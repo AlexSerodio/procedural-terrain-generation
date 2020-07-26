@@ -36,8 +36,8 @@ namespace Simulation.Terrain.DiegoliNeto
             {
                 for (int y = 0; y < maxY; y++)
                 {
-                    float maxHeightDiff = 0;            // maior diferença encontrada entre os vizinhos.
-                    float sumExceededDiffs = 0;         // soma das diferenças que ultrapassam o limite talus.
+                    float maxHeightDiff = 0;            // Maior diferença encontrada entre os vizinhos.
+                    float sumExceededDiffs = 0;         // Soma das diferenças que ultrapassam o limite talus.
 
                     // Primeiro loop não realiza nenhuma alteração no no relevo.
                     // Percorre os vizinhos calculando qual a maior diferença de altura entre todos

@@ -73,7 +73,7 @@ namespace Simulation.Terrain.DiegoliNeto
                         float localSurface = matrix[relX, relY] + water[relX, relY];    // Altura total do vizinho.
                         float diff = surface - localSurface;                            // Diferença entre atual e vizinho.
                         // Se a altura total atual for menor que a altura total do vizinho, skip 
-                        if (diff < 0)           // TODO: alterar essa linha para if (surface < localSurface) quando houver testes
+                        if (diff < 0)           // TODO: Alterar essa linha para if (surface < localSurface) quando houver testes
                             skip = true;
                         else
                         {
@@ -81,7 +81,6 @@ namespace Simulation.Terrain.DiegoliNeto
                             avg += localSurface;
                             count++;
                         }
-                        
                     });
                     
                     if (skip)

@@ -1082,8 +1082,46 @@ public class CustomTerrain : MonoBehaviour
             heightMin *= heigthDampener;
             heightMax *= heigthDampener;
         }
-           
+        
         terrainData.SetHeights(0, 0, heightMap);
+    }
+
+    public void MatrixToString()
+    {
+        float[,] matrix = GetHeightMap();
+     
+        var content = new System.Text.StringBuilder();
+        content.Append("{\n");
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            content.Append("\t{");
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                content.Append(matrix[i, j].ToString("n6"));
+                if(j < matrix.GetLength(1)-1)
+                    content.Append(",");
+                content.Append(" ");
+            }
+            content.Append("},\n");
+        }
+        content.Append("}");
+
+        // Debug.Log(content.ToString());
+        WriteString(content.ToString(), "teste");
+    }
+
+    private void WriteString(string content, string fileName)
+    {
+        string path = $"Assets/Samples/{fileName}.txt";
+
+        //Write some text to the test.txt file
+        System.IO.StreamWriter writer = new System.IO.StreamWriter(path, true);
+        writer.Write(content);
+        writer.Close();
+
+        //Re-import the file to update the reference in the editor
+        AssetDatabase.ImportAsset(path); 
+        TextAsset asset = Resources.Load(fileName) as TextAsset;
     }
 
     public void Voronoi()
@@ -1238,6 +1276,23 @@ public class CustomTerrain : MonoBehaviour
                 heightMap[x, z] = 0.1f;
             }
         }
+        terrainData.SetHeights(0, 0, heightMap);
+    }
+
+    public void SaveHeights(string filename)
+    {
+        var writer = new Generation.Terrain.Utils.ReadWriteTerrain(filename);
+
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+
+        writer.WriteMatrix(heightMap);
+    }
+
+    public void LoadHeights(string filename)
+    {
+        var reader = new Generation.Terrain.Utils.ReadWriteTerrain(filename);
+
+        float[,] heightMap = reader.ReadMatrix();
         terrainData.SetHeights(0, 0, heightMap);
     }
 }

@@ -369,11 +369,21 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("smoothAmount"));
             if (GUILayout.Button("Smooth"))
                 terrain.Smooth();
+
         }
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         if (GUILayout.Button("Reset Heights"))
             terrain.ResetTerrain();
+
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        string fileName = "test";
+        if (GUILayout.Button("Save Heights"))
+            terrain.SaveHeights(fileName);
+        if (GUILayout.Button("Load Heights"))
+            terrain.LoadHeights(fileName);
+        if (GUILayout.Button("Load Sample Heights"))
+            terrain.LoadHeights("sample");
 
         showHeights = EditorGUILayout.Foldout(showHeights, "Height Map");
         if (showHeights)
@@ -409,7 +419,7 @@ public class CustomTerrainEditor : Editor
             {
                 byte[] bytes = hmTexture.EncodeToPNG();
                 System.IO.Directory.CreateDirectory(Application.dataPath + "/SavedTextures");
-                File.WriteAllBytes(Application.dataPath + "/SavedTextures/" + System.DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HHmmss") + ".png", bytes);
+                File.WriteAllBytes(Application.dataPath + "/SavedTextures/" + System.DateTime.Now.ToString("yyyy'-'MM'-'dd' 'HH-mm-ss") + ".png", bytes);
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
