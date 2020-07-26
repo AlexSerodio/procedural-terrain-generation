@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using Generation.Utils;
+using Generation.Terrain.Utils;
 
-namespace Generation.Physics.Erosion
+namespace Generation.Terrain.Physics.Erosion
 {
     /// <summary>
     /// Foreach position, check if the height of it's neighbors is less than the current height plus he erosionStrength.

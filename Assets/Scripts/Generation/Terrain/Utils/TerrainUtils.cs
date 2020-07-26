@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Numerics;
 
-namespace Generation.Utils
+namespace Generation.Terrain.Utils
 {
     public static class TerrainUtils
     {

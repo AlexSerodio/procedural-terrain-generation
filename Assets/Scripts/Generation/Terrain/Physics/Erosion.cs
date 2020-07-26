@@ -1,4 +1,4 @@
-﻿namespace Generation.Physics.Erosion
+﻿namespace Generation.Terrain.Physics.Erosion
 {
     public interface Erosion
     {
