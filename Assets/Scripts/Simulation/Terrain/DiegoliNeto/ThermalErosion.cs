@@ -27,11 +27,11 @@ namespace Simulation.Terrain.DiegoliNeto
         /// <param name="matrix">Mapa de altura do relevo.</param>
         /// <param name="talus">Diferença de altura máxima permitida.</param>
         /// <param name="factor">Fator limitante de movimentação.</param>
-        public void DryErosion(float[,] matrix, float talus, float factor)
+        public void DryErosion(float[,] matrix, float talus = 1, float factor = 0.5f)
         {
             int maxX = matrix.GetLength(0);
             int maxY = matrix.GetLength(1);
-            
+            int count = 0;
             for (int x = 0; x < maxX; x++)
             {
                 for (int y = 0; y < maxY; y++)
@@ -42,17 +42,19 @@ namespace Simulation.Terrain.DiegoliNeto
                     // Primeiro loop não realiza nenhuma alteração no no relevo.
                     // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
                     // e a soma de todas as diferenças de altura que ultrapassam o limite talus.
-                    Neighborhood.VonNeumann(x, y, matrix, (int relX, int relY) => {
-                        float heightDiff = matrix[x, y] - matrix[relX, relY];
-                        if (heightDiff > maxHeightDiff)
-                            maxHeightDiff = heightDiff;
-                        if (heightDiff > talus)
-                            sumExceededDiffs += heightDiff;
-                    });
+                    
+                    // Neighborhood.VonNeumann(x, y, matrix, (int relX, int relY) => {
+                    //     float heightDiff = matrix[x, y] - matrix[relX, relY];
+                    //     if (heightDiff > maxHeightDiff)
+                    //         maxHeightDiff = heightDiff;
+                    //     if (heightDiff > talus)
+                    //         sumExceededDiffs += heightDiff;
+                    // });
                     
                     // Se não existir nenhuma diferença de altura que ultrapasse o limite, o ponto está estabilizado.
                     if (sumExceededDiffs == 0)
                         continue;
+
                     
                     // float inclinationDifference = (maxHeightDiff - talus);
                     
@@ -60,18 +62,21 @@ namespace Simulation.Terrain.DiegoliNeto
                     Neighborhood.VonNeumann(x, y, matrix, (int relX, int relY) => {
                         float heightDiff = matrix[x, y] - matrix[relX, relY];
                         
+                        count++;
                         // Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
                         // remove material da posição atual e aplica ao vizinho.
                         if (heightDiff > talus)
                         {
                             // Fórmula de distribuição do solo.
-                            float move = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+                            // float move = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+                            float move = (factor * (heightDiff - talus));
                             matrix[relX, relY] += move;
                             matrix[x, y] -= move;
                         }
                     });
                 }
             }
+            UnityEngine.Debug.Log(count);
         }
     }
 }

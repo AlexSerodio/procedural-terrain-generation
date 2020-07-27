@@ -339,7 +339,7 @@ public class CustomTerrain : MonoBehaviour
                 RainErosion();
                 break;
             case ErosionType.Thermal:
-                ThermalErosion();
+                ThermalErosion(terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution), 0.003f, 0.045f);
                 break;
             case ErosionType.Tidal:
                 TidalErosion();
@@ -376,26 +376,26 @@ public class CustomTerrain : MonoBehaviour
     }
 
     /// <summary>
-    /// Foreach position, check if the heigth of it's neighbours is less than the current height plus he erosionStrength.
-    /// If so, a percentage of the current position height is removed from the current position and added to the neighbour.
+    /// Foreach position, check if the height of it's neighbors is less than the current height plus he erosionStrength.
+    /// If so, a percentage of the current position height is removed from the current position and added to the neighbor.
     /// </summary>
-    private void ThermalErosion()
+    private void ThermalErosion(float[,] heightMap, float _erosionStrength, float _erosionAmount)
     {
-        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
-        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        // float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        for (int y = 0; y < heightMap.GetLength(1); y++)
         {
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            for (int x = 0; x < heightMap.GetLength(0); x++)
             {
                 Vector2 thisLocation = new Vector2(x, y);
-                List<Vector2> neighbours = GenerateNeighbours(thisLocation, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                List<Vector2> neighbors = GenerateNeighbors(thisLocation, heightMap.GetLength(0), heightMap.GetLength(1));
                 
-                foreach (Vector2 n in neighbours)
+                foreach (Vector2 n in neighbors)
                 {
-                    if (heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + erosionStrength)
+                    if (heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + _erosionStrength)
                     {
                         float currentHeight = heightMap[x, y];
-                        heightMap[x, y] -= currentHeight * erosionAmount;
-                        heightMap[(int)n.x, (int)n.y] += currentHeight * erosionAmount;
+                        heightMap[x, y] -= currentHeight * _erosionAmount;
+                        heightMap[(int)n.x, (int)n.y] += currentHeight * _erosionAmount;
                     }
                 }
             }
@@ -404,7 +404,7 @@ public class CustomTerrain : MonoBehaviour
     }
 
     /// <summary>
-    /// Foreach position, check if the current heigth is less than the water height and if it's neighbours height is bigger than it.
+    /// Foreach position, check if the current height is less than the water height and if it's neighbors height is bigger than it.
     /// If so, update both heights to the water height, creating a slope on the beach.
     /// </summary>
     private void TidalErosion()
@@ -415,8 +415,8 @@ public class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 Vector2 thisLocation = new Vector2(x, y);
-                List<Vector2> neighbours = GenerateNeighbours(thisLocation, terrainData.heightmapResolution, terrainData.heightmapResolution);
-                foreach (Vector2 n in neighbours)
+                List<Vector2> neighbors = GenerateNeighbors(thisLocation, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                foreach (Vector2 n in neighbors)
                 {
                     if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
                     {
@@ -468,10 +468,10 @@ public class CustomTerrain : MonoBehaviour
     {
         while (erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] > 0)
         {
-            List<Vector2> neighbours = GenerateNeighbours(dropletPosition, width, height);
-            neighbours.Shuffle();
+            List<Vector2> neighbors = GenerateNeighbors(dropletPosition, width, height);
+            neighbors.Shuffle();
             bool foundLower = false;
-            foreach (Vector2 n in neighbours)
+            foreach (Vector2 n in neighbors)
             {
                 if (heightMap[(int)n.x, (int)n.y] < heightMap[(int)dropletPosition.x, (int)dropletPosition.y])
                 {
@@ -603,9 +603,9 @@ public class CustomTerrain : MonoBehaviour
 
                         RaycastHit hit;
                         int layerMask = 1 << terrainLayer;
-                        Vector3 heigthCastOffset = new Vector3(0, 10, 0);
-                        if (Physics.Raycast(treeWorldPos + heigthCastOffset, -Vector3.up, out hit, 100, layerMask)  ||
-                            Physics.Raycast(treeWorldPos - heigthCastOffset, Vector3.up, out hit, 100, layerMask))
+                        Vector3 heightCastOffset = new Vector3(0, 10, 0);
+                        if (Physics.Raycast(treeWorldPos + heightCastOffset, -Vector3.up, out hit, 100, layerMask)  ||
+                            Physics.Raycast(treeWorldPos - heightCastOffset, Vector3.up, out hit, 100, layerMask))
                         {
                             float treeHeight = (hit.point.y - this.transform.position.y) / terrainData.size.y;
                             instance.position = new Vector3(instance.position.x, treeHeight, instance.position.z);
@@ -634,12 +634,12 @@ public class CustomTerrain : MonoBehaviour
     {
         TreePrototype[] newTreePrototypes;
         newTreePrototypes = new TreePrototype[vegetation.Count];
-        int tindex = 0;
+        int tIndex = 0;
         foreach (Vegetation t in vegetation)
         {
-            newTreePrototypes[tindex] = new TreePrototype();
-            newTreePrototypes[tindex].prefab = t.mesh;
-            tindex++;
+            newTreePrototypes[tIndex] = new TreePrototype();
+            newTreePrototypes[tIndex].prefab = t.mesh;
+            tIndex++;
         }
         terrainData.treePrototypes = newTreePrototypes;
     }
@@ -667,7 +667,7 @@ public class CustomTerrain : MonoBehaviour
     }
 
     public void AddDetails() {
-        PrepareDetailssPrototypes();
+        PrepareDetailsPrototypes();
 
         float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
 
@@ -702,7 +702,7 @@ public class CustomTerrain : MonoBehaviour
         }
     }
 
-    private void PrepareDetailssPrototypes()
+    private void PrepareDetailsPrototypes()
     {
         DetailPrototype[] newDetailPrototypes;
         newDetailPrototypes = new DetailPrototype[details.Count];
@@ -775,8 +775,8 @@ public class CustomTerrain : MonoBehaviour
             {
                 //find spot on shore
                 Vector2 thisLocation = new Vector2(x, y);
-                List<Vector2> neighbours = GenerateNeighbours(thisLocation, terrainData.heightmapResolution, terrainData.heightmapResolution);
-                foreach (Vector2 n in neighbours)
+                List<Vector2> neighbors = GenerateNeighbors(thisLocation, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                foreach (Vector2 n in neighbors)
                 {
                     if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
                     {
@@ -878,15 +878,15 @@ public class CustomTerrain : MonoBehaviour
     {
         TerrainLayer[] newTerrainLayers;
         newTerrainLayers = new TerrainLayer[splatHeights.Count];
-        int spindex = 0;
+        int spIndex = 0;
         foreach (SplatHeights sh in splatHeights)
         {
-            newTerrainLayers[spindex] = new TerrainLayer();
-            newTerrainLayers[spindex].diffuseTexture = sh.texture;
-            newTerrainLayers[spindex].tileOffset = sh.tileOffset;
-            newTerrainLayers[spindex].tileSize = sh.tileSize;
-            newTerrainLayers[spindex].diffuseTexture.Apply(true);
-            spindex++;
+            newTerrainLayers[spIndex] = new TerrainLayer();
+            newTerrainLayers[spIndex].diffuseTexture = sh.texture;
+            newTerrainLayers[spIndex].tileOffset = sh.tileOffset;
+            newTerrainLayers[spIndex].tileSize = sh.tileSize;
+            newTerrainLayers[spIndex].diffuseTexture.Apply(true);
+            spIndex++;
         }
         terrainData.terrainLayers = newTerrainLayers;
 
@@ -936,9 +936,9 @@ public class CustomTerrain : MonoBehaviour
             v[i] /= total;
     }
 
-    private List<Vector2> GenerateNeighbours(Vector2 pos, int width, int height)
+    private List<Vector2> GenerateNeighbors(Vector2 pos, int width, int height)
     {
-        List<Vector2> neighbours = new List<Vector2>();
+        List<Vector2> neighbors = new List<Vector2>();
         for (int y = -1; y < 2; y++)
         {
             for (int x = -1; x < 2; x++)
@@ -947,12 +947,12 @@ public class CustomTerrain : MonoBehaviour
                 {
                     Vector2 nPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width - 1),
                                                 Mathf.Clamp(pos.y + y, 0, height - 1));
-                    if (!neighbours.Contains(nPos))
-                        neighbours.Add(nPos);
+                    if (!neighbors.Contains(nPos))
+                        neighbors.Add(nPos);
                 }
             }
         }
-        return neighbours;
+        return neighbors;
     }
 
     public void Smooth()
@@ -969,13 +969,13 @@ public class CustomTerrain : MonoBehaviour
                 for (int y = 0; y < terrainData.heightmapResolution; y++)
                 {
                     float totalHeight = heightMap[x, y];
-                    List<Vector2> neighbours = GenerateNeighbours(new Vector2(x, y),
+                    List<Vector2> neighbors = GenerateNeighbors(new Vector2(x, y),
                                                                 terrainData.heightmapResolution,
                                                                 terrainData.heightmapResolution);
-                    foreach (Vector2 neighbour in neighbours)
-                        totalHeight += heightMap[(int)neighbour.x, (int)neighbour.y];
+                    foreach (Vector2 neighbor in neighbors)
+                        totalHeight += heightMap[(int)neighbor.x, (int)neighbor.y];
 
-                    heightMap[x, y] = totalHeight / ((float)neighbours.Count + 1);
+                    heightMap[x, y] = totalHeight / ((float)neighbors.Count + 1);
                 }
             }
             smoothProgress++;
@@ -995,7 +995,7 @@ public class CustomTerrain : MonoBehaviour
         float heightMin = MPDHeightMin;
         float heightMax = MPDHeightMax;
         // float roughness = 2.0f;
-        float heigthDampener = (float)Mathf.Pow(MPDHeightDampenerPower, -1 * MPDRoughness);
+        float heightDampener = (float)Mathf.Pow(MPDHeightDampenerPower, -1 * MPDRoughness);
 
         int endX, endY;
         int midX, midY;
@@ -1079,8 +1079,8 @@ public class CustomTerrain : MonoBehaviour
 
             // update step
             squareSize = (int)(squareSize / 2.0f);
-            heightMin *= heigthDampener;
-            heightMax *= heigthDampener;
+            heightMin *= heightDampener;
+            heightMax *= heightDampener;
         }
         
         terrainData.SetHeights(0, 0, heightMap);

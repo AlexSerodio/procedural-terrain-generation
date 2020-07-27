@@ -369,7 +369,6 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("smoothAmount"));
             if (GUILayout.Button("Smooth"))
                 terrain.Smooth();
-
         }
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
