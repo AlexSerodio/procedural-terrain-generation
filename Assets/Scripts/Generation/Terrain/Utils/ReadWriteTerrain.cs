@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Generation.Terrain.Utils
 {
@@ -49,10 +48,6 @@ namespace Generation.Terrain.Utils
                             matrix[i, j] = reader.ReadSingle();
                     }
                 }
-            }
-            else
-            {
-                UnityEngine.Debug.Log("File not found.");
             }
 
             return matrix;

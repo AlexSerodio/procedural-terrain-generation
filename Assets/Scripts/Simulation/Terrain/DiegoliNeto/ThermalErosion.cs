@@ -43,13 +43,13 @@ namespace Simulation.Terrain.DiegoliNeto
                     // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
                     // e a soma de todas as diferenças de altura que ultrapassam o limite talus.
                     
-                    // Neighborhood.VonNeumann(x, y, matrix, (int relX, int relY) => {
-                    //     float heightDiff = matrix[x, y] - matrix[relX, relY];
-                    //     if (heightDiff > maxHeightDiff)
-                    //         maxHeightDiff = heightDiff;
-                    //     if (heightDiff > talus)
-                    //         sumExceededDiffs += heightDiff;
-                    // });
+                    Neighborhood.VonNeumann(x, y, matrix, (int relX, int relY) => {
+                        float heightDiff = matrix[x, y] - matrix[relX, relY];
+                        if (heightDiff > maxHeightDiff)
+                            maxHeightDiff = heightDiff;
+                        if (heightDiff > talus)
+                            sumExceededDiffs += heightDiff;
+                    });
                     
                     // Se não existir nenhuma diferença de altura que ultrapasse o limite, o ponto está estabilizado.
                     if (sumExceededDiffs == 0)

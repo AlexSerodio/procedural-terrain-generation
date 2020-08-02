@@ -57,5 +57,6 @@
         "Behaviour",
         "Blumenau",
         "Diegoli"
-    ]
+    ],
+    "dotnet-test-explorer.testProjectPath": "UnitTests/**/*.csproj"
 }
