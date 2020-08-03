@@ -54,7 +54,6 @@ namespace Simulation.Terrain.DiegoliNeto
                     // Se não existir nenhuma diferença de altura que ultrapasse o limite, o ponto está estabilizado.
                     if (sumExceededDiffs == 0)
                         continue;
-
                     
                     // float inclinationDifference = (maxHeightDiff - talus);
                     
@@ -76,7 +75,6 @@ namespace Simulation.Terrain.DiegoliNeto
                     });
                 }
             }
-            UnityEngine.Debug.Log(count);
         }
     }
 }

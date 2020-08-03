@@ -28,7 +28,13 @@ public class TestManager : MonoBehaviour
     {
         var thermalErosion = new Simulation.Terrain.DiegoliNeto.ThermalErosion();
         float[,] heightMap = GetHeightMap();
-        thermalErosion.DryErosion(heightMap, 0.003f, 0.05f);
+
+        int N = heightMap.GetLength(0);
+        float talus = 2f / N;       // 0.0038f;
+        float factor = 0.5f;
+        int iteration = 500;
+        for (int i = 0; i < iteration; i++)
+            thermalErosion.DryErosion(heightMap, talus, factor);
 
         UpdateTerrain(heightMap);
     }
