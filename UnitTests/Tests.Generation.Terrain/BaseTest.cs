@@ -19,10 +19,10 @@ namespace Tests.Generation.Terrain
             Output = output;
         }
 
-        private static float[,] GetTestHeightMap()
+        protected static float[,] GetTestHeightMap(string filename = "heightmap-1")
         {
-            var fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\UnitTests\\";
-            var reader = new ReadWriteTerrain("test-heightmap", fullPath);
+            var fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Heighmaps\\";
+            var reader = new ReadWriteTerrain(filename, fullPath);
             
             return reader.ReadMatrix();
         }

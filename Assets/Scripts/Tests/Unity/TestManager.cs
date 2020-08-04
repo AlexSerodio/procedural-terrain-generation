@@ -1,50 +1,62 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Generation.Terrain.Utils;
+using Simulation.Terrain.DiegoliNeto;
+using UnityEditor;
+using UnityEngine.UI;
 using UnityEngine;
-using Generation.Terrain.Physics.Erosion;
-using Generation.Terrain.Utils;
 
 public class TestManager : MonoBehaviour
 {
-    public float ErosionFactor = 0.045f;
-    public float ErosionStrength = 0.003f;
     private TerrainData terrainData;
+
+    public Text LoadTerrainNameField;
+    public Text SaveTerrainNameField;
+    public Text ErosionIterationsField;
+    public Text SmoothAmountField;
 
     void Start()
     {
         terrainData = Terrain.activeTerrain.terrainData;
     }
 
-    public void ThermalErosionMine()
+    public void ThermalErosion()
     {
-        float[,] heightMap = GetHeightMap();
-        ThermalErosion thermalErosion = new ThermalErosion(ErosionStrength, ErosionFactor);
-        thermalErosion.Erode(heightMap);
-
-        UpdateTerrain(heightMap);
-    }
-
-    public void ThermalErosionDiegoli()
-    {
-        var thermalErosion = new Simulation.Terrain.DiegoliNeto.ThermalErosion();
+        var thermalErosion = new ThermalErosion();
         float[,] heightMap = GetHeightMap();
 
-        int N = heightMap.GetLength(0);
-        float talus = 2f / N;       // 0.0038f;
+        int N = heightMap.GetLength(0) - 1;
+        float talus = 1f / N;       // nosso talus é menor do que o do Olsen (4/N) possivelmente por estarmos trabalhando com diferenças de alturas maiores.
         float factor = 0.5f;
-        int iteration = 500;
-        for (int i = 0; i < iteration; i++)
+        int iterations = int.Parse(ErosionIterationsField.text);
+        EditorUtility.DisplayProgressBar("Erode Terrain", "Progress", 0);
+        for (int i = 0; i < iterations; i++)
+        {
+            EditorUtility.DisplayProgressBar("Erode Terrain", "Progress", i / iterations);
             thermalErosion.DryErosion(heightMap, talus, factor);
+        }
 
         UpdateTerrain(heightMap);
+        EditorUtility.ClearProgressBar();
     }
 
-    public void RestartTerrain()
+    public void LoadTerrain()
     {
-        var reader = new ReadWriteTerrain("sample");
+        string fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Heighmaps\\";
+        string filename = LoadTerrainNameField.text;
+        var reader = new ReadWriteTerrain(filename, fullPath);
         float[,] heightMap = reader.ReadMatrix();
 
         UpdateTerrain(heightMap);
+    }
+
+    public void SaveTerrain()
+    {
+        float[,] heightMap = GetHeightMap();
+
+        string fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Heighmaps\\";
+        string filename = SaveTerrainNameField.text;
+        var writer = new ReadWriteTerrain(filename, fullPath);
+
+        writer.WriteMatrix(heightMap);
     }
 
     private float[,] GetHeightMap()
