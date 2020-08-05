@@ -23,19 +23,14 @@ public class TestManager : MonoBehaviour
         var thermalErosion = new ThermalErosion();
         float[,] heightMap = GetHeightMap();
 
-        int N = heightMap.GetLength(0) - 1;
+        int N = heightMap.GetLength(0);
         float talus = 1f / N;       // nosso talus é menor do que o do Olsen (4/N) possivelmente por estarmos trabalhando com diferenças de alturas maiores.
         float factor = 0.5f;
         int iterations = int.Parse(ErosionIterationsField.text);
-        EditorUtility.DisplayProgressBar("Erode Terrain", "Progress", 0);
-        for (int i = 0; i < iterations; i++)
-        {
-            EditorUtility.DisplayProgressBar("Erode Terrain", "Progress", i / iterations);
-            thermalErosion.DryErosion(heightMap, talus, factor);
-        }
+
+        thermalErosion.Erode(heightMap, talus, factor, iterations);
 
         UpdateTerrain(heightMap);
-        EditorUtility.ClearProgressBar();
     }
 
     public void LoadTerrain()

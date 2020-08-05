@@ -13,6 +13,12 @@ namespace Simulation.Terrain.DiegoliNeto
     /// </summary>
     public class ThermalErosion
     {
+        public void Erode(float[,] matrix, float talus = 1, float factor = 0.5f, int iterations = 500)
+        {
+            for (int i = 0; i < iterations; i++)
+                DryErosion(matrix, talus, factor);
+        }
+
         /// <summary>
         /// Simula os efeitos de erosão térmica, que causa a queda de materiais em encostas de montanhas,
         /// tornando a encosta mais íngreme e gerando acumulo de materiais na sua base. 
@@ -67,8 +73,8 @@ namespace Simulation.Terrain.DiegoliNeto
                         if (heightDiff > talus)
                         {
                             // Fórmula de distribuição do solo.
-                            // float move = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
-                            float move = (factor * (heightDiff - talus));
+                            float move = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+                            // float move = (factor * (heightDiff - talus));
                             matrix[relX, relY] += move;
                             matrix[x, y] -= move;
                         }

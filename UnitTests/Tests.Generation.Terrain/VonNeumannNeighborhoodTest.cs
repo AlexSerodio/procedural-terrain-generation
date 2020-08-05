@@ -7,10 +7,18 @@ using Xunit;
 
 namespace Tests.Generation.Terrain
 {
+    [Collection("Neighborhood")]
     public class VonNeumannNeighborhoodTest : BaseTest
     {
+        private readonly float[,] Heightmap;
+        private readonly int Width;
+        private readonly int Height;
+
         public VonNeumannNeighborhoodTest(ITestOutputHelper output) : base(output)
         {
+            Heightmap = ReadHeightMap("heightmap-1");
+            Width = Heightmap.GetLength(0);
+            Height = Heightmap.GetLength(1);
         }
 
         [Fact]
