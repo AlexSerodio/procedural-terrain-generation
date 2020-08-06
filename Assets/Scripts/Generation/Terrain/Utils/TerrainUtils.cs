@@ -6,29 +6,37 @@ namespace Generation.Terrain.Utils
     public static class TerrainUtils
     {
         /// <summary>
-        /// Smooth the heighMap informed. Each position gets the average height of its eight neighbors plus its own.
+        /// Smooth the heighmap informed. Each position gets the average height of its eight neighbors plus its own.
         /// </summary>
-        /// <param name="heightMap">The heighMap to be smoothed.</param>
+        /// <param name="heightmap">The heighmap to be smoothed.</param>
         /// <param name="iterations">The number of times the algorithm will be repeated.</param>
-        /// <returns>The smoothed heightMap.</returns>
-        public static float[,] Smooth(float[,] heightMap, int iterations = 1)
+        /// <returns>The smoothed heightmap.</returns>
+        public static float[,] Smooth(float[,] heightmap, int iterations = 1)
         {
-            for (int i = 0; i < iterations; i++)
-            {
-                for (int x = 0; x < heightMap.GetLength(0); x++)
-                {
-                    for (int y = 0; y < heightMap.GetLength(1); y++)
-                    {
-                        float totalHeight = heightMap[x, y];
-                        List<Vector2> neighbors = Neighborhood.Moore(new Vector2(x, y), heightMap.GetLength(0), heightMap.GetLength(1));
-                        foreach (Vector2 neighbor in neighbors)
-                            totalHeight += heightMap[(int)neighbor.X, (int)neighbor.Y];
+            int width = heightmap.GetLength(0);
+            int height = heightmap.GetLength(1);
 
-                        heightMap[x, y] = totalHeight / (neighbors.Count + 1);
-                    }
+            for (int i = 0; i < iterations; i++)
+                BoxBlur(heightmap, width, height);
+
+            return heightmap;
+        }
+
+        private static void BoxBlur(float[,] matrix, int width, int height)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    float totalHeight = matrix[x, y];
+                    
+                    List<Vector2> neighbors = Neighborhood.Moore(new Vector2(x, y), width, height);
+                    foreach (Vector2 neighbor in neighbors)
+                        totalHeight += matrix[(int)neighbor.X, (int)neighbor.Y];
+
+                    matrix[x, y] = totalHeight / (neighbors.Count + 1);
                 }
             }
-            return heightMap;
         }
     }
 }

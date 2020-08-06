@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Numerics;
+
 namespace Simulation.Terrain.DiegoliNeto
 {
     /// <summary>
@@ -56,7 +59,21 @@ namespace Simulation.Terrain.DiegoliNeto
                         if (heightDiff > talus)
                             sumExceededDiffs += heightDiff;
                     });
+
+                    List<Vector2> neighbors = Generation.Terrain.Utils.Neighborhood.VonNeumann(new Vector2(x, y), maxX, maxY);
                     
+                    // Primeiro loop não realiza nenhuma alteração no no relevo.
+                    // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
+                    // e a soma de todas as diferenças de altura que ultrapassam o limite talus.
+                    // foreach (var neighbor in neighbors)
+                    // {
+                    //     float heightDiff = matrix[x, y] - matrix[(int)neighbor.X, (int)neighbor.Y];
+                    //     if (heightDiff > maxHeightDiff)
+                    //         maxHeightDiff = heightDiff;
+                    //     if (heightDiff > talus)
+                    //         sumExceededDiffs += heightDiff;
+                    // }
+
                     // Se não existir nenhuma diferença de altura que ultrapasse o limite, o ponto está estabilizado.
                     if (sumExceededDiffs == 0)
                         continue;
@@ -79,6 +96,24 @@ namespace Simulation.Terrain.DiegoliNeto
                             matrix[x, y] -= move;
                         }
                     });
+
+                    // Segundo loop é onde são feitas as alterações.
+                    // foreach (var neighbor in neighbors)
+                    // {
+                    //     float heightDiff = matrix[x, y] - matrix[(int)neighbor.X, (int)neighbor.Y];
+                        
+                    //     count++;
+                    //     // Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
+                    //     // remove material da posição atual e aplica ao vizinho.
+                    //     if (heightDiff > talus)
+                    //     {
+                    //         // Fórmula de distribuição do solo.
+                    //         float move = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+                    //         // float move = (factor * (heightDiff - talus));
+                    //         matrix[(int)neighbor.X, (int)neighbor.Y] += move;
+                    //         matrix[x, y] -= move;
+                    //     }
+                    // }
                 }
             }
         }

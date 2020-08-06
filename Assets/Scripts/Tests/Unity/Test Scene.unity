@@ -744,7 +744,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 730436451}
-        m_MethodName: ThermalErosionMine
+        m_MethodName: Smooth
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

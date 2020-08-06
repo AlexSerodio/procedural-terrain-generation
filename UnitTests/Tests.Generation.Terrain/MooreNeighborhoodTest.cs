@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Tests.Generation.Terrain
 {
-    [Collection("Neighborhood")]
+    [Collection("MustReadFile")]
     public class MooreNeighborhoodTest : BaseTest
     {
         private readonly float[,] Heightmap;

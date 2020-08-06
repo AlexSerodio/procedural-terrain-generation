@@ -1,6 +1,5 @@
 ﻿using Generation.Terrain.Utils;
 using Simulation.Terrain.DiegoliNeto;
-using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -52,6 +51,16 @@ public class TestManager : MonoBehaviour
         var writer = new ReadWriteTerrain(filename, fullPath);
 
         writer.WriteMatrix(heightMap);
+    }
+
+    public void Smooth()
+    {
+        float[,] heightMap = GetHeightMap();
+
+        int iterations = int.Parse(SmoothAmountField.text);
+        TerrainUtils.Smooth(heightMap, iterations);
+
+        UpdateTerrain(heightMap);
     }
 
     private float[,] GetHeightMap()

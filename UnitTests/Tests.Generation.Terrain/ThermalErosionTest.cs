@@ -1,4 +1,3 @@
-using System;
 using FluentAssertions;
 using Simulation.Terrain.DiegoliNeto;
 using Xunit;
@@ -6,6 +5,7 @@ using Xunit.Abstractions;
 
 namespace Tests.Generation.Terrain
 {
+    [Collection("MustReadFile")]
     public class ThermalErosionTest : BaseTest
     {
         private ThermalErosion thermalErosion;
@@ -60,32 +60,6 @@ namespace Tests.Generation.Terrain
 
             // Assert
             AreEqual(actualHeighmap, expectedHeighmap).Should().Be(true);
-        }
-
-        /// <summary>
-        /// Compares whether the values from first matrix are equal the values from the second one.
-        /// Float values can vary slightly from one matrix to another. The 'allowedDifference'
-        /// parameter determines how much that difference can be.
-        /// </summary>
-        private bool AreEqual(float[,] actual, float[,] expected, float allowedDifference = 0.00015f)
-        {
-            if(actual.GetLength(0) != expected.GetLength(0) || actual.GetLength(1) != expected.GetLength(1))
-                return false;
-
-            for (int i = 0; i < actual.GetLength(0); i++)
-            {
-                for (int j = 0; j < actual.GetLength(1); j++)
-                {
-                    if(Math.Abs(actual[i, j] - expected[i, j]) > allowedDifference)
-                    {
-                        Output.WriteLine("Actual: " + actual[i, j]);
-                        Output.WriteLine("Expected: " + expected[i, j]);
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
     }
 }
