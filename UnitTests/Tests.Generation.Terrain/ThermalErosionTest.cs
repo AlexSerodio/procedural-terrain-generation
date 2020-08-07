@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Generation.Terrain.Utils;
 using Simulation.Terrain.DiegoliNeto;
 using Xunit;
 using Xunit.Abstractions;
@@ -24,8 +25,8 @@ namespace Tests.Generation.Terrain
         public void Erode_WithHeightmap2_ShouldBeEqualErodedHeighmap2()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-2");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-2-eroded");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap2.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap2.Eroded);
 
             // Act
             thermalErosion.Erode(actualHeighmap, talus, factor, iterations);
@@ -38,8 +39,8 @@ namespace Tests.Generation.Terrain
         public void Erode_WithHeightmap3_ShouldBeEqualErodedHeighmap3()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-3");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-3-eroded");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap3.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap3.Eroded);
 
             // Act
             thermalErosion.Erode(actualHeighmap, talus, factor, iterations);
@@ -52,8 +53,8 @@ namespace Tests.Generation.Terrain
         public void Erode_WithHeightmap4_ShouldBeEqualErodedHeighmap4()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-4");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-4-eroded");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap4.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap4.Eroded);
 
             // Act
             thermalErosion.Erode(actualHeighmap, talus, factor, iterations);

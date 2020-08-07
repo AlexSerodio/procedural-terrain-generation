@@ -1,11 +1,12 @@
-using System;
 using Generation.Terrain.Utils;
+using System;
 using Xunit.Abstractions;
 
 namespace Tests.Generation.Terrain
 {
     public abstract class BaseTest
     {
+        protected Files Files;
         protected readonly ITestOutputHelper Output;
 
         protected BaseTest(ITestOutputHelper output)

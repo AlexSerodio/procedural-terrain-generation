@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Generation.Terrain.Utils;
-using Xunit;
 using Xunit.Abstractions;
+using Xunit;
 
 namespace Tests.Generation.Terrain
 {
@@ -18,8 +18,8 @@ namespace Tests.Generation.Terrain
         public void Smooth_WithHeightmap1_ShouldBeEqualSmoothedHeighmap1()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-1");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-1-smoothed");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap1.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap1.Smoothed);
 
             // Act
             TerrainUtils.Smooth(actualHeighmap, iterations);
@@ -32,8 +32,8 @@ namespace Tests.Generation.Terrain
         public void Smooth_WithHeightmap2_ShouldBeEqualSmoothedHeighmap2()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-2");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-2-smoothed");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap2.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap2.Smoothed);
 
             // Act
             TerrainUtils.Smooth(actualHeighmap, iterations);
@@ -46,8 +46,8 @@ namespace Tests.Generation.Terrain
         public void Smooth_WithHeightmap3_ShouldBeEqualSmoothedHeighmap3()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-3");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-3-smoothed");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap3.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap3.Smoothed);
 
             // Act
             TerrainUtils.Smooth(actualHeighmap, iterations);
@@ -60,8 +60,8 @@ namespace Tests.Generation.Terrain
         public void Smooth_WithHeightmap4_ShouldBeEqualSmoothedHeighmap4()
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap("heightmap-4");
-            float[,] expectedHeighmap = ReadHeightMap("heightmap-4-smoothed");
+            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap4.Original);
+            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap4.Smoothed);
 
             // Act
             TerrainUtils.Smooth(actualHeighmap, iterations);

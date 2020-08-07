@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Generation.Terrain.Utils;
 using System.Collections.Generic;
-using System.Numerics;
 using Xunit.Abstractions;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace Tests.Generation.Terrain
 
         public MooreNeighborhoodTest(ITestOutputHelper output) : base(output)
         {
-            Heightmap = ReadHeightMap("heightmap-1");
+            Heightmap = ReadHeightMap(Files.Heightmap1.Original);
             Width = Heightmap.GetLength(0);
             Height = Heightmap.GetLength(1);
         }

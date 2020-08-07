@@ -15,7 +15,7 @@ namespace Tests.Generation.Terrain
 
         public VonNeumannNeighborhoodTest(ITestOutputHelper output) : base(output)
         {
-            Heightmap = ReadHeightMap("heightmap-1");
+            Heightmap = ReadHeightMap(Files.Heightmap1.Original);
             Width = Heightmap.GetLength(0);
             Height = Heightmap.GetLength(1);
         }

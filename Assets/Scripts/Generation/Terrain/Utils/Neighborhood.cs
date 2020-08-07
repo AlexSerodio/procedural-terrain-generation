@@ -16,16 +16,16 @@ namespace Generation.Terrain.Utils
         /// <returns>A list with the neighbors found.</returns>
         public static List<Coords> Moore(Coords seed, int width, int height)
         {
-            HashSet<Coords> neighbors = new HashSet<Coords>();
+            List<Coords> neighbors = new List<Coords>();
             
             if (seed.X > 0)
                 neighbors.Add(new Coords(seed.X-1, seed.Y));
             
-            if (seed.X < width - 1)
-                neighbors.Add(new Coords(seed.X+1, seed.Y));
-            
             if (seed.Y > 0)
                 neighbors.Add(new Coords(seed.X, seed.Y-1));
+            
+            if (seed.X < width - 1)
+                neighbors.Add(new Coords(seed.X+1, seed.Y));
             
             if (seed.Y < height - 1)
                 neighbors.Add(new Coords(seed.X, seed.Y+1));
@@ -42,7 +42,7 @@ namespace Generation.Terrain.Utils
             if (seed.X < width - 1 && seed.Y > 0)
                 neighbors.Add(new Coords(seed.X+1, seed.Y-1));
 
-            return neighbors.ToList();
+            return neighbors;
         }
 
         /// <summary>
@@ -56,21 +56,21 @@ namespace Generation.Terrain.Utils
         /// <returns>A list with the neighbors found.</returns>
         public static List<Coords> VonNeumann(Coords seed, int width, int height)
         {
-            HashSet<Coords> neighbors = new HashSet<Coords>();
+            List<Coords> neighbors = new List<Coords>();
             
             if (seed.X > 0)
                 neighbors.Add(new Coords(seed.X-1, seed.Y));
             
-            if (seed.X < width - 1)
-                neighbors.Add(new Coords(seed.X+1, seed.Y));
-            
             if (seed.Y > 0)
                 neighbors.Add(new Coords(seed.X, seed.Y-1));
+            
+            if (seed.X < width - 1)
+                neighbors.Add(new Coords(seed.X+1, seed.Y));
             
             if (seed.Y < height - 1)
                 neighbors.Add(new Coords(seed.X, seed.Y+1));
 
-            return neighbors.ToList();
+            return neighbors;
         }
     }
 }
