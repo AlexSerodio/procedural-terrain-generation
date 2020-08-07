@@ -11,7 +11,7 @@ namespace Tests.Generation.Terrain
         private ThermalErosion thermalErosion;
 
         private const int N = 513;
-        private const float talus = 1f / N;       // nosso talus é menor do que o do Olsen (4/N) possivelmente por estarmos trabalhando com diferenças de alturas maiores.
+        private const float talus = 1f / N;     // our talus value is smaller than Olsen's (4/N) possibly because we are working with greater height differences.
         private const float factor = 0.5f;
         private const int iterations = 500;
 

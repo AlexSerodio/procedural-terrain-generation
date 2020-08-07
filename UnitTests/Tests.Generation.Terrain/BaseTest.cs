@@ -6,17 +6,10 @@ namespace Tests.Generation.Terrain
 {
     public abstract class BaseTest
     {
-        // protected static float[,] Heightmap = ReadHeightMap("heightmap-1");
-        // protected int Width;
-        // protected int Height;
-
         protected readonly ITestOutputHelper Output;
 
-        public BaseTest(ITestOutputHelper output)
+        protected BaseTest(ITestOutputHelper output)
         {
-            // Width = Heightmap.GetLength(0);
-            // Height = Heightmap.GetLength(1);
-
             Output = output;
         }
 
@@ -33,7 +26,7 @@ namespace Tests.Generation.Terrain
         /// Float values can vary slightly from one matrix to another. The 'allowedDifference'
         /// parameter determines how much that difference can be.
         /// </summary>
-        protected bool AreEqual(float[,] actual, float[,] expected, float allowedDifference = 0.0002f)
+        protected bool AreEqual(float[,] actual, float[,] expected, float allowedDifference = 0.00015f)
         {
             if(actual.GetLength(0) != expected.GetLength(0) || actual.GetLength(1) != expected.GetLength(1))
                 return false;

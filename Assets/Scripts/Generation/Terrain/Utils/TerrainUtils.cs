@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
 
 namespace Generation.Terrain.Utils
 {
@@ -30,9 +29,9 @@ namespace Generation.Terrain.Utils
                 {
                     float totalHeight = matrix[x, y];
                     
-                    List<Vector2> neighbors = Neighborhood.Moore(new Vector2(x, y), width, height);
-                    foreach (Vector2 neighbor in neighbors)
-                        totalHeight += matrix[(int)neighbor.X, (int)neighbor.Y];
+                    List<Coords> neighbors = Neighborhood.Moore(new Coords(x, y), width, height);
+                    foreach (Coords neighbor in neighbors)
+                        totalHeight += matrix[neighbor.X, neighbor.Y];
 
                     matrix[x, y] = totalHeight / (neighbors.Count + 1);
                 }

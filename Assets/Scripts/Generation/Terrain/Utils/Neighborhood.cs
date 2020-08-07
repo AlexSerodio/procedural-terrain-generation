@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace Generation.Terrain.Utils
 {
@@ -12,28 +11,36 @@ namespace Generation.Terrain.Utils
         /// will not be returned.
         /// </summary>
         /// <param name="seed">The central position from which wants to recover the neighbors.</param>
-        /// <param name="xMax">The maximum X position.</param>
-        /// <param name="yMax">The maximum Y position.</param>
+        /// <param name="width">The maximum X position.</param>
+        /// <param name="height">The maximum Y position.</param>
         /// <returns>A list with the neighbors found.</returns>
-        public static List<Vector2> Moore(Vector2 seed, int xMax, int yMax)
+        public static List<Coords> Moore(Coords seed, int width, int height)
         {
-            HashSet<Vector2> neighbors = new HashSet<Vector2>();
-            Vector2 min = Vector2.Zero;
-            Vector2 max = new Vector2(xMax-1, yMax-1);
+            HashSet<Coords> neighbors = new HashSet<Coords>();
             
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X-1, seed.Y+1), min, max));
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X, seed.Y+1), min, max));
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X+1, seed.Y+1), min, max));
+            if (seed.X > 0)
+                neighbors.Add(new Coords(seed.X-1, seed.Y));
+            
+            if (seed.X < width - 1)
+                neighbors.Add(new Coords(seed.X+1, seed.Y));
+            
+            if (seed.Y > 0)
+                neighbors.Add(new Coords(seed.X, seed.Y-1));
+            
+            if (seed.Y < height - 1)
+                neighbors.Add(new Coords(seed.X, seed.Y+1));
+            
+            if (seed.X > 0 && seed.Y > 0)
+                neighbors.Add(new Coords(seed.X-1, seed.Y-1));
 
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X-1, seed.Y), min, max));
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X+1, seed.Y), min, max));
+            if (seed.X > 0 && seed.Y < height - 1)
+                neighbors.Add(new Coords(seed.X-1, seed.Y+1));
             
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X-1, seed.Y-1), min, max));
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X, seed.Y-1), min, max));
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X+1, seed.Y-1), min, max));
+            if (seed.X < width - 1 && seed.Y < height - 1)
+                neighbors.Add(new Coords(seed.X+1, seed.Y+1));
             
-            // Ensures that the seed itself is not included in the neighbors.
-            neighbors.Remove(seed);
+            if (seed.X < width - 1 && seed.Y > 0)
+                neighbors.Add(new Coords(seed.X+1, seed.Y-1));
 
             return neighbors.ToList();
         }
@@ -44,24 +51,24 @@ namespace Generation.Terrain.Utils
         /// will not be returned.
         /// </summary>
         /// <param name="seed">The central position from which wants to recover the neighbors.</param>
-        /// <param name="xMax">The maximum X position.</param>
-        /// <param name="yMax">The maximum Y position.</param>
+        /// <param name="width">The maximum X position.</param>
+        /// <param name="height">The maximum Y position.</param>
         /// <returns>A list with the neighbors found.</returns>
-        public static List<Vector2> VonNeumann(Vector2 seed, int width, int height)
+        public static List<Coords> VonNeumann(Coords seed, int width, int height)
         {
-            HashSet<Vector2> neighbors = new HashSet<Vector2>();
-            Vector2 min = Vector2.Zero;
-            Vector2 max = new Vector2(width-1, height-1);
+            HashSet<Coords> neighbors = new HashSet<Coords>();
             
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X, seed.Y+1), min, max));
-
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X-1, seed.Y), min, max));
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X+1, seed.Y), min, max));
+            if (seed.X > 0)
+                neighbors.Add(new Coords(seed.X-1, seed.Y));
             
-            neighbors.Add(Vector2.Clamp(new Vector2(seed.X, seed.Y-1), min, max));
+            if (seed.X < width - 1)
+                neighbors.Add(new Coords(seed.X+1, seed.Y));
             
-            // Ensures that the seed itself is not included in the neighbors.
-            neighbors.Remove(seed);
+            if (seed.Y > 0)
+                neighbors.Add(new Coords(seed.X, seed.Y-1));
+            
+            if (seed.Y < height - 1)
+                neighbors.Add(new Coords(seed.X, seed.Y+1));
 
             return neighbors.ToList();
         }

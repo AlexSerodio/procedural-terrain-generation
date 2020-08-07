@@ -60,7 +60,7 @@ namespace Simulation.Terrain.DiegoliNeto
                             sumExceededDiffs += heightDiff;
                     });
 
-                    List<Vector2> neighbors = Generation.Terrain.Utils.Neighborhood.VonNeumann(new Vector2(x, y), maxX, maxY);
+                    // List<Vector2> neighbors = Generation.Terrain.Utils.Neighborhood.VonNeumann(new Vector2(x, y), maxX, maxY);
                     
                     // Primeiro loop não realiza nenhuma alteração no no relevo.
                     // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
