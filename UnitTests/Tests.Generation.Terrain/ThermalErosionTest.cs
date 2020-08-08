@@ -1,6 +1,6 @@
 using FluentAssertions;
+using Generation.Terrain.Physics.Erosion;
 using Generation.Terrain.Utils;
-using Simulation.Terrain.DiegoliNeto;
 using Xunit;
 using Xunit.Abstractions;
 

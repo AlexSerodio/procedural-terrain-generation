@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 104151127}
   - component: {fileID: 104151126}
   m_Layer: 5
-  m_Name: Text
+  m_Name: LoadTerraiin Field Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 133841031}
   - component: {fileID: 133841030}
   m_Layer: 5
-  m_Name: Text
+  m_Name: SaveTerrain Field Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -492,13 +492,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 444722168}
-  m_LocalRotation: {x: 0.2038825, y: -0.79386765, z: 0.37018552, w: 0.43722853}
+  m_LocalRotation: {x: 0.0260456, y: -0.9045856, z: 0.42181376, w: 0.055854954}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50.000004, y: -122.312004, z: 0}
+  m_LocalEulerAnglesHint: {x: 50.000004, y: -172.93301, z: 0}
 --- !u!1 &490259897
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,7 +654,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 730436449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a325022b9550a94094fde962cf73b7d, type: 3}
+  m_Script: {fileID: 11500000, guid: a66e0cf528c0fcd46a68fd7593abd09c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   LoadTerrainNameField: {fileID: 104151126}
@@ -881,7 +881,7 @@ GameObject:
   - component: {fileID: 826281974}
   - component: {fileID: 826281973}
   m_Layer: 5
-  m_Name: Text
+  m_Name: ThermalErosionIterations Field Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2012,7 +2012,7 @@ Camera:
   m_GameObject: {fileID: 1443327008}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -2053,8 +2053,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1443327008}
-  m_LocalRotation: {x: 0.061784264, y: -0.9193101, z: 0.16046739, w: 0.35398018}
-  m_LocalPosition: {x: 571.3988, y: 294.7707, z: 669.86304}
+  m_LocalRotation: {x: -0.04572679, y: -0.94409, z: 0.29081035, w: -0.1484335}
+  m_LocalPosition: {x: 173.62988, y: 338.3202, z: 732.0092}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2072,7 +2072,7 @@ GameObject:
   - component: {fileID: 1619695382}
   - component: {fileID: 1619695381}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Smooth Iterations Field Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,7 +1,7 @@
 ﻿using Generation.Terrain.Utils;
-using Simulation.Terrain.DiegoliNeto;
 using UnityEngine.UI;
 using UnityEngine;
+using Generation.Terrain.Physics.Erosion;
 
 public class TestManager : MonoBehaviour
 {

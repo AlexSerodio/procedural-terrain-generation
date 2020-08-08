@@ -1,67 +1,91 @@
-﻿using System.Collections.Generic;
-// using System.Numerics;
-using Generation.Terrain.Utils;
-using UnityEngine;
+﻿using Generation.Terrain.Utils;
+using System.Collections.Generic;
 
 namespace Generation.Terrain.Physics.Erosion
 {
     /// <summary>
-    /// Foreach position, check if the height of it's neighbors is less than the current height plus he erosionStrength.
-    /// If so, a percentage of the current position height is removed from the current position and added to the neighbor.
+    /// Fornece algoritmos de erosão térmica de terrenos detalhados por Olsen (2004).
+    /// Os algoritmos apresentados nesta classe (assim como algumas das descrições existentes nos algoritmos) 
+    /// foram implementados por Guilherme Diegoli Neto durante seu Trabalho de Conclusão de Curso (TCC)
+    /// do curso de Ciência da Computação da universidade Fundação Universidade Regional de Blumenau (FURB).
+    /// 
+    /// Algumas alterações foram realizadas nos algoritmos originais.
+    /// O código original está disponível em sua monografia, nas páginas 35 à 40.
+    /// 
+    /// O trabalho em questão está disponível em: http://dsc.inf.furb.br/tcc/index.php?cd=6&tcc=1867.
     /// </summary>
-    public class ThermalErosion : Erosion
+    public class ThermalErosion
     {
-        public float ErosionStrength { get; }
-        public float ErosionFactor { get; }
-
-        public ThermalErosion(float erosionStrength, float erosionFactor)
+        /// <summary>
+        /// Applies the DryErosion algorithm multiple times to get more realistic results.
+        /// The amount of repetitions is controlled by the 'iterations' variable.
+        /// </summary>
+        public void Erode(float[,] matrix, float talus = 1, float factor = 0.5f, int iterations = 500)
         {
-            ErosionStrength = erosionStrength;
-            ErosionFactor = erosionFactor;
+            for (int i = 0; i < iterations; i++)
+                DryErosion(matrix, talus, factor);
         }
 
-        public float[,] Erode(float[,] heightMap)
+        /// <summary>
+        /// Simula os efeitos de erosão térmica, que causa a queda de materiais em encostas de montanhas,
+        /// tornando a encosta mais íngreme e gerando acumulo de materiais na sua base. 
+        /// 
+        /// O algoritmo atinge esse efeito através da movimentação de material de pontos mais altos para vizinhos 
+        /// mais baixos quando a diferença entre os dois ultrapassa um determinado valor. A quantidade de material 
+        /// a ser movimentada é inicialmente obtida através da fórmula (factor * (heightDiff - talus)), onde factor 
+        /// representa um fator limitante de movimentação, heightDiff representa a diferença entre as alturas, 
+        /// e talus representa a diferença máxima permitida.
+        /// Olsen (2004, p. 6) sugere que o valor ideal para factor é 0,5.
+        /// </summary>
+        /// <param name="matrix">Mapa de altura do relevo.</param>
+        /// <param name="talus">Diferença de altura máxima permitida.</param>
+        /// <param name="factor">Fator limitante de movimentação.</param>
+        public void DryErosion(float[,] matrix, float talus = 1, float factor = 0.5f)
         {
-            int rows = heightMap.GetLength(0);
-            int columns = heightMap.GetLength(1);
-            for (int x = 0; x < rows; x++)
+            int maxX = matrix.GetLength(0);
+            int maxY = matrix.GetLength(1);
+            for (int x = 0; x < maxX; x++)
             {
-                for (int y = 0; y < columns; y++)
+                for (int y = 0; y < maxY; y++)
                 {
-                    Vector2 thisLocation = new Vector2(x, y);
-                    List<Vector2> neighbors = GenerateNeighbors(thisLocation, rows, columns);
+                    float maxHeightDiff = 0;            // Maior diferença encontrada entre os vizinhos.
+                    float sumExceededDiffs = 0;         // Soma das diferenças que ultrapassam o limite talus.
+
+                    List<Coords> neighbors = Generation.Terrain.Utils.Neighborhood.VonNeumann(new Coords(x, y), maxX, maxY);
                     
-                    foreach (Vector2 neighbor in neighbors)
+                    // Primeiro loop não realiza nenhuma alteração no relevo.
+                    // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
+                    // e a soma de todas as diferenças de altura que ultrapassam o limite talus.
+                    foreach (var neighbor in neighbors)
                     {
-                        if (heightMap[x, y] > heightMap[(int)neighbor.x, (int)neighbor.y] + ErosionStrength)
+                        float heightDiff = matrix[x, y] - matrix[neighbor.X, neighbor.Y];
+                        if (heightDiff > maxHeightDiff)
+                            maxHeightDiff = heightDiff;
+                        if (heightDiff > talus)
+                            sumExceededDiffs += heightDiff;
+                    }
+
+                    // Se não existir nenhuma diferença de altura que ultrapasse o limite, o ponto está estabilizado.
+                    if (sumExceededDiffs == 0)
+                        continue;
+
+                    // Segundo loop é onde são feitas as alterações.
+                    foreach (var neighbor in neighbors)
+                    {
+                        float heightDiff = matrix[x, y] - matrix[neighbor.X, neighbor.Y];
+                        
+                        // Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
+                        // remove material da posição atual e aplica ao vizinho.
+                        if (heightDiff > talus)
                         {
-                            float sediments = heightMap[x, y] * ErosionFactor;
-                            heightMap[x, y] -= sediments;
-                            heightMap[(int)neighbor.x, (int)neighbor.y] += sediments;
+                            // Fórmula de distribuição do solo.
+                            float sediment = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+                            matrix[neighbor.X, neighbor.Y] += sediment;
+                            matrix[x, y] -= sediment;
                         }
                     }
                 }
             }
-            return heightMap;
-        }
-
-        private List<Vector2> GenerateNeighbors(Vector2 pos, int width, int height)
-        {
-            List<Vector2> neighbors = new List<Vector2>();
-            for (int y = -1; y < 2; y++)
-            {
-                for (int x = -1; x < 2; x++)
-                {
-                    if (!(x == 0 && y == 0))
-                    {
-                        Vector2 nPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width - 1),
-                                                    Mathf.Clamp(pos.y + y, 0, height - 1));
-                        if (!neighbors.Contains(nPos))
-                            neighbors.Add(nPos);
-                    }
-                }
-            }
-            return neighbors;
         }
     }
 }
