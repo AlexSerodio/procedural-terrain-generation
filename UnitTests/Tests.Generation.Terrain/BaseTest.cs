@@ -16,8 +16,7 @@ namespace Tests.Generation.Terrain
 
         protected static float[,] ReadHeightMap(string filename)
         {
-            var fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Heighmaps\\";
-            var reader = new ReadWriteTerrain(filename, fullPath);
+            var reader = new ReadWriteTerrain(filename, Files.HeightmapPath);
             
             return reader.ReadMatrix();
         }

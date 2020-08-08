@@ -23,7 +23,7 @@ public class TestManager : MonoBehaviour
         float[,] heightMap = GetHeightMap();
 
         int N = heightMap.GetLength(0);
-        float talus = 1f / N;       // nosso talus é menor do que o do Olsen (4/N) possivelmente por estarmos trabalhando com diferenças de alturas maiores.
+        float talus = 1f / N;       // our talus is smaller than Olsen's (4/N) possibly because we're working with greater height differences.
         float factor = 0.5f;
         int iterations = int.Parse(ErosionIterationsField.text);
 
@@ -34,9 +34,8 @@ public class TestManager : MonoBehaviour
 
     public void LoadTerrain()
     {
-        string fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Heighmaps\\";
         string filename = LoadTerrainNameField.text;
-        var reader = new ReadWriteTerrain(filename, fullPath);
+        var reader = new ReadWriteTerrain(filename, Files.HeightmapPath);
         float[,] heightMap = reader.ReadMatrix();
 
         UpdateTerrain(heightMap);
@@ -46,9 +45,8 @@ public class TestManager : MonoBehaviour
     {
         float[,] heightMap = GetHeightMap();
 
-        string fullPath = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Heighmaps\\";
         string filename = SaveTerrainNameField.text;
-        var writer = new ReadWriteTerrain(filename, fullPath);
+        var writer = new ReadWriteTerrain(filename, Files.HeightmapPath);
 
         writer.WriteMatrix(heightMap);
     }
