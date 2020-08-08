@@ -16,9 +16,7 @@ namespace Tests.Generation.Terrain
 
         protected static float[,] ReadHeightMap(string filename)
         {
-            var reader = new ReadWriteTerrain(filename, Files.HeightmapPath);
-            
-            return reader.ReadMatrix();
+            return HeightmapSerializer.Deserialize(filename);
         }
 
         /// <summary>

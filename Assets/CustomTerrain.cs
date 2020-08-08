@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Generation.Terrain.Utils;
 
 [ExecuteInEditMode]
 public class CustomTerrain : MonoBehaviour
@@ -1281,18 +1282,13 @@ public class CustomTerrain : MonoBehaviour
 
     public void SaveHeights(string filename)
     {
-        var writer = new Generation.Terrain.Utils.ReadWriteTerrain(filename);
-
         float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
-
-        writer.WriteMatrix(heightMap);
+        HeightmapSerializer.Serialize(heightMap, $".\\Assets\\SavedTerrains\\{filename}");
     }
 
     public void LoadHeights(string filename)
     {
-        var reader = new Generation.Terrain.Utils.ReadWriteTerrain(filename);
-
-        float[,] heightMap = reader.ReadMatrix();
+        float[,] heightMap = HeightmapSerializer.Deserialize($".\\Assets\\SavedTerrains\\{filename}");
         terrainData.SetHeights(0, 0, heightMap);
     }
 }

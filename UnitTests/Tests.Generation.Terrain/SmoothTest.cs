@@ -22,7 +22,7 @@ namespace Tests.Generation.Terrain
             float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap1.Smoothed);
 
             // Act
-            TerrainUtils.Smooth(actualHeighmap, iterations);
+            Smooth.Apply(actualHeighmap, iterations);
 
             // Assert
             AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);
@@ -36,7 +36,7 @@ namespace Tests.Generation.Terrain
             float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap2.Smoothed);
 
             // Act
-            TerrainUtils.Smooth(actualHeighmap, iterations);
+            Smooth.Apply(actualHeighmap, iterations);
 
             // Assert
             AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);
@@ -50,7 +50,7 @@ namespace Tests.Generation.Terrain
             float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap3.Smoothed);
 
             // Act
-            TerrainUtils.Smooth(actualHeighmap, iterations);
+            Smooth.Apply(actualHeighmap, iterations);
 
             // Assert
             AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);
@@ -64,7 +64,7 @@ namespace Tests.Generation.Terrain
             float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap4.Smoothed);
 
             // Act
-            TerrainUtils.Smooth(actualHeighmap, iterations);
+            Smooth.Apply(actualHeighmap, iterations);
 
             // Assert
             AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);

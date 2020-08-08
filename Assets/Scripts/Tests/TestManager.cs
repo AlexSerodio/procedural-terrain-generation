@@ -34,9 +34,8 @@ public class TestManager : MonoBehaviour
 
     public void LoadTerrain()
     {
-        string filename = LoadTerrainNameField.text;
-        var reader = new ReadWriteTerrain(filename, Files.HeightmapPath);
-        float[,] heightMap = reader.ReadMatrix();
+        string filename = Files.HeightmapPath + LoadTerrainNameField.text;
+        float[,] heightMap = HeightmapSerializer.Deserialize(filename);
 
         UpdateTerrain(heightMap);
     }
@@ -45,10 +44,8 @@ public class TestManager : MonoBehaviour
     {
         float[,] heightMap = GetHeightMap();
 
-        string filename = SaveTerrainNameField.text;
-        var writer = new ReadWriteTerrain(filename, Files.HeightmapPath);
-
-        writer.WriteMatrix(heightMap);
+        string filename = Files.HeightmapPath + SaveTerrainNameField.text;
+        HeightmapSerializer.Serialize(heightMap, filename);
     }
 
     public void Smooth()
@@ -56,7 +53,7 @@ public class TestManager : MonoBehaviour
         float[,] heightMap = GetHeightMap();
 
         int iterations = int.Parse(SmoothAmountField.text);
-        TerrainUtils.Smooth(heightMap, iterations);
+        Generation.Terrain.Utils.Smooth.Apply(heightMap, iterations);
 
         UpdateTerrain(heightMap);
     }

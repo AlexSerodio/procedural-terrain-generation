@@ -2,15 +2,19 @@
 
 namespace Generation.Terrain.Utils
 {
-    public static class TerrainUtils
+    /// <summary>
+    /// Implements a heightmap smoothing algorithm.
+    /// </summary>
+    public static class Smooth
     {
         /// <summary>
-        /// Smooth the heighmap informed. Each position gets the average height of its eight neighbors plus its own.
+        /// Smooths the heighmap passed as parameter. 
+        /// Each position gets the average height of its eight neighbors plus its own.
         /// </summary>
         /// <param name="heightmap">The heighmap to be smoothed.</param>
         /// <param name="iterations">The number of times the algorithm will be repeated.</param>
         /// <returns>The smoothed heightmap.</returns>
-        public static float[,] Smooth(float[,] heightmap, int iterations = 1)
+        public static float[,] Apply(float[,] heightmap, int iterations = 1)
         {
             int width = heightmap.GetLength(0);
             int height = heightmap.GetLength(1);
