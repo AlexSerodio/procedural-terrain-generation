@@ -9,7 +9,7 @@ namespace Generation.Terrain.Procedural.Noise
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
-                    heightmap[x, y] = Single(x, y);
+                    heightmap[x, y] += Single(x, y);
             }
         }
 

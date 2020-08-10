@@ -4,8 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Shore
-  - Cloud
   - Terrain
   layers:
   - Default
@@ -17,7 +15,7 @@ TagManager:
   - 
   - 
   - Terrain
-  - Sky
+  - 
   - 
   - 
   - 

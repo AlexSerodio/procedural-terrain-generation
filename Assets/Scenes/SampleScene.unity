@@ -390,6 +390,122 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 9.736, y: 9.899, z: 2.039}
+--- !u!1 &1756491733
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1756491737}
+  - component: {fileID: 1756491734}
+  - component: {fileID: 1756491736}
+  - component: {fileID: 1756491735}
+  - component: {fileID: 1756491739}
+  - component: {fileID: 1756491738}
+  m_Layer: 0
+  m_Name: Scripts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1756491734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756491733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf7feea5e0069584c8286703bb704487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PerlinOffsetX: 0
+  PerlinOffsetY: 0
+  PerlinXScale: 0.01
+  PerlinYScale: 0.01
+  PerlinOctaves: 3
+  PerlinPersistance: 8
+  PerlinHeightScale: 0.064
+--- !u!114 &1756491735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756491733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba863a556127a36418800e091cae2ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HeightDampenerPower: 2
+  HeightMin: -2
+  HeightMax: 2
+  Roughness: 2
+--- !u!114 &1756491736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756491733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 683c9fe8c8fb6654398ef884d94527a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FallOff: 3.5
+  DropOff: 2.5
+  MinHeight: 0.14
+  MaxHeight: 0.25
+  PeaksAmount: 5
+  Type: 2
+--- !u!4 &1756491737
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756491733}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 825.9729, y: -191.52371, z: 468.43314}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1756491738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756491733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f2e178790e76747bc4b93397b0ed48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smoothAmount: 5
+--- !u!114 &1756491739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756491733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 274851b108d807b44b53d5fe6eee3cf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TalusFactor: 1
+  Factor: 0.5
+  Iterations: 500
 --- !u!1 &1890891543
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,7 +517,6 @@ GameObject:
   - component: {fileID: 1890891546}
   - component: {fileID: 1890891545}
   - component: {fileID: 1890891544}
-  - component: {fileID: 1890891547}
   m_Layer: 8
   m_Name: Terrain
   m_TagString: Terrain
@@ -467,36 +582,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1890891547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890891543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d105205df08417a4b8ed83f1bb75aa5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  perlinXScale: 0.0185
-  perlinYScale: 0.0123
-  perlinOffsetX: 6637
-  perlinOffsetY: 4956
-  perlinOctaves: 1
-  perlinPersistance: 2.64
-  perlinHeightScale: 0.028
-  voronoiDropOff: 2.4
-  voronoiFallOff: 3.55
-  voronoiMinHeight: 0.139
-  voronoiMaxHeight: 0.256
-  voronoiPeaks: 5
-  voronoiType: 2
-  MPDHeightMin: -1
-  MPDHeightMax: 1.05
-  MPDHeightDampenerPower: 2
-  MPDRoughness: 2
-  smoothAmount: 2
-  erosionType: 0
-  erosionSmoothAmount: 5
-  terrainData: {fileID: 15600000, guid: 6a34ddfcd9c5c864d9fcc4ae2e892f47, type: 2}
