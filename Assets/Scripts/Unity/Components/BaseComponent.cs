@@ -4,23 +4,36 @@ namespace Unity.Components
 {
     public abstract class BaseComponent : MonoBehaviour
     {
-        protected TerrainData terrainData;
+        // private TerrainData terrainData;
+        public MeshGenerator meshGenerator;
+        protected int xSize { get => meshGenerator.Heightmap.GetLength(0); }
+        protected int zSize { get => meshGenerator.Heightmap.GetLength(1); }
 
         void Start()
         {
-            terrainData = Terrain.activeTerrain.terrainData;
+            meshGenerator = FindObjectOfType<MeshGenerator>();
         }
 
         public abstract void UpdateComponent();
 
         protected float[,] GetTerrainHeight()
         {
-            return terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+            return meshGenerator.Heightmap;
         }
 
         protected void UpdateTerrainHeight(float[,] heightmap)
         {
-            terrainData.SetHeights(0, 0, heightmap);
+            meshGenerator.UpdateMesh(heightmap);
         }
+
+        // protected float[,] GetTerrainHeight()
+        // {
+        //     return terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        // }
+
+        // protected void UpdateTerrainHeight(float[,] heightmap)
+        // {
+        //     terrainData.SetHeights(0, 0, heightmap);
+        // }
     }
 }

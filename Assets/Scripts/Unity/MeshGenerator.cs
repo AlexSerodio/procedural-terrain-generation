@@ -1,48 +1,83 @@
-﻿using Generation.Terrain.Procedural;
+﻿using System;
 using UnityEngine;
 
+[ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshGenerator : MonoBehaviour
 {
-    private int xSize;
-	private int zSize;
+	private const int dimensions = 226;		// 15²+1 -> dimensions must be x²+1 and less than 256
+	private float[,] _heightmap;
+	public float[,] Heightmap {
+		get {
+			if(_heightmap == null)
+				_heightmap = new float[dimensions, dimensions];
+			return _heightmap;
+		}
+		set => _heightmap = value;
+	}
 	private float heightFactor = 30f;
 
 	private Mesh mesh;
 	private Vector3[] vertices;
-	private int[] triangles;
-
-	private float[,] heightmap;
 
 	void Start()
 	{
-		if (mesh == null) {
-			mesh = new Mesh();
-			mesh.name = "Mesh";
-			GetComponent<MeshFilter>().mesh = mesh;
-		}
-
-		heightmap = new float[65, 65];
-
-		var midpointDisplacement = new MidpointDisplacement();
-		midpointDisplacement.HeightMin = -1f;
-		midpointDisplacement.HeightMax = 1.5f;
-
-		midpointDisplacement.Apply(heightmap);
-
-		xSize = heightmap.GetLength(0);
-		zSize = heightmap.GetLength(1);
-
-		CreateShape(heightmap);
-		UpdateMesh();
+		Debug.Log("teste");
+		mesh = new Mesh();
+		mesh.name = "Mesh";
+		GetComponent<MeshFilter>().mesh = mesh;
 	}
 
-	private void CreateShape(float[,] heightmap)
-	{
-        vertices = MatrixToVector3Array(heightmap);
+	public void UpdateMesh(float[,] heightmap)
+    {
+		Heightmap = heightmap;
 
-        int trianglesAmount = xSize * zSize * 6;
-        triangles = new int[trianglesAmount];
+        vertices = GetVerticesFromMatrix();
+        int[] triangles = GetTriangles();
+
+		mesh.Clear();
+
+		mesh.vertices = vertices;
+		mesh.triangles = triangles;
+
+		mesh.RecalculateNormals();
+    }
+
+    private Vector3[] GetVerticesFromMatrix()
+	{
+		int xSize = Heightmap.GetLength(0);
+		int zSize = Heightmap.GetLength(1);
+		
+		Vector3[] vectors = new Vector3[(xSize+1) * (zSize+1)];
+
+		float height;
+		for (int i = 0, z = 0; z <= zSize; z++)
+		{
+			for (int x = 0; x <= xSize; x++)
+			{
+				if(x < xSize && z < zSize)
+					height = Heightmap[x, z];
+				else if(x == xSize && z < zSize)
+					height = Heightmap[x-1, z];
+				else if(x < xSize && z == zSize)
+					height = Heightmap[x, z-1];
+				else
+					height = Heightmap[x-1, z-1];
+
+				vectors[i++] = new Vector3(x, Math.Max(height * heightFactor, -50), z);
+			}
+		}
+
+		return vectors;
+	}
+
+	private int[] GetTriangles()
+    {
+		int xSize = Heightmap.GetLength(0);
+		int zSize = Heightmap.GetLength(1);
+
+		int trianglesAmount = xSize * zSize * 6;
+        int[] triangles = new int[trianglesAmount];
 
         int vertexOffset = 0;
         int triangleOffset = 0;
@@ -65,50 +100,17 @@ public class MeshGenerator : MonoBehaviour
             }
             vertexOffset++;
         }
-	}
-
-	private Vector3[] MatrixToVector3Array(float[,] matrix)
-	{
-		Vector3[] vectors = new Vector3[(xSize+1) * (zSize+1)];
-
-		float height;
-		for (int i = 0, z = 0; z <= zSize; z++)
-		{
-			for (int x = 0; x <= xSize; x++)
-			{
-				if(x < xSize && z < zSize)
-					height = matrix[x, z];
-				else if(x == xSize && z < zSize)
-					height = matrix[x-1, z];
-				else if(x < xSize && z == zSize)
-					height = matrix[x, z-1];
-				else
-					height = matrix[x-1, z-1];
-
-				vectors[i++] = new Vector3(x, height * heightFactor, z);
-			}
-		}
-
-		return vectors;
-	}
-
-	private void UpdateMesh()
-	{
-		mesh.Clear();
-
-		mesh.vertices = vertices;
-		mesh.triangles = triangles;
-
-		mesh.RecalculateNormals();
-	}
-
-	private void OnDrawGizmos()
-	{
-		if(vertices == null)
-			return;
 		
-		Gizmos.color = Color.red;
-		for (int i = 0; i < vertices.Length; i++)
-			Gizmos.DrawSphere(vertices[i], .1f);
-	}
+		return triangles;
+    }
+
+	// private void OnDrawGizmos()
+	// {
+	// 	if(vertices == null)
+	// 		return;
+		
+	// 	Gizmos.color = Color.red;
+	// 	for (int i = 0; i < vertices.Length; i++)
+	// 		Gizmos.DrawSphere(vertices[i], .1f);
+	// }
 }

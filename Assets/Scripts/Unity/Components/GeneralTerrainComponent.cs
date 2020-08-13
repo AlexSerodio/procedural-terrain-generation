@@ -19,7 +19,7 @@ namespace Unity.Components
 
         public void ResetTerrain()
         {
-            float[,] heightmap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+            float[,] heightmap = new float[xSize, zSize];
             
             UpdateTerrainHeight(heightmap);
         }
