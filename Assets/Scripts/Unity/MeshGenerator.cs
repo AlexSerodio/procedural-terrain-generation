@@ -5,7 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshGenerator : MonoBehaviour
 {
-	private const int dimensions = 226;		// 15²+1 -> dimensions must be x²+1 and less than 256
+	public Gradient heatmap;
+    public float heatmapFactor = 100f;
+	public float heightFactor = 30f;
+
+	private const int dimensions = 257;		// 14²+1 -> dimensions must be x²+1 and less than 256
 	private float[,] _heightmap;
 	public float[,] Heightmap {
 		get {
@@ -15,12 +19,11 @@ public class MeshGenerator : MonoBehaviour
 		}
 		set => _heightmap = value;
 	}
-	private float heightFactor = 30f;
 
 	private Mesh mesh;
 	private Vector3[] vertices;
 
-	void Start()
+    void Start()
 	{
 		Debug.Log("teste");
 		mesh = new Mesh();
@@ -39,6 +42,8 @@ public class MeshGenerator : MonoBehaviour
 
 		mesh.vertices = vertices;
 		mesh.triangles = triangles;
+
+		UpdateHeatMap();
 
 		mesh.RecalculateNormals();
     }
@@ -104,13 +109,14 @@ public class MeshGenerator : MonoBehaviour
 		return triangles;
     }
 
-	// private void OnDrawGizmos()
-	// {
-	// 	if(vertices == null)
-	// 		return;
-		
-	// 	Gizmos.color = Color.red;
-	// 	for (int i = 0; i < vertices.Length; i++)
-	// 		Gizmos.DrawSphere(vertices[i], .1f);
-	// }
+	public void UpdateHeatMap()
+	{
+		Color[] colors = new Color[vertices.Length];
+		for (int v = 0, y = 0; y <= dimensions; y++) {
+			for (int x = 0; x <= dimensions; x++, v++) {
+				colors[v] = heatmap.Evaluate(vertices[v].y/heatmapFactor);
+			}
+		}
+		mesh.colors = colors;
+	}
 }
