@@ -25,7 +25,6 @@ public class MeshGenerator : MonoBehaviour
 
     void Start()
 	{
-		Debug.Log("teste");
 		mesh = new Mesh();
 		mesh.name = "Mesh";
 		GetComponent<MeshFilter>().mesh = mesh;
