@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -9,12 +10,14 @@ public class MeshGenerator : MonoBehaviour
     public float heatmapFactor = 100f;
 	public float heightFactor = 30f;
 
-	private const int dimensions = 257;		// 14²+1 -> dimensions must be x²+1 and less than 256
+	public const int chunksAmountPerRow = 1;
+	private const int dimensions = 256;		// 14²+1 -> dimensions must be x²+1 and less than 256
+	public int Size { get => (dimensions+1)*chunksAmountPerRow; }
 	private float[,] _heightmap;
 	public float[,] Heightmap {
 		get {
 			if(_heightmap == null)
-				_heightmap = new float[dimensions, dimensions];
+				_heightmap = new float[Size, Size];
 			return _heightmap;
 		}
 		set => _heightmap = value;
@@ -27,6 +30,8 @@ public class MeshGenerator : MonoBehaviour
 	{
 		mesh = new Mesh();
 		mesh.name = "Mesh";
+		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+		
 		GetComponent<MeshFilter>().mesh = mesh;
 	}
 
@@ -111,8 +116,8 @@ public class MeshGenerator : MonoBehaviour
 	public void UpdateHeatMap()
 	{
 		Color[] colors = new Color[vertices.Length];
-		for (int v = 0, y = 0; y <= dimensions; y++) {
-			for (int x = 0; x <= dimensions; x++, v++) {
+		for (int v = 0, y = 0; y <= Size; y++) {
+			for (int x = 0; x <= Size; x++, v++) {
 				colors[v] = heatmap.Evaluate(vertices[v].y/heatmapFactor);
 			}
 		}

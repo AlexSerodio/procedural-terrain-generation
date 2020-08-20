@@ -6,8 +6,8 @@ namespace Unity.Components
     {
         // private TerrainData terrainData;
         public MeshGenerator meshGenerator;
-        protected int xSize { get => meshGenerator.Heightmap.GetLength(0); }
-        protected int zSize { get => meshGenerator.Heightmap.GetLength(1); }
+        protected int xSize { get => meshGenerator.Size; }
+        protected int zSize { get => meshGenerator.Size; }
 
         void Start()
         {
