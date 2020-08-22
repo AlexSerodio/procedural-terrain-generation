@@ -4,10 +4,9 @@ namespace Unity.Components
 {
     public abstract class BaseComponent : MonoBehaviour
     {
-        // private TerrainData terrainData;
         public MeshGenerator meshGenerator;
-        protected int xSize { get => meshGenerator.Size; }
-        protected int zSize { get => meshGenerator.Size; }
+        protected int xSize { get => meshGenerator.Heightmap.GetLength(0); }
+        protected int zSize { get => meshGenerator.Heightmap.GetLength(1); }
 
         void Start()
         {
@@ -25,15 +24,5 @@ namespace Unity.Components
         {
             meshGenerator.UpdateMesh(heightmap);
         }
-
-        // protected float[,] GetTerrainHeight()
-        // {
-        //     return terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
-        // }
-
-        // protected void UpdateTerrainHeight(float[,] heightmap)
-        // {
-        //     terrainData.SetHeights(0, 0, heightmap);
-        // }
     }
 }

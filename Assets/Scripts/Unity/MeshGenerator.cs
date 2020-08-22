@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshGenerator : MonoBehaviour
 {
-	public Gradient heatmap;
-    public float heatmapFactor = 100f;
+	public Gradient hypsometricMap;
+    public float hypsometricMapFactor = 100f;
 	public float heightFactor = 30f;
 
-	public const int chunksAmountPerRow = 1;
-	private const int dimensions = 256;		// 14²+1 -> dimensions must be x²+1 and less than 256
-	public int Size { get => (dimensions+1)*chunksAmountPerRow; }
+	private const int dimensions = 513;	
+	
 	private float[,] _heightmap;
 	public float[,] Heightmap {
 		get {
 			if(_heightmap == null)
-				_heightmap = new float[Size, Size];
+				_heightmap = new float[dimensions, dimensions];
 			return _heightmap;
 		}
 		set => _heightmap = value;
@@ -47,9 +45,11 @@ public class MeshGenerator : MonoBehaviour
 		mesh.vertices = vertices;
 		mesh.triangles = triangles;
 
-		UpdateHeatMap();
+		UpdateHypsometricMap();
 
 		mesh.RecalculateNormals();
+		
+		transform.localPosition = new Vector3(-dimensions/2, 0, -dimensions/2);
     }
 
     private Vector3[] GetVerticesFromMatrix()
@@ -113,12 +113,12 @@ public class MeshGenerator : MonoBehaviour
 		return triangles;
     }
 
-	public void UpdateHeatMap()
+	public void UpdateHypsometricMap()
 	{
 		Color[] colors = new Color[vertices.Length];
-		for (int v = 0, y = 0; y <= Size; y++) {
-			for (int x = 0; x <= Size; x++, v++) {
-				colors[v] = heatmap.Evaluate(vertices[v].y/heatmapFactor);
+		for (int v = 0, y = 0; y < dimensions; y++) {
+			for (int x = 0; x < dimensions; x++, v++) {
+				colors[v] = hypsometricMap.Evaluate(vertices[v].y/hypsometricMapFactor);
 			}
 		}
 		mesh.colors = colors;

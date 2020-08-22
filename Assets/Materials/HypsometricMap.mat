@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mesh Heatmap
+  m_Name: HypsometricMap
   m_Shader: {fileID: 4800000, guid: e8bb4ed8053fa004b81be4da0a6f28f3, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
