@@ -18,95 +18,97 @@ namespace Generation.Terrain.Procedural
         }
 
         // TODO: refactor so that it is no longer necessary to use the UnityEngine namespace
-        public void Apply(float[,] heightmap)
+        public void Apply(float[,] heights)
         {
-            int width = heightmap.GetLength(0) - 1;
-            int squareSize = width;
+            int width = heights.GetLength(0) - 1;
+            int size = width;
             float heightMin = HeightMin;
             float heightMax = HeightMax;
-            // float roughness = 2.0f;
             float heightDampener = (float)Mathf.Pow(HeightDampenerPower, -1 * Roughness);
 
-            int endX, endY;
-            int midX, midY;
-            int pMidXLeft, pMidXRight, pMidYUp, pMidYDown;
+            int mx, my;
+            int left, right, up, down;
 
-            while (squareSize > 0)
+            float average = 0f;
+            int halfSize = 0;
+
+            while (size > 0)
             {
+                halfSize = size / 2;
+                
                 // diamond step
-                for (int x = 0; x < width; x += squareSize)
+                for (int x = 0; x < width; x += size)
                 {
-                    for (int y = 0; y < width; y += squareSize)
+                    for (int y = 0; y < width; y += size)
                     {
-                        endX = (x + squareSize);
-                        endY = (y + squareSize);
+                        average = heights[x, y];
+                        average += heights[x + size, y];
+                        average += heights[x, y + size];
+                        average += heights[x + size, y + size];
+                        average /= 4.0f;
 
-                        midX = (int)(x + squareSize / 2.0f);
-                        midY = (int)(y + squareSize / 2.0f);
-
-                        heightmap[midX, midY] = (float)((heightmap[x, y] +
-                                                            heightmap[endX, y] +
-                                                            heightmap[x, endY] +
-                                                            heightmap[endX, endY]) / 4.0f +
-                                                            UnityEngine.Random.Range(heightMin, heightMax));
+                        average += Offset(heightMin, heightMax);
+                        heights[x + halfSize, y + halfSize] = average;
                     }
                 }
 
                 // square step
-                for (int x = 0; x < width; x += squareSize)
+                for (int x = 0; x < width; x += size)
                 {
-                    for (int y = 0; y < width; y += squareSize)
+                    for (int y = 0; y < width; y += size)
                     {
-                        endX = (x + squareSize);
-                        endY = (y + squareSize);
+                        mx = x + halfSize;
+                        my = y + halfSize;
 
-                        midX = (int)(x + squareSize / 2.0f);
-                        midY = (int)(y + squareSize / 2.0f);
-
-                        pMidXRight = (int)(midX + squareSize);
-                        pMidYUp = (int)(midY + squareSize);
-                        pMidXLeft = (int)(midX - squareSize);
-                        pMidYDown = (int)(midY - squareSize);
+                        right = mx + size;
+                        up = my + size;
+                        left = mx - size;
+                        down = my - size;
 
                         // if pmid values are off the limit, ignore them
-                        if (pMidXLeft <= 0 || pMidYDown <= 0 || pMidXRight >= width - 1 || pMidYUp >= width - 1) 
+                        if (left <= 0 || down <= 0 || right >= width - 1 || up >= width - 1)
                             continue;
 
-                        //Calculate the square value for the bottom side  
-                        heightmap[midX, y] = (float)((heightmap[midX, midY] +
-                                                        heightmap[x, y] +
-                                                        heightmap[midX, pMidYDown] +
-                                                        heightmap[endX, y]) / 4.0f +
-                                                        UnityEngine.Random.Range(heightMin, heightMax));
+                        // Calculate the square value for the bottom side  
+                        average = (heights[mx, my] +
+                                    heights[x, y] +
+                                    heights[mx, down] +
+                                    heights[x + size, y]) / 4.0f;
+                        heights[mx, y] = average + Offset(heightMin, heightMax);
 
-                        //Calculate the square value for the top side   
-                        heightmap[midX, endY] = (float)((heightmap[x, endY] +
-                                                        heightmap[midX, midY] +
-                                                        heightmap[endX, endY] +
-                                                        heightmap[midX, pMidYUp]) / 4.0f +
-                                                        UnityEngine.Random.Range(heightMin, heightMax));
+                        // Calculate the square value for the top side
+                        average = (heights[x, y + size] +
+                                    heights[mx, my] +
+                                    heights[x + size, y + size] +
+                                    heights[mx, up]) / 4.0f;
+                        heights[mx, y + size] = average + Offset(heightMin, heightMax);
 
-                        //Calculate the square value for the left side   
-                        heightmap[x, midY] = (float)((heightmap[x, y] +
-                                                        heightmap[pMidXLeft, midY] +
-                                                        heightmap[x, endY] +
-                                                        heightmap[midX, midY]) / 4.0f +
-                                                        UnityEngine.Random.Range(heightMin, heightMax));
-                        
-                        //Calculate the square value for the right side   
-                        heightmap[endX, midY] = (float)((heightmap[midX, y] +
-                                                        heightmap[midX, midY] +
-                                                        heightmap[endX, endY] +
-                                                        heightmap[pMidXRight, midY]) / 4.0f +
-                                                        UnityEngine.Random.Range(heightMin, heightMax));
+                        // Calculate the square value for the left side
+                        average = (heights[x, y] +
+                                    heights[left, my] +
+                                    heights[x, y + size] +
+                                    heights[mx, my]) / 4.0f;
+                        heights[x, my] = average + Offset(heightMin, heightMax);
+
+                        // Calculate the square value for the right side
+                        average = (heights[mx, y] +
+                                    heights[mx, my] +
+                                    heights[x + size, y + size] +
+                                    heights[right, my]) / 4.0f;
+                        heights[x + size, my] = average + Offset(heightMin, heightMax);
                     }
                 }
 
                 // update step
-                squareSize = (int)(squareSize / 2.0f);
+                size = size / 2;
                 heightMin *= heightDampener;
                 heightMax *= heightDampener;
             }
+        }
+
+        private float Offset(float min, float max)
+        {
+            return UnityEngine.Random.Range(min, max);
         }
     }
 }
