@@ -37,6 +37,22 @@ namespace Generation.Terrain.Procedural
                 halfSize = size / 2;
                 
                 // diamond step
+                // for (int x = 0; x < width; x += size)
+                // {
+                //     for (int y = 0; y < width; y += size)
+                //     {
+                //         average = heights[x, y];
+                //         average += heights[x + size, y];
+                //         average += heights[x, y + size];
+                //         average += heights[x + size, y + size];
+                //         average /= 4.0f;
+
+                //         average += Offset(heightMin, heightMax);
+                //         heights[x + halfSize, y + halfSize] = average;
+                //     }
+                // }
+
+                // square step
                 for (int x = 0; x < width; x += size)
                 {
                     for (int y = 0; y < width; y += size)
@@ -49,14 +65,7 @@ namespace Generation.Terrain.Procedural
 
                         average += Offset(heightMin, heightMax);
                         heights[x + halfSize, y + halfSize] = average;
-                    }
-                }
 
-                // square step
-                for (int x = 0; x < width; x += size)
-                {
-                    for (int y = 0; y < width; y += size)
-                    {
                         mx = x + halfSize;
                         my = y + halfSize;
 
