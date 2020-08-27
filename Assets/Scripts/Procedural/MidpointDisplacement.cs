@@ -52,11 +52,12 @@ namespace Generation.Terrain.Procedural
                 //     }
                 // }
 
-                // square step
+                
                 for (int x = 0; x < width; x += size)
                 {
                     for (int y = 0; y < width; y += size)
                     {
+                        // diamond step
                         average = heights[x, y];
                         average += heights[x + size, y];
                         average += heights[x, y + size];
@@ -66,6 +67,7 @@ namespace Generation.Terrain.Procedural
                         average += Offset(heightMin, heightMax);
                         heights[x + halfSize, y + halfSize] = average;
 
+                        // square step
                         mx = x + halfSize;
                         my = y + halfSize;
 

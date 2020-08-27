@@ -9,16 +9,9 @@ public class DiamondSquare : MonoBehaviour
     private Vector3[] mVerts;
     private int mVertCont;
 
-    // Start is called before the first frame update
     void Start()
     {
         CreateTerrain();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void CreateTerrain()
@@ -62,11 +55,7 @@ public class DiamondSquare : MonoBehaviour
             }
         }
 
-        mVerts[0].y = Random.Range(-mHeight, mHeight);
-        mVerts[mDivisions].y = Random.Range(-mHeight, mHeight);
-        mVerts[mVerts.Length-1].y = Random.Range(-mHeight, mHeight);
-        mVerts[mVerts.Length-1-mDivisions].y = Random.Range(-mHeight, mHeight);
-
+        RandomizeCorners();
 
         int iterations = (int)Mathf.Log(mDivisions, 2);
         int numSquares = 1;
@@ -97,6 +86,14 @@ public class DiamondSquare : MonoBehaviour
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+    }
+
+    private void RandomizeCorners()
+    {
+        mVerts[0].y = Random.Range(-mHeight, mHeight);
+        mVerts[mDivisions].y = Random.Range(-mHeight, mHeight);
+        mVerts[mVerts.Length - 1].y = Random.Range(-mHeight, mHeight);
+        mVerts[mVerts.Length - 1 - mDivisions].y = Random.Range(-mHeight, mHeight);
     }
 
     private void DiamondSquareAlgorithm(int row, int col, int size, float offset)
