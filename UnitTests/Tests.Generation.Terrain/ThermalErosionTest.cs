@@ -1,8 +1,8 @@
 using FluentAssertions;
 using Generation.Terrain.Physics.Erosion;
 using Generation.Terrain.Utils;
-using Xunit;
 using Xunit.Abstractions;
+using Xunit;
 
 namespace Tests.Generation.Terrain
 {
@@ -21,40 +21,15 @@ namespace Tests.Generation.Terrain
             thermalErosion = new ThermalErosion();
         }
 
-        [Fact]
-        public void Erode_WithHeightmap2_ShouldBeEqualErodedHeighmap2()
+        [Theory]
+        [InlineData(Files.Heightmap2.Original, Files.Heightmap2.Eroded)]
+        [InlineData(Files.Heightmap3.Original, Files.Heightmap3.Eroded)]
+        [InlineData(Files.Heightmap4.Original, Files.Heightmap4.Eroded)]
+        public void Erode_ThermalErosion_ShouldBeEqualErodedHeighmap(string originalHeightmap, string erodedHeightmap)
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap2.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap2.Eroded);
-
-            // Act
-            thermalErosion.Erode(actualHeighmap, talus, factor, iterations);
-
-            // Assert
-            AreEqual(actualHeighmap, expectedHeighmap).Should().Be(true);
-        }
-
-        [Fact]
-        public void Erode_WithHeightmap3_ShouldBeEqualErodedHeighmap3()
-        {
-            // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap3.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap3.Eroded);
-
-            // Act
-            thermalErosion.Erode(actualHeighmap, talus, factor, iterations);
-
-            // Assert
-            AreEqual(actualHeighmap, expectedHeighmap).Should().Be(true);
-        }
-
-        [Fact]
-        public void Erode_WithHeightmap4_ShouldBeEqualErodedHeighmap4()
-        {
-            // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap4.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap4.Eroded);
+            float[,] actualHeighmap = ReadHeightMap(originalHeightmap);
+            float[,] expectedHeighmap = ReadHeightMap(erodedHeightmap);
 
             // Act
             thermalErosion.Erode(actualHeighmap, talus, factor, iterations);

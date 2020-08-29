@@ -14,54 +14,16 @@ namespace Tests.Generation.Terrain
         public SmoothTest(ITestOutputHelper output) 
             : base(output) { }
 
-        [Fact]
-        public void Smooth_WithHeightmap1_ShouldBeEqualSmoothedHeighmap1()
+        [Theory]
+        [InlineData(Files.Heightmap1.Original, Files.Heightmap1.Smoothed)]
+        [InlineData(Files.Heightmap2.Original, Files.Heightmap2.Smoothed)]
+        [InlineData(Files.Heightmap3.Original, Files.Heightmap3.Smoothed)]
+        [InlineData(Files.Heightmap4.Original, Files.Heightmap4.Smoothed)]
+        public void Smooth_ShouldBeEqualSmoothedHeighmap(string originalHeightmap, string smoothedHeightmap)
         {
             // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap1.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap1.Smoothed);
-
-            // Act
-            Smooth.Apply(actualHeighmap, iterations);
-
-            // Assert
-            AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);
-        }
-
-        [Fact]
-        public void Smooth_WithHeightmap2_ShouldBeEqualSmoothedHeighmap2()
-        {
-            // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap2.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap2.Smoothed);
-
-            // Act
-            Smooth.Apply(actualHeighmap, iterations);
-
-            // Assert
-            AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);
-        }
-
-        [Fact]
-        public void Smooth_WithHeightmap3_ShouldBeEqualSmoothedHeighmap3()
-        {
-            // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap3.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap3.Smoothed);
-
-            // Act
-            Smooth.Apply(actualHeighmap, iterations);
-
-            // Assert
-            AreEqual(actualHeighmap, expectedHeighmap, allowedDifference).Should().Be(true);
-        }
-
-        [Fact]
-        public void Smooth_WithHeightmap4_ShouldBeEqualSmoothedHeighmap4()
-        {
-            // Arrange
-            float[,] actualHeighmap = ReadHeightMap(Files.Heightmap4.Original);
-            float[,] expectedHeighmap = ReadHeightMap(Files.Heightmap4.Smoothed);
+            float[,] actualHeighmap = ReadHeightMap(originalHeightmap);
+            float[,] expectedHeighmap = ReadHeightMap(smoothedHeightmap);
 
             // Act
             Smooth.Apply(actualHeighmap, iterations);
