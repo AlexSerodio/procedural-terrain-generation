@@ -30,14 +30,17 @@ namespace Generation.Terrain.Procedural.Noise
             {
                 for (int y = 0; y < height; y++)
                 {
-                    heightmap[x, y] += FractionalBrownianMotion((x+PerlinOffsetX) * PerlinXScale, (y+PerlinOffsetY) * PerlinYScale, 
-                                                PerlinOctaves, PerlinPersistance) * PerlinHeightScale;
+                    heightmap[x, y] += FractionalBrownianMotion(
+                        (x + PerlinOffsetX) * PerlinXScale, 
+                        (y + PerlinOffsetY) * PerlinYScale,
+                        PerlinOctaves, PerlinPersistance
+                    ) * PerlinHeightScale;
                 }
             }
         }
 
         /// <summary>
-        /// Fractal Brownian Motion.
+        /// Fractional Brownian Motion.
         /// Expands the Perlin Noise function adding several octaves together, with each octave 
         /// added being larger than the previous one, based on the 'persistence' factor.
         /// </summary>
