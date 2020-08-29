@@ -2,15 +2,15 @@
 
 public class DiamondSquare : MonoBehaviour
 {
-    public int mDivisions;
-    public float mSize;
-    public float mHeight;
+    public int resolution;
+    public float size;
+    public float height;
 
     private float[,] heights;
 
     void Start()
     {
-        heights = new float[mDivisions+1, mDivisions+1];
+        heights = new float[resolution+1, resolution+1];
         CreateTerrain();
     }
 
@@ -22,9 +22,9 @@ public class DiamondSquare : MonoBehaviour
 
         RandomizeCorners();
 
-        int iterations = (int)Mathf.Log(mDivisions, 2);
+        int iterations = (int)Mathf.Log(resolution, 2);
         int numSquares = 1;
-        int squareSize = mDivisions;
+        int squareSize = resolution;
 
         for (int i = 0; i < iterations; i++)
         {
@@ -34,14 +34,14 @@ public class DiamondSquare : MonoBehaviour
                 int col = 0;
                 for (int k = 0; k < numSquares; k++)
                 {
-                    DiamondSquareAlgorithm(row, col, squareSize, mHeight);
+                    DiamondSquareAlgorithm(row, col, squareSize, height);
                     col += squareSize;
                 }
                 row += squareSize;
             }
             numSquares *= 2;
             squareSize /= 2;
-            mHeight *= 0.5f;
+            height *= 0.5f;
         }
         mesh.vertices = GetVerticesFromMatrix();
         mesh.triangles = GetTriangles();
@@ -52,10 +52,10 @@ public class DiamondSquare : MonoBehaviour
 
     private void RandomizeCorners()
     {
-        heights[0, 0] = Random.Range(-mHeight, mHeight);
-        heights[0, mDivisions] = Random.Range(-mHeight, mHeight);
-        heights[mDivisions, 0] = Random.Range(-mHeight, mHeight);
-        heights[mDivisions, mDivisions] = Random.Range(-mHeight, mHeight);
+        heights[0, 0] = Random.Range(-height, height);
+        heights[0, resolution] = Random.Range(-height, height);
+        heights[resolution, 0] = Random.Range(-height, height);
+        heights[resolution, resolution] = Random.Range(-height, height);
     }
 
     private void DiamondSquareAlgorithm(int row, int col, int size, float offset)
@@ -84,8 +84,8 @@ public class DiamondSquare : MonoBehaviour
 		
 		Vector3[] vectors = new Vector3[(xSize+1) * (zSize+1)];
 
-        float halfSize = mSize * 0.5f;
-        float divisionSize = mSize / mDivisions;
+        float halfSize = size * 0.5f;
+        float divisionSize = size / resolution;
 
 		float height;
 		for (int i = 0, z = 0; z <= zSize; z++)
