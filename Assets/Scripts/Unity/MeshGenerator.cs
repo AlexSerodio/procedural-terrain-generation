@@ -9,7 +9,7 @@ public class MeshGenerator : MonoBehaviour
     public float hypsometricMapFactor = 100f;
 	public float heightFactor = 30f;
 
-	private const int dimensions = 513;	
+	private const int dimensions = 129;	
 	
 	private float[,] _heightmap;
 	public float[,] Heightmap {
