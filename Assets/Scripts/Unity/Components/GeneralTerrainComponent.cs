@@ -6,7 +6,7 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class GeneralTerrainComponent : BaseComponent
     {
-        public int smoothAmount = 2;
+        public int smoothAmount;
 
         public void SmoothTerrain(int iterations)
         {

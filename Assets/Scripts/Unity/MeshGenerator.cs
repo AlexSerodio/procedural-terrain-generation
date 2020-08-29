@@ -1,91 +1,92 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshGenerator : MonoBehaviour
 {
-	public Gradient hypsometricMap;
-    public float hypsometricMapFactor = 100f;
-	public float heightFactor = 30f;
+    public int resolution;
+    public float size;
+    public float hypsometricMapFactor = 1;
+    public Gradient hypsometricMap;
 
-	private const int dimensions = 129;	
-	
-	private float[,] _heightmap;
-	public float[,] Heightmap {
-		get {
-			if(_heightmap == null)
-				_heightmap = new float[dimensions, dimensions];
-			return _heightmap;
-		}
-		set => _heightmap = value;
-	}
+    private float[,] _heightmap;
+    public float[,] Heightmap
+    {
+        get
+        {
+            if (_heightmap == null)
+                _heightmap = new float[resolution + 1, resolution + 1];
+            return _heightmap;
+        }
+        set => _heightmap = value;
+    }
 
-	private Mesh mesh;
-	private Vector3[] vertices;
+    private Mesh mesh;
+    private Vector3[] vertices;
 
     void Start()
-	{
-		mesh = new Mesh();
-		mesh.name = "Mesh";
-		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-		
-		GetComponent<MeshFilter>().mesh = mesh;
-	}
-
-	public void UpdateMesh(float[,] heightmap)
     {
-		Heightmap = heightmap;
+        mesh = new Mesh();
+        mesh.name = "Mesh";
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
+        GetComponent<MeshFilter>().mesh = mesh;
+    }
+
+    public void UpdateMesh(float[,] heightmap)
+    {
+        Heightmap = heightmap;
 
         vertices = GetVerticesFromMatrix();
         int[] triangles = GetTriangles();
 
-		mesh.Clear();
+        mesh.Clear();
 
-		mesh.vertices = vertices;
-		mesh.triangles = triangles;
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
 
-		UpdateHypsometricMap();
+        UpdateHypsometricMap();
 
-		mesh.RecalculateNormals();
-		
-		transform.localPosition = new Vector3(-dimensions/2, 0, -dimensions/2);
+        mesh.RecalculateNormals();
     }
 
     private Vector3[] GetVerticesFromMatrix()
-	{
-		int xSize = Heightmap.GetLength(0);
-		int zSize = Heightmap.GetLength(1);
-		
-		Vector3[] vectors = new Vector3[(xSize+1) * (zSize+1)];
-
-		float height;
-		for (int i = 0, z = 0; z <= zSize; z++)
-		{
-			for (int x = 0; x <= xSize; x++)
-			{
-				if(x < xSize && z < zSize)
-					height = Heightmap[x, z];
-				else if(x == xSize && z < zSize)
-					height = Heightmap[x-1, z];
-				else if(x < xSize && z == zSize)
-					height = Heightmap[x, z-1];
-				else
-					height = Heightmap[x-1, z-1];
-
-				vectors[i++] = new Vector3(x, Math.Max(height * heightFactor, -50), z);
-			}
-		}
-
-		return vectors;
-	}
-
-	private int[] GetTriangles()
     {
-		int xSize = Heightmap.GetLength(0);
-		int zSize = Heightmap.GetLength(1);
+        int xSize = Heightmap.GetLength(0);
+        int zSize = Heightmap.GetLength(1);
 
-		int trianglesAmount = xSize * zSize * 6;
+        Vector3[] vectors = new Vector3[(xSize + 1) * (zSize + 1)];
+
+        float halfSize = size * 0.5f;
+        float divisionSize = size / resolution;
+
+        float height;
+        for (int i = 0, z = 0; z <= zSize; z++)
+        {
+            for (int x = 0; x <= xSize; x++)
+            {
+                if (x < xSize && z < zSize)
+                    height = Heightmap[x, z];
+                else if (x == xSize && z < zSize)
+                    height = Heightmap[x-1, z];
+                else if (x < xSize && z == zSize)
+                    height = Heightmap[x, z-1];
+                else
+                    height = Heightmap[x-1, z-1];
+
+                vectors[i++] = new Vector3(-halfSize + x * divisionSize, height, -halfSize + z * divisionSize);
+            }
+        }
+
+        return vectors;
+    }
+
+    private int[] GetTriangles()
+    {
+        int xSize = Heightmap.GetLength(0);
+        int zSize = Heightmap.GetLength(1);
+
+        int trianglesAmount = xSize * zSize * 2 * 3;
         int[] triangles = new int[trianglesAmount];
 
         int vertexOffset = 0;
@@ -109,18 +110,23 @@ public class MeshGenerator : MonoBehaviour
             }
             vertexOffset++;
         }
-		
-		return triangles;
+
+        return triangles;
     }
 
-	public void UpdateHypsometricMap()
-	{
-		Color[] colors = new Color[vertices.Length];
-		for (int v = 0, y = 0; y < dimensions; y++) {
-			for (int x = 0; x < dimensions; x++, v++) {
-				colors[v] = hypsometricMap.Evaluate(vertices[v].y/hypsometricMapFactor);
-			}
-		}
-		mesh.colors = colors;
-	}
+    public void UpdateHypsometricMap()
+    {
+        int xSize = Heightmap.GetLength(0);
+        int zSize = Heightmap.GetLength(1);
+        Color[] colors = new Color[vertices.Length];
+
+        for (int v = 0, y = 0; y < xSize; y++)
+        {
+            for (int x = 0; x < zSize; x++, v++)
+            {
+                colors[v] = hypsometricMap.Evaluate(vertices[v].y / hypsometricMapFactor);
+            }
+        }
+        mesh.colors = colors;
+    }
 }

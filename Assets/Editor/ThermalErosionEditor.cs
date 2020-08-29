@@ -9,11 +9,12 @@ public class ThermalErosionEditor : Editor
     private SerializedProperty talusFactor;
     private SerializedProperty factor;
     private SerializedProperty iterations;
+    
     void OnEnable()
     {
-        factor = serializedObject.FindProperty("TalusFactor");
-        talusFactor = serializedObject.FindProperty("Factor");
-        iterations = serializedObject.FindProperty("Iterations");
+        factor = serializedObject.FindProperty("talusFactor");
+        talusFactor = serializedObject.FindProperty("factor");
+        iterations = serializedObject.FindProperty("iterations");
     }
 
     public override void OnInspectorGUI()
