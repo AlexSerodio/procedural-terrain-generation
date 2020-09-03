@@ -6,12 +6,12 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class VoronoiComponent : BaseComponent
     {
-        public float FallOff = 3.5f;
-        public float DropOff = 2.5f;
-        public float MinHeight = 0.14f;
-        public float MaxHeight = 0.25f;
-        public int PeaksAmount = 5;
-        public VoronoiType Type = VoronoiType.Combined;
+        public float fallOff;
+        public float dropOff;
+        public float minHeight;
+        public float maxHeight;
+        public int peaksAmount;
+        public VoronoiType type = VoronoiType.Combined;
         
         private Voronoi voronoi = new Voronoi();
 
@@ -19,12 +19,12 @@ namespace Unity.Components
         {
             float[,] heightmap = GetTerrainHeight();
 
-            voronoi.DropOff = DropOff;
-            voronoi.FallOff = FallOff;
-            voronoi.MaxHeight = MaxHeight;
-            voronoi.MinHeight = MinHeight;
-            voronoi.PeaksAmount = PeaksAmount;
-            voronoi.Type = Type;
+            voronoi.DropOff = dropOff;
+            voronoi.FallOff = fallOff;
+            voronoi.MaxHeight = maxHeight;
+            voronoi.MinHeight = minHeight;
+            voronoi.PeaksAmount = peaksAmount;
+            voronoi.Type = type;
 
             voronoi.Apply(heightmap);
 

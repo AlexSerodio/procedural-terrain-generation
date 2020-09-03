@@ -15,12 +15,12 @@ public class VoronoiEditor : Editor
 
     void OnEnable()
     {
-        dropOff = serializedObject.FindProperty("DropOff");
-        fallOff = serializedObject.FindProperty("FallOff");
-        minHeight = serializedObject.FindProperty("MinHeight");
-        maxHeight = serializedObject.FindProperty("MaxHeight");
-        peaksAmount = serializedObject.FindProperty("PeaksAmount");
-        type = serializedObject.FindProperty("Type");
+        dropOff = serializedObject.FindProperty("dropOff");
+        fallOff = serializedObject.FindProperty("fallOff");
+        minHeight = serializedObject.FindProperty("minHeight");
+        maxHeight = serializedObject.FindProperty("maxHeight");
+        peaksAmount = serializedObject.FindProperty("peaksAmount");
+        type = serializedObject.FindProperty("type");
     }
 
     public override void OnInspectorGUI()

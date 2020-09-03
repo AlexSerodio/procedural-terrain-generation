@@ -16,13 +16,13 @@ public class BrownianNoiseEditor : Editor
 
     void OnEnable()
     {
-        perlinOffsetX = serializedObject.FindProperty("PerlinOffsetX");
-        perlinOffsetY = serializedObject.FindProperty("PerlinOffsetY");
-        perlinXScale = serializedObject.FindProperty("PerlinXScale");
-        perlinYScale = serializedObject.FindProperty("PerlinYScale");
-        perlinOctaves = serializedObject.FindProperty("PerlinOctaves");
-        perlinPersistance = serializedObject.FindProperty("PerlinPersistance");
-        perlinHeightScale = serializedObject.FindProperty("PerlinHeightScale");
+        perlinOffsetX = serializedObject.FindProperty("perlinOffsetX");
+        perlinOffsetY = serializedObject.FindProperty("perlinOffsetY");
+        perlinXScale = serializedObject.FindProperty("perlinXScale");
+        perlinYScale = serializedObject.FindProperty("perlinYScale");
+        perlinOctaves = serializedObject.FindProperty("perlinOctaves");
+        perlinPersistance = serializedObject.FindProperty("perlinPersistance");
+        perlinHeightScale = serializedObject.FindProperty("perlinHeightScale");
     }
 
     public override void OnInspectorGUI()

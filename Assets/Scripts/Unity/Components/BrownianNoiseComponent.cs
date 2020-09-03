@@ -6,13 +6,13 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class BrownianNoiseComponent : BaseComponent
     {
-        public int PerlinOffsetX = 0;
-        public int PerlinOffsetY = 0;
-        public float PerlinXScale = 0.01f;
-        public float PerlinYScale = 0.01f;
-        public int PerlinOctaves = 3;
-        public float PerlinPersistance = 8;
-        public float PerlinHeightScale = 0.09f;
+        public int perlinOffsetX;
+        public int perlinOffsetY;
+        public float perlinXScale;
+        public float perlinYScale;
+        public int perlinOctaves;
+        public float perlinPersistance;
+        public float perlinHeightScale;
         
         private BrownianNoise brownianNoise = new BrownianNoise();
 
@@ -20,13 +20,13 @@ namespace Unity.Components
         {
             float[,] heightmap = GetTerrainHeight();
 
-            brownianNoise.PerlinOffsetX = PerlinOffsetX;
-            brownianNoise.PerlinOffsetY = PerlinOffsetY;
-            brownianNoise.PerlinXScale = PerlinXScale;
-            brownianNoise.PerlinYScale = PerlinYScale;
-            brownianNoise.PerlinOctaves = PerlinOctaves;
-            brownianNoise.PerlinPersistance = PerlinPersistance;
-            brownianNoise.PerlinHeightScale = PerlinHeightScale;
+            brownianNoise.PerlinOffsetX = perlinOffsetX;
+            brownianNoise.PerlinOffsetY = perlinOffsetY;
+            brownianNoise.PerlinXScale = perlinXScale;
+            brownianNoise.PerlinYScale = perlinYScale;
+            brownianNoise.PerlinOctaves = perlinOctaves;
+            brownianNoise.PerlinPersistance = perlinPersistance;
+            brownianNoise.PerlinHeightScale = perlinHeightScale;
 
             brownianNoise.Apply(heightmap);
 
