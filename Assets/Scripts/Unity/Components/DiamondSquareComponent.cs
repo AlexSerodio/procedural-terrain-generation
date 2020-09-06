@@ -15,7 +15,7 @@ namespace Unity.Components
         {
             float[,] heightmap = base.GetTerrainHeight();
 
-            diamondSquare.Resolution = resolution;
+            diamondSquare.Resolution = base.meshGenerator.resolution;
             diamondSquare.Height = height;
 
             diamondSquare.Apply(heightmap);
