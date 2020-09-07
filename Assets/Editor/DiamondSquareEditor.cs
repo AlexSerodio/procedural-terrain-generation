@@ -9,7 +9,7 @@ public class MidpointDisplacementEditor : Editor
     private SerializedProperty resolution;
     private SerializedProperty height;
     private SerializedProperty shader;
-    public SerializedProperty useGPU;
+    private SerializedProperty useGPU;
 
     void OnEnable()
     {
