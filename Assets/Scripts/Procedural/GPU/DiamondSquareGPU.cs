@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class MyShaderTest : MonoBehaviour
+public class DiamondSquareGPU : MonoBehaviour
 {
     public ComputeShader shader;
 

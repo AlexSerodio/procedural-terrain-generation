@@ -8,17 +8,31 @@ namespace Unity.Components
     {
         public int resolution;
         public float height;
+        public ComputeShader shader;
+        public bool useGPU;
 
         private DiamondSquare diamondSquare = new DiamondSquare();
+        private DiamondSquareGPU diamondSquareGPU = new DiamondSquareGPU();
 
         public override void UpdateComponent()
         {
             float[,] heightmap = base.GetTerrainHeight();
 
-            diamondSquare.Resolution = base.meshGenerator.resolution;
-            diamondSquare.Height = height;
+            if(!useGPU) {
+                diamondSquare.Resolution = base.meshGenerator.resolution;
+                diamondSquare.Height = height;
+                diamondSquare.Apply(heightmap);
+            }
+            else
+            {
+                Debug.Log("Chamou GPU");
+                // diamondSquareGPU.Resolution = base.meshGenerator.resolution;
+                // diamondSquareGPU.Height = height;
+                // diamondSquareGPU.Shader = shader;
 
-            diamondSquare.Apply(heightmap);
+                // diamondSquareGPU.Apply(heightmap);
+            }
+
             
             base.UpdateTerrainHeight(heightmap);
         }
