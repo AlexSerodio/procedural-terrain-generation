@@ -1,5 +1,4 @@
 ﻿using Generation.Terrain.Utils;
-using System;
 
 namespace Generation.Terrain.Procedural
 {
@@ -26,11 +25,10 @@ namespace Generation.Terrain.Procedural
 
             RandomizeCorners(heightmap);
 
-            int iterations = (int)Math.Log(Resolution, 2);
             int numSquares = 1;
             int squareSize = Resolution;
 
-            for (int i = 0; i < iterations; i++)
+            while (squareSize > 1)
             {
                 int row = 0;
                 for (int j = 0; j < numSquares; j++)
@@ -39,9 +37,9 @@ namespace Generation.Terrain.Procedural
                     for (int k = 0; k < numSquares; k++)
                     {
                         DiamondSquareAlgorithm(row, col, squareSize, Height, heightmap);
-                        col += squareSize;
+                        col = (k + 1) * squareSize;     // equivalent to -> col += squareSize
                     }
-                    row += squareSize;
+                    row = (j + 1) * squareSize;         // equivalent to -> row += squareSize
                 }
                 numSquares *= 2;
                 squareSize /= 2;
