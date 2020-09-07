@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CustomEditor(typeof(DiamondSquareComponent))]
 [CanEditMultipleObjects]
-public class MidpointDisplacementEditor : Editor
+public class DiamondSquareEditor : Editor
 {
     private SerializedProperty resolution;
     private SerializedProperty height;
