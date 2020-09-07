@@ -68,10 +68,10 @@ namespace Generation.Terrain.Procedural
             heightmap[mid.X, mid.Y] = (heightmap[topLeft.X, topLeft.Y] + heightmap[topRight.X, topRight.Y] + heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[bottomRight.X, bottomRight.Y]) * 0.25f + RandomValue(offset);
 
             // square step
-            // heightmap[topLeft.X + halfSize, topLeft.Y] = (heightmap[topLeft.X, topLeft.Y] + heightmap[topRight.X, topRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
-            // heightmap[mid.X - halfSize, mid.Y] = (heightmap[topLeft.X, topLeft.Y] + heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
-            // heightmap[mid.X + halfSize, mid.Y] = (heightmap[topRight.X, topRight.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
-            // heightmap[bottomLeft.X + halfSize, bottomLeft.Y] = (heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
+            heightmap[topLeft.X + halfSize, topLeft.Y] = (heightmap[topLeft.X, topLeft.Y] + heightmap[topRight.X, topRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
+            heightmap[mid.X - halfSize, mid.Y] = (heightmap[topLeft.X, topLeft.Y] + heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
+            heightmap[mid.X + halfSize, mid.Y] = (heightmap[topRight.X, topRight.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
+            heightmap[bottomLeft.X + halfSize, bottomLeft.Y] = (heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
         }
 
         private float RandomValue(float range)

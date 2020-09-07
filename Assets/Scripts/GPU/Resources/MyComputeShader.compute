@@ -1,14 +1,11 @@
-﻿// Each #kernel tells which function to compile; you can have many kernels
-#pragma kernel CSMain
+﻿#pragma kernel CSMain
 
 RWStructuredBuffer<float> terrain;
 
-uint width; 				// width of the heightmap.
+uint width;
 float height;
 float squareSize;
 uint externalSeed;
-
-// uint currentPos; 			// current position on the heightmap to be evaluated.
 
 uint wang_hash(uint seed)
 {
@@ -20,93 +17,42 @@ uint wang_hash(uint seed)
     return seed;
 }
 
-// uint rand_lcg(uint seed)
-// {
-//     // LCG values from Numerical Recipes
-//     return 1664525 * seed + 1013904223;
-// }
-
-// uint rand_xorshift(uint seed)
-// {
-//     // Xorshift algorithm from George Marsaglia's paper
-//     seed ^= (seed << 13);
-//     seed ^= (seed >> 17);
-//     seed ^= (seed << 5);
-//     return seed;
-// }
-
 // normalizes the given value between -1 and 1
 float normalize(uint x)
 {
-	// return 2 * ((x - min) / (max - min)) - 1;
-	return 2 * (x / 4294967295.0) - 1;
+	return 2 * (x / 4294967295.0) - 1;		// equivalent to -> f(x) = 2 * ((x - min) / (max - min)) - 1
 }
-
-// float normalize(uint input)
-// {
-// 	float min = 0.0;
-// 	float max = 4294967295.0;	// <- max value of uint. uint has 4 bytes, 8 bits each, so 2^(8*4) = 4,294,967,296
-
-//     float average      = (min + max) / 2;
-//     float range        = (max - min) / 2;
-//     float normalized_x = (input - average) / range;
-//     return normalized_x;
-// }
 
 float random(uint seed, uint offset)
 {
 	float normalizedRandom = normalize(wang_hash(seed+offset));
-	// float normalizedRandom = wang_hash(seed+offset) / 4294967295.0;
-	return normalizedRandom * height;
+	return normalizedRandom;
 }
 
 void DiamondSquareAlgorithm(uint row, uint col, uint size, uint seed)
 {
 	uint halfSize = (uint)(size*0.5);
 	uint mid = (row+halfSize)*(width+1) + (col+halfSize);
-	
-	// if(mid > (width+1)*(width+1)) {
-	// 	mid = mid - (width+1)*(width+1);
-	// }
-
-	// uint mid = (row+halfSize)*(width+1) + col;
 	uint topLeft = row * (width+1)+col;
 	uint bottomLeft = (row+size)*(width+1)+col;
 
 	// diamond step
-	terrain[mid] = (terrain[topLeft]+terrain[topLeft+size]+terrain[bottomLeft]+terrain[bottomLeft+size]) * 0.25 + random(seed, mid);
-	// terrain[mid] = random(seed, mid);
-	// terrain[mid] = 10;
+	terrain[mid] = (terrain[topLeft]+terrain[topLeft+size]+terrain[bottomLeft]+terrain[bottomLeft+size]) * 0.25 + random(seed, mid) * height;
 
 	// square step
-	// terrain[topLeft+halfSize] = (terrain[topLeft]+terrain[topLeft+size]+terrain[mid]) / 3 + random(seed, offset);
-	// terrain[mid-halfSize] = (terrain[topLeft]+terrain[bottomLeft]+terrain[mid]) / 3 + random(seed, offset);
-	// terrain[mid+halfSize] = (terrain[topLeft+size]+terrain[bottomLeft+size]+terrain[mid]) / 3 + random(seed, offset);
-	// terrain[bottomLeft+halfSize] = (terrain[bottomLeft]+terrain[bottomLeft+size]+terrain[mid]) / 3 + random(seed, offset);
+	terrain[topLeft+halfSize] = (terrain[topLeft]+terrain[topLeft+size]+terrain[mid]) / 3 + random(seed, topLeft+halfSize) * height;
+	terrain[mid-halfSize] = (terrain[topLeft]+terrain[bottomLeft]+terrain[mid]) / 3 + random(seed, mid-halfSize) * height;
+	terrain[mid+halfSize] = (terrain[topLeft+size]+terrain[bottomLeft+size]+terrain[mid]) / 3 + random(seed, mid+halfSize) * height;
+	terrain[bottomLeft+halfSize] = (terrain[bottomLeft]+terrain[bottomLeft+size]+terrain[mid]) / 3 + random(seed, bottomLeft+halfSize) * height;
 }
 
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-	// uint x = id.x;
-	// uint y = id.y * width;
-	// currentPos = x + y;
-
-	// quando id xy é zero funciona, com xy parece apenas incrementar 1 ao invés de mudar a multiplicação
-	// TODO: fazer teste de mesa de toda a execução 
-
 	uint col = (id.x) * squareSize;
 	uint row = (id.y) * squareSize;
 	
-	// if(row == 0)
-	// 	row = width;
-	
 	uint seed = id.xy + externalSeed;
 
-	// terrain[currentPos] = 20.0;
-
 	DiamondSquareAlgorithm(row, col, squareSize, seed);
-
-	// float normalizedRandom = wang_hash(seed+currentPos) / 4294967295.0;	// <- max value of uint. uint has 4 bytes, 8 bits each, so 2^(8*4) = 4,294,967,296
-	// terrain[currentPos] = normalizedRandom * height;
 }

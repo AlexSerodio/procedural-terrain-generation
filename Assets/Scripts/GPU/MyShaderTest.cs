@@ -24,6 +24,13 @@ public class MyShaderTest : MonoBehaviour
 
         GetComponent<MeshFilter>().mesh = mesh;
 
+        Apply(heightmap);
+
+        UpdateMesh();
+    }
+
+    public void Apply(float[,] heightmap)
+    {
         RandomizeCorners(heightmap);
 
         int squareSize = resolution;
@@ -32,28 +39,19 @@ public class MyShaderTest : MonoBehaviour
         int numthreads = 0;
         while (squareSize > 1)
         {
-            // equation to calculate the number of calls to DiamondSquareAlgorithm() per iterations. Each call would be a new gpu thread
+            // Calculates the number of calls to DiamondSquare per iterations. Each call represents a new gpu thread
             numthreads = i > 0 ? (i * 2) : 1;
-            // numthreads = 2;
-            // numthreads = (i * 4) + 1;
             i = numthreads;
 
             RunOnGPU(heightmap, squareSize, numthreads);
 
             squareSize /= 2;
             height *= 0.5f;
-        
-            UnityEngine.Debug.Log($"threadNumber: {numthreads}");
         }
-
-        LogSpots();
-
-        UpdateMesh();
     }
 
     private void RandomizeCorners(float[,] heightmap)
     {
-        // TODO: the -1 probably will be removed once we're back using a heightmap of size resolution + 1
         heightmap[0, 0] = RandomValue() * height;
         heightmap[0, resolution] = RandomValue() * height;
         heightmap[resolution, 0] = RandomValue() * height;
@@ -67,63 +65,29 @@ public class MyShaderTest : MonoBehaviour
 
     private void RunOnGPU(float[,] heightMap, float squareSize, int numthreads)
     {
-        //Create a read/writable buffer that contains the heightmap data and sends it to the GPU.
-        //We need to specify the length of the buffer and the size of a single element. 
-        //The buffer needs to be the same length as the heightmap, and each element in the heightmap is a single float which is 4 bytes long.
+        // Creates a read/writable buffer that contains the heightmap data and sends it to the GPU.
+        // The buffer needs to be the same length as the heightmap, and each element in the heightmap is a single float which is 4 bytes long.
         ComputeBuffer buffer = new ComputeBuffer(heightMap.Length, 4);
 
-        //Set the initial data to be held in the buffer as the pre-generated heightmap
+        // Set the initial data to be held in the buffer as the pre-generated heightmap
         buffer.SetData(heightMap);
 
-        int kernelId = shader.FindKernel("CSMain");     // get the id of the main kernel of the shader
+        int kernelId = shader.FindKernel("CSMain");     // Gets the id of the main kernel of the shader
 
-        shader.SetBuffer(kernelId, "terrain", buffer);  // set the heightmap buffer
+        shader.SetBuffer(kernelId, "terrain", buffer);  // Set the terrain buffer
 
-        // initialize the parameters needed for the shader
+        // Initializes the parameters needed for the shader
         shader.SetInt("width", resolution);
         shader.SetFloat("height", height);
         shader.SetFloat("squareSize", squareSize);
         shader.SetInt("externalSeed", new System.Random().Next());
 
-        // Execute the compute shader on the GPU.
-        // shader.Dispatch(kernelId, 32, 32, 1);
+        // Executes the compute shader on the GPU
         shader.Dispatch(kernelId, numthreads, numthreads, 1);
 
         buffer.GetData(heightMap);          // Receive the updated heightmap data from the buffer
         buffer.Dispose();                   // Dispose the buffer 
     }
-
-    private void LogSpots()
-    {
-        int count = 0;
-        for (int i = 0; i < heightmap.GetLength(0); i++)
-        {
-            for (int j = 0; j < heightmap.GetLength(1); j++)
-            {
-                if (heightmap[i,j] != 0.0f)
-                {
-                    count++;
-                    // Debug.Log($"[{i}, {j}]");
-                }
-            }
-        }
-        UnityEngine.Debug.Log($"Modified Spots: {count}");
-    }
-
-    // private void OnDrawGizmos()
-    // {
-    //     for (int i = 0; i <= resolution; i++)
-    //     {
-    //         for (int j = 0; j <= resolution; j++)
-    //         {
-    //             if (heightmap[i,j] != 0.0f)
-    //             {
-    //                 Gizmos.color = Color.yellow;
-    //                 Gizmos.DrawSphere(new Vector3(i, height, j), 1);
-    //             }
-    //         }
-    //     }
-    // }
 
     public void UpdateMesh()
     {
