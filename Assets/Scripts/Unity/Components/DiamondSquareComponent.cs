@@ -1,4 +1,5 @@
-﻿using Generation.Terrain.Procedural;
+﻿using Generation.Terrain.Procedural.GPU;
+using Generation.Terrain.Procedural;
 using UnityEngine;
 
 namespace Unity.Components
@@ -25,14 +26,12 @@ namespace Unity.Components
             }
             else
             {
-                Debug.Log("Chamou GPU");
-                // diamondSquareGPU.Resolution = base.meshGenerator.resolution;
-                // diamondSquareGPU.Height = height;
-                // diamondSquareGPU.Shader = shader;
+                diamondSquareGPU.Resolution = base.meshGenerator.resolution;
+                diamondSquareGPU.Height = height;
+                diamondSquareGPU.Shader = shader;
 
-                // diamondSquareGPU.Apply(heightmap);
+                diamondSquareGPU.Apply(heightmap);
             }
-
             
             base.UpdateTerrainHeight(heightmap);
         }
