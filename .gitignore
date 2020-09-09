@@ -63,4 +63,4 @@ UnitTests/**/bin
 UnitTests/**/obj
 
 # Terrain Logs
-terrain-logs/**
+logs-terrain/**
