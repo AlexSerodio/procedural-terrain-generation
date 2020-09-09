@@ -20,16 +20,16 @@ namespace Unity.Components
         {
             float[,] heightmap = base.GetTerrainHeight();
 
-            if(!useGPU) {
+            if (!useGPU)
+            {
                 diamondSquare.Resolution = base.meshGenerator.resolution;
                 diamondSquare.Height = height;
 
-                TimeLogger.Start(LoggerType.CPU_DIAMOND_SQUARE);
+                TimeLogger.Start(LoggerType.CPU_DIAMOND_SQUARE, diamondSquare.Resolution);
 
                 diamondSquare.Apply(heightmap);
 
-                TimeLogger.RegisterTimeInMilliseconds();
-                TimeLogger.SaveLog();
+                TimeLogger.RecordSingleTimeInMilliseconds();
             }
             else
             {
@@ -37,14 +37,13 @@ namespace Unity.Components
                 diamondSquareGPU.Height = height;
                 diamondSquareGPU.Shader = shader;
 
-                TimeLogger.Start(LoggerType.GPU_DIAMOND_SQUARE);
+                TimeLogger.Start(LoggerType.GPU_DIAMOND_SQUARE, diamondSquareGPU.Resolution);
 
                 diamondSquareGPU.Apply(heightmap);
-            
-                TimeLogger.RegisterTimeInMilliseconds();
-                TimeLogger.SaveLog();
+
+                TimeLogger.RecordSingleTimeInMilliseconds();
             }
-            
+
             base.UpdateTerrainHeight(heightmap);
         }
     }

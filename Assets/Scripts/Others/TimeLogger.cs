@@ -7,43 +7,54 @@ namespace TerrainGeneration.Analytics
 {
     public static class TimeLogger
     {
-        private static List<float> _times;
-        private static string _timestamp;
-        private static string _name;
-        private static Stopwatch _stopWatch = new Stopwatch();
-
+        private static List<float> times;
+        private static string timestamp;
+        private static string name;
+        private static Stopwatch stopWatch = new Stopwatch();
         private static string DATE_FORMAT = "dd-MM-yyyy-HH-mm-ss";
 
         private static string Destination { get => Directory.GetCurrentDirectory() + "/terrain-logs"; }
-        private static string FileName { get => $"{_name}_{_timestamp}.log"; }
+        private static string FileName { get => $"{name}_{timestamp}.log"; }
 
-        public static void Start(LoggerType type)
+        public static void Start(LoggerType type, int terrainLength)
         {
             System.IO.Directory.CreateDirectory(Destination);
 
-            _times = new List<float>();
-            _name = GetAlgorithmName(type);
-            _timestamp = DateTime.Now.ToString(DATE_FORMAT);
+            times = new List<float>();
+            name = $"{GetAlgorithmName(type)}_{terrainLength}x{terrainLength}";
+            timestamp = DateTime.Now.ToString(DATE_FORMAT);
 
-            _stopWatch.Start();
+            stopWatch.Start();
         }
 
-        public static void RegisterTimeInMilliseconds()
+        public static void RecordTimeInMilliseconds()
         {
-            _stopWatch.Stop();
-            _times.Add(_stopWatch.Elapsed.Milliseconds);
-            _stopWatch.Reset();
+            stopWatch.Stop();
+            times.Add(stopWatch.Elapsed.Milliseconds);
+            stopWatch.Reset();
+        }
+
+        public static void RecordSingleTimeInMilliseconds()
+        {
+            stopWatch.Stop();
+            times.Add(stopWatch.Elapsed.Milliseconds);
+            stopWatch.Reset();
+
+            using (StreamWriter writer = File.AppendText($"{Destination}/{name}.log"))
+            {
+                times.ForEach(time => writer.Write(time + ","));
+            }
         }
 
         public static void SaveLog()
         {
             using (StreamWriter writer = File.AppendText($"{Destination}/{FileName}"))
             {
-                writer.WriteLine("Algorithm:," + _name);
+                writer.WriteLine("Algorithm:," + name);
                 writer.WriteLine("X Axis:, Iterations");
                 writer.WriteLine("Y Axis:, Duration (ms)");
 
-                _times.ForEach(time => writer.Write(time + ","));
+                times.ForEach(time => writer.Write(time + ","));
 
                 writer.WriteLine();
             }
