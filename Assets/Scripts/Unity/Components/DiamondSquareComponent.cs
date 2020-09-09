@@ -1,6 +1,6 @@
 ﻿using Generation.Terrain.Procedural.GPU;
 using Generation.Terrain.Procedural;
-using System.Diagnostics;
+using TerrainGeneration.Analytics;
 using UnityEngine;
 
 namespace Unity.Components
@@ -20,18 +20,16 @@ namespace Unity.Components
         {
             float[,] heightmap = base.GetTerrainHeight();
 
-            if(!useGPU) {
+            if (!useGPU)
+            {
                 diamondSquare.Resolution = base.meshGenerator.resolution;
                 diamondSquare.Height = height;
 
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
+                TimeLogger.Start(LoggerType.CPU_DIAMOND_SQUARE, diamondSquare.Resolution);
 
                 diamondSquare.Apply(heightmap);
 
-                stopWatch.Stop ();
-                UnityEngine.Debug.Log($"DiamondSquare on CPU with {diamondSquare.Resolution}x{diamondSquare.Resolution} vertices took {stopWatch.Elapsed.Milliseconds}ms.");
-                stopWatch.Reset ();
+                TimeLogger.RecordSingleTimeInMilliseconds();
             }
             else
             {
@@ -39,16 +37,13 @@ namespace Unity.Components
                 diamondSquareGPU.Height = height;
                 diamondSquareGPU.Shader = shader;
 
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
+                TimeLogger.Start(LoggerType.GPU_DIAMOND_SQUARE, diamondSquareGPU.Resolution);
 
                 diamondSquareGPU.Apply(heightmap);
-            
-                stopWatch.Stop ();
-                UnityEngine.Debug.Log($"DiamondSquare on GPU with {diamondSquareGPU.Resolution}x{diamondSquareGPU.Resolution} vertices took {stopWatch.Elapsed.Milliseconds}ms.");
-                stopWatch.Reset ();
+
+                TimeLogger.RecordSingleTimeInMilliseconds();
             }
-            
+
             base.UpdateTerrainHeight(heightmap);
         }
     }
