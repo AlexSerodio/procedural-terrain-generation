@@ -13,7 +13,7 @@ namespace Unity.Components
         public int perlinOctaves;
         public float perlinPersistance;
         public float perlinHeightScale;
-        
+
         private BrownianNoise brownianNoise = new BrownianNoise();
 
         public override void UpdateComponent()

@@ -19,13 +19,13 @@ namespace Generation.Terrain.Utils
         /// <param name="filename">The file path and name to which serialize.</param>
         public static void Serialize(float[,] matrix, string filename)
         {
-            if(matrix == null)
+            if (matrix == null)
                 throw new ArgumentNullException("The matrix argument cannot be null.");
 
-            if(string.IsNullOrWhiteSpace(filename))
+            if (string.IsNullOrWhiteSpace(filename))
                 throw new ArgumentException("The filename argument cannot be null or empty.");
 
-            if(!filename.EndsWith(extension))
+            if (!filename.EndsWith(extension))
                 filename += extension;
 
             using (BinaryWriter writer = new BinaryWriter(File.Open(filename, FileMode.Create)))
@@ -52,13 +52,13 @@ namespace Generation.Terrain.Utils
         /// <returns>The deserialized heightmap matrix.</returns>
         public static float[,] Deserialize(string filename)
         {
-            if(string.IsNullOrWhiteSpace(filename))
+            if (string.IsNullOrWhiteSpace(filename))
                 throw new ArgumentException("The filename argument cannot be null or empty.");
 
-            if(!filename.EndsWith(extension))
+            if (!filename.EndsWith(extension))
                 filename += extension;
 
-            if(!File.Exists(filename))
+            if (!File.Exists(filename))
                 throw new FileNotFoundException($"Couldn't find the file {filename}. Make sure the file exists and has the '{extension}' extension.");
 
             float[,] matrix = null;

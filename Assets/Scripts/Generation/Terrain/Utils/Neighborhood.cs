@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Generation.Terrain.Utils
 {
@@ -17,30 +16,30 @@ namespace Generation.Terrain.Utils
         public static List<Coords> Moore(Coords seed, int width, int height)
         {
             List<Coords> neighbors = new List<Coords>();
-            
+
             if (seed.X > 0)
-                neighbors.Add(new Coords(seed.X-1, seed.Y));
-            
+                neighbors.Add(new Coords(seed.X - 1, seed.Y));
+
             if (seed.Y > 0)
-                neighbors.Add(new Coords(seed.X, seed.Y-1));
-            
+                neighbors.Add(new Coords(seed.X, seed.Y - 1));
+
             if (seed.X < width - 1)
-                neighbors.Add(new Coords(seed.X+1, seed.Y));
-            
+                neighbors.Add(new Coords(seed.X + 1, seed.Y));
+
             if (seed.Y < height - 1)
-                neighbors.Add(new Coords(seed.X, seed.Y+1));
-            
+                neighbors.Add(new Coords(seed.X, seed.Y + 1));
+
             if (seed.X > 0 && seed.Y > 0)
-                neighbors.Add(new Coords(seed.X-1, seed.Y-1));
+                neighbors.Add(new Coords(seed.X - 1, seed.Y - 1));
 
             if (seed.X > 0 && seed.Y < height - 1)
-                neighbors.Add(new Coords(seed.X-1, seed.Y+1));
-            
+                neighbors.Add(new Coords(seed.X - 1, seed.Y + 1));
+
             if (seed.X < width - 1 && seed.Y < height - 1)
-                neighbors.Add(new Coords(seed.X+1, seed.Y+1));
-            
+                neighbors.Add(new Coords(seed.X + 1, seed.Y + 1));
+
             if (seed.X < width - 1 && seed.Y > 0)
-                neighbors.Add(new Coords(seed.X+1, seed.Y-1));
+                neighbors.Add(new Coords(seed.X + 1, seed.Y - 1));
 
             return neighbors;
         }
@@ -57,18 +56,18 @@ namespace Generation.Terrain.Utils
         public static List<Coords> VonNeumann(Coords seed, int width, int height)
         {
             List<Coords> neighbors = new List<Coords>();
-            
+
             if (seed.X > 0)
-                neighbors.Add(new Coords(seed.X-1, seed.Y));
-            
+                neighbors.Add(new Coords(seed.X - 1, seed.Y));
+
             if (seed.Y > 0)
-                neighbors.Add(new Coords(seed.X, seed.Y-1));
-            
+                neighbors.Add(new Coords(seed.X, seed.Y - 1));
+
             if (seed.X < width - 1)
-                neighbors.Add(new Coords(seed.X+1, seed.Y));
-            
+                neighbors.Add(new Coords(seed.X + 1, seed.Y));
+
             if (seed.Y < height - 1)
-                neighbors.Add(new Coords(seed.X, seed.Y+1));
+                neighbors.Add(new Coords(seed.X, seed.Y + 1));
 
             return neighbors;
         }

@@ -8,7 +8,8 @@ namespace Generation.Terrain.Utils
         public int X;
         public int Y;
 
-        public Coords(int x, int y) {
+        public Coords(int x, int y)
+        {
             X = x;
             Y = y;
         }

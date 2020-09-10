@@ -43,25 +43,25 @@ namespace Generation.Terrain.Procedural
                 );
                 float peakHeight = UnityEngine.Random.Range(MinHeight, MaxHeight);
 
-                if(heightmap[(int)peakLocation.x, (int)peakLocation.y] < peakHeight)
+                if (heightmap[(int)peakLocation.x, (int)peakLocation.y] < peakHeight)
                     heightmap[(int)peakLocation.x, (int)peakLocation.y] = peakHeight;
                 else
                     continue;
 
                 float maxDistance = Vector2.Distance(new Vector2(0, 0), new Vector2(width, height));
 
-                for(int x = 0; x < width; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    for(int y = 0; y < height; y++)
+                    for (int y = 0; y < height; y++)
                     {
-                        if(!(x == peakLocation.x && y == peakLocation.y))
+                        if (!(x == peakLocation.x && y == peakLocation.y))
                         {
                             float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, y));
                             float normalizedDistance = distanceToPeak / maxDistance;
 
                             float voronoiHeight = 0f;
 
-                            switch(Type)
+                            switch (Type)
                             {
                                 case VoronoiType.Linear:
                                     voronoiHeight = peakHeight - (normalizedDistance * FallOff);
@@ -75,12 +75,12 @@ namespace Generation.Terrain.Procedural
                                 case VoronoiType.SinPow:
                                     voronoiHeight = peakHeight - Mathf.Pow(normalizedDistance * 3, FallOff) - Mathf.Sin(normalizedDistance * 2 * Mathf.PI) / DropOff;
                                     break;
-                            }                        
+                            }
 
-                            if(heightmap[x, y] < voronoiHeight)
+                            if (heightmap[x, y] < voronoiHeight)
                                 heightmap[x, y] = voronoiHeight;
                         }
-                    }   
+                    }
                 }
             }
         }

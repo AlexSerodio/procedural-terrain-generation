@@ -11,16 +11,16 @@ namespace Unity.Components
         public void SmoothTerrain(int iterations)
         {
             float[,] heightmap = GetTerrainHeight();
-            
+
             Smooth.Apply(heightmap, iterations);
-            
+
             UpdateTerrainHeight(heightmap);
         }
 
         public void ResetTerrain()
         {
             float[,] heightmap = new float[xSize, zSize];
-            
+
             UpdateTerrainHeight(heightmap);
         }
 

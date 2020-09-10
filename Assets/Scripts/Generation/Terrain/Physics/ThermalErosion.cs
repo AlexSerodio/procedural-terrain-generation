@@ -52,7 +52,7 @@ namespace Generation.Terrain.Physics.Erosion
                     float sumExceededDiffs = 0;         // Soma das diferenças que ultrapassam o limite talus.
 
                     List<Coords> neighbors = Generation.Terrain.Utils.Neighborhood.VonNeumann(new Coords(x, y), maxX, maxY);
-                    
+
                     // Primeiro loop não realiza nenhuma alteração no relevo.
                     // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
                     // e a soma de todas as diferenças de altura que ultrapassam o limite talus.
@@ -73,7 +73,7 @@ namespace Generation.Terrain.Physics.Erosion
                     foreach (var neighbor in neighbors)
                     {
                         float heightDiff = matrix[x, y] - matrix[neighbor.X, neighbor.Y];
-                        
+
                         // Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
                         // remove material da posição atual e aplica ao vizinho.
                         if (heightDiff > talus)

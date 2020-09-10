@@ -12,7 +12,7 @@ namespace Unity.Components
         public float maxHeight;
         public int peaksAmount;
         public VoronoiType type = VoronoiType.Combined;
-        
+
         private Voronoi voronoi = new Voronoi();
 
         public override void UpdateComponent()

@@ -68,11 +68,11 @@ public class MeshGenerator : MonoBehaviour
                 if (x < xSize && z < zSize)
                     height = Heightmap[x, z];
                 else if (x == xSize && z < zSize)
-                    height = Heightmap[x-1, z];
+                    height = Heightmap[x - 1, z];
                 else if (x < xSize && z == zSize)
-                    height = Heightmap[x, z-1];
+                    height = Heightmap[x, z - 1];
                 else
-                    height = Heightmap[x-1, z-1];
+                    height = Heightmap[x - 1, z - 1];
 
                 vectors[i++] = new Vector3(-halfSize + x * divisionSize, height, -halfSize + z * divisionSize);
             }

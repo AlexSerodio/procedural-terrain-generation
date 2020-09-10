@@ -35,7 +35,7 @@ namespace Generation.Terrain.Procedural
             while (size > 0)
             {
                 halfSize = size / 2;
-                
+
                 for (int x = 0; x < width; x += size)
                 {
                     for (int y = 0; y < width; y += size)

@@ -30,7 +30,7 @@ namespace Generation.Terrain.Procedural.GPU
 
         public void Apply(float[,] heightmap)
         {
-            if(Shader == null)
+            if (Shader == null)
                 throw new System.InvalidOperationException("You must set at least the Shader property before call this operation.");
 
             RandomizeCorners(heightmap);
