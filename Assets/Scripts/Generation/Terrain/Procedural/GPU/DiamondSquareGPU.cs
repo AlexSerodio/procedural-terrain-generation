@@ -5,7 +5,6 @@ namespace Generation.Terrain.Procedural.GPU
     public class DiamondSquareGPU : ITerrainModifier
     {
         public int Resolution { get; set; }
-        public float Height { get; set; }
         public ComputeShader Shader { get; set; }
 
         private ComputeBuffer buffer;
@@ -13,7 +12,6 @@ namespace Generation.Terrain.Procedural.GPU
         public DiamondSquareGPU()
         {
             Resolution = 1024;
-            Height = 20;
         }
 
         public DiamondSquareGPU(ComputeShader shader) : this()
@@ -21,10 +19,9 @@ namespace Generation.Terrain.Procedural.GPU
             Shader = shader;
         }
 
-        public DiamondSquareGPU(int resolution, float height, ComputeShader shader)
+        public DiamondSquareGPU(int resolution, ComputeShader shader)
         {
             Resolution = resolution;
-            Height = height;
             Shader = shader;
         }
 
@@ -35,6 +32,7 @@ namespace Generation.Terrain.Procedural.GPU
 
             RandomizeCorners(heightmap);
 
+            float height = 1.0f;
             int squareSize = Resolution;
 
             int i = 0;
@@ -49,10 +47,10 @@ namespace Generation.Terrain.Procedural.GPU
                 numthreads = i > 0 ? (i * 2) : 1;
                 i = numthreads;
 
-                RunOnGPU(kernelId, squareSize, numthreads);
+                RunOnGPU(kernelId, squareSize, height, numthreads);
 
                 squareSize /= 2;
-                Height *= 0.5f;
+                height *= 0.5f;
 
                 // For debug purposes only
                 totalThreadsUsed += numthreads;
@@ -66,10 +64,10 @@ namespace Generation.Terrain.Procedural.GPU
 
         private void RandomizeCorners(float[,] heightmap)
         {
-            heightmap[0, 0] = RandomValue() * Height;
-            heightmap[0, Resolution] = RandomValue() * Height;
-            heightmap[Resolution, 0] = RandomValue() * Height;
-            heightmap[Resolution, Resolution] = RandomValue() * Height;
+            heightmap[0, 0] = RandomValue();
+            heightmap[0, Resolution] = RandomValue();
+            heightmap[Resolution, 0] = RandomValue();
+            heightmap[Resolution, Resolution] = RandomValue();
         }
 
         private int InitComputeShader(float[,] heightmap)
@@ -89,10 +87,10 @@ namespace Generation.Terrain.Procedural.GPU
             return kernelId;
         }
 
-        private void RunOnGPU(int kernelId, float squareSize, int numthreads)
+        private void RunOnGPU(int kernelId, float squareSize, float height, int numthreads)
         {
             // Initializes the parameters needed for the shader
-            Shader.SetFloat("height", Height);
+            Shader.SetFloat("height", height);
             Shader.SetFloat("squareSize", squareSize);
             Shader.SetInt("externalSeed", new System.Random().Next());
 

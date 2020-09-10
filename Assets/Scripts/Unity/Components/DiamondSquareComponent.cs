@@ -9,7 +9,6 @@ namespace Unity.Components
     public class DiamondSquareComponent : BaseComponent
     {
         public int resolution;
-        public float height;
         public ComputeShader shader;
         public bool useGPU;
 
@@ -23,7 +22,6 @@ namespace Unity.Components
             if (!useGPU)
             {
                 diamondSquare.Resolution = base.meshGenerator.resolution;
-                diamondSquare.Height = height;
 
                 TimeLogger.Start(LoggerType.CPU_DIAMOND_SQUARE, diamondSquare.Resolution);
 
@@ -34,7 +32,6 @@ namespace Unity.Components
             else
             {
                 diamondSquareGPU.Resolution = base.meshGenerator.resolution;
-                diamondSquareGPU.Height = height;
                 diamondSquareGPU.Shader = shader;
 
                 TimeLogger.Start(LoggerType.GPU_DIAMOND_SQUARE, diamondSquareGPU.Resolution);

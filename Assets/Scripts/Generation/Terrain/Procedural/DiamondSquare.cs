@@ -5,16 +5,11 @@ namespace Generation.Terrain.Procedural
     public class DiamondSquare : ITerrainModifier
     {
         public int Resolution { get; set; }
-        public float Height { get; set; }
 
-        public DiamondSquare()
-        {
-            Height = 20;
-        }
+        public DiamondSquare() { }
 
-        public DiamondSquare(float height, int resolution)
+        public DiamondSquare(int resolution)
         {
-            Height = height;
             Resolution = resolution;
         }
 
@@ -25,6 +20,7 @@ namespace Generation.Terrain.Procedural
 
             RandomizeCorners(heightmap);
 
+            float height = 1.0f;
             int numSquares = 1;
             int squareSize = Resolution;
 
@@ -36,23 +32,23 @@ namespace Generation.Terrain.Procedural
                     int col = 0;
                     for (int k = 0; k < numSquares; k++)
                     {
-                        DiamondSquareAlgorithm(row, col, squareSize, Height, heightmap);
+                        DiamondSquareAlgorithm(row, col, squareSize, height, heightmap);
                         col = (k + 1) * squareSize;     // equivalent to -> col += squareSize
                     }
                     row = (j + 1) * squareSize;         // equivalent to -> row += squareSize
                 }
                 numSquares *= 2;
                 squareSize /= 2;
-                Height *= 0.5f;
+                height *= 0.5f;
             }
         }
 
         private void RandomizeCorners(float[,] heightmap)
         {
-            heightmap[0, 0] = RandomValue(Height);
-            heightmap[0, Resolution] = RandomValue(Height);
-            heightmap[Resolution, 0] = RandomValue(Height);
-            heightmap[Resolution, Resolution] = RandomValue(Height);
+            heightmap[0, 0] = RandomValue();
+            heightmap[0, Resolution] = RandomValue();
+            heightmap[Resolution, 0] = RandomValue();
+            heightmap[Resolution, Resolution] = RandomValue();
         }
 
         private void DiamondSquareAlgorithm(int row, int col, int size, float offset, float[,] heightmap)
@@ -74,7 +70,7 @@ namespace Generation.Terrain.Procedural
             heightmap[bottomLeft.X + halfSize, bottomLeft.Y] = (heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
         }
 
-        private float RandomValue(float range)
+        private float RandomValue(float range = 1.0f)
         {
             return UnityEngine.Random.Range(-range, range);
         }
