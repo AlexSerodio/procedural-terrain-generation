@@ -7,14 +7,12 @@ using UnityEngine;
 public class DiamondSquareEditor : Editor
 {
     private SerializedProperty resolution;
-    private SerializedProperty height;
     private SerializedProperty shader;
     private SerializedProperty useGPU;
 
     void OnEnable()
     {
         resolution = serializedObject.FindProperty("resolution");
-        height = serializedObject.FindProperty("height");
         shader = serializedObject.FindProperty("shader");
         useGPU = serializedObject.FindProperty("useGPU");
     }
@@ -25,7 +23,6 @@ public class DiamondSquareEditor : Editor
         DiamondSquareComponent component = (DiamondSquareComponent)target;
 
         EditorGUILayout.PropertyField(resolution);
-        EditorGUILayout.PropertyField(height);
         EditorGUILayout.PropertyField(shader);
         EditorGUILayout.PropertyField(useGPU);
         

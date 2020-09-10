@@ -2,39 +2,28 @@
 
 namespace Generation.Terrain.Procedural.GPU
 {
-    public class DiamondSquareGPU : ITerrainModifier
+    public class DiamondSquareGPU : DiamondSquare
     {
-        public int Resolution { get; set; }
-        public float Height { get; set; }
         public ComputeShader Shader { get; set; }
 
         private ComputeBuffer buffer;
 
-        public DiamondSquareGPU()
-        {
-            Resolution = 1024;
-            Height = 20;
-        }
-
-        public DiamondSquareGPU(ComputeShader shader) : this()
+        public DiamondSquareGPU(ComputeShader shader) : base()
         {
             Shader = shader;
         }
 
-        public DiamondSquareGPU(int resolution, float height, ComputeShader shader)
+        public DiamondSquareGPU(int resolution, ComputeShader shader)
         {
             Resolution = resolution;
-            Height = height;
             Shader = shader;
         }
 
-        public void Apply(float[,] heightmap)
+        public override void Apply(float[,] heightmap)
         {
-            if (Shader == null)
-                throw new System.InvalidOperationException("You must set at least the Shader property before call this operation.");
+            base.RandomizeCorners(heightmap);
 
-            RandomizeCorners(heightmap);
-
+            float height = 1.0f;
             int squareSize = Resolution;
 
             int i = 0;
@@ -49,10 +38,10 @@ namespace Generation.Terrain.Procedural.GPU
                 numthreads = i > 0 ? (i * 2) : 1;
                 i = numthreads;
 
-                RunOnGPU(kernelId, squareSize, numthreads);
+                RunOnGPU(kernelId, squareSize, height, numthreads);
 
                 squareSize /= 2;
-                Height *= 0.5f;
+                height *= 0.5f;
 
                 // For debug purposes only
                 totalThreadsUsed += numthreads;
@@ -62,14 +51,6 @@ namespace Generation.Terrain.Procedural.GPU
 
             // For debug purposes only
             Debug.Log($"Number of threads used: {totalThreadsUsed}.");
-        }
-
-        private void RandomizeCorners(float[,] heightmap)
-        {
-            heightmap[0, 0] = RandomValue() * Height;
-            heightmap[0, Resolution] = RandomValue() * Height;
-            heightmap[Resolution, 0] = RandomValue() * Height;
-            heightmap[Resolution, Resolution] = RandomValue() * Height;
         }
 
         private int InitComputeShader(float[,] heightmap)
@@ -89,10 +70,10 @@ namespace Generation.Terrain.Procedural.GPU
             return kernelId;
         }
 
-        private void RunOnGPU(int kernelId, float squareSize, int numthreads)
+        private void RunOnGPU(int kernelId, float squareSize, float height, int numthreads)
         {
             // Initializes the parameters needed for the shader
-            Shader.SetFloat("height", Height);
+            Shader.SetFloat("height", height);
             Shader.SetFloat("squareSize", squareSize);
             Shader.SetInt("externalSeed", new System.Random().Next());
 
@@ -104,11 +85,6 @@ namespace Generation.Terrain.Procedural.GPU
         {
             buffer.GetData(heightmap);          // Receive the updated heightmap data from the buffer
             buffer.Dispose();                   // Dispose the buffer 
-        }
-
-        private float RandomValue(float range = 1f)
-        {
-            return UnityEngine.Random.Range(-range, range);
         }
     }
 }

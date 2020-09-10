@@ -6,7 +6,7 @@ public class MeshGenerator : MonoBehaviour
 {
     public int resolution;
     public float size;
-    public float hypsometricMapFactor = 1;
+    public float heightFactor;
     public Gradient hypsometricMap;
 
     private float[,] _heightmap;
@@ -74,7 +74,7 @@ public class MeshGenerator : MonoBehaviour
                 else
                     height = Heightmap[x - 1, z - 1];
 
-                vectors[i++] = new Vector3(-halfSize + x * divisionSize, height, -halfSize + z * divisionSize);
+                vectors[i++] = new Vector3(-halfSize + x * divisionSize, height * heightFactor, -halfSize + z * divisionSize);
             }
         }
 
@@ -124,7 +124,7 @@ public class MeshGenerator : MonoBehaviour
         {
             for (int x = 0; x < zSize; x++, v++)
             {
-                colors[v] = hypsometricMap.Evaluate(vertices[v].y / hypsometricMapFactor);
+                colors[v] = hypsometricMap.Evaluate(vertices[v].y / heightFactor);
             }
         }
         mesh.colors = colors;

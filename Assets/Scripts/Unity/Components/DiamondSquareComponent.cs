@@ -9,40 +9,26 @@ namespace Unity.Components
     public class DiamondSquareComponent : BaseComponent
     {
         public int resolution;
-        public float height;
         public ComputeShader shader;
         public bool useGPU;
 
-        private DiamondSquare diamondSquare = new DiamondSquare();
-        private DiamondSquareGPU diamondSquareGPU = new DiamondSquareGPU();
+        private DiamondSquare diamondSquare;
 
         public override void UpdateComponent()
         {
             float[,] heightmap = base.GetTerrainHeight();
+            int resolution = base.meshGenerator.resolution;
 
-            if (!useGPU)
-            {
-                diamondSquare.Resolution = base.meshGenerator.resolution;
-                diamondSquare.Height = height;
-
-                TimeLogger.Start(LoggerType.CPU_DIAMOND_SQUARE, diamondSquare.Resolution);
-
-                diamondSquare.Apply(heightmap);
-
-                TimeLogger.RecordSingleTimeInMilliseconds();
-            }
+            if (useGPU)
+                diamondSquare = new DiamondSquareGPU(resolution, shader);
             else
-            {
-                diamondSquareGPU.Resolution = base.meshGenerator.resolution;
-                diamondSquareGPU.Height = height;
-                diamondSquareGPU.Shader = shader;
+                diamondSquare = new DiamondSquare(resolution);
 
-                TimeLogger.Start(LoggerType.GPU_DIAMOND_SQUARE, diamondSquareGPU.Resolution);
+            TimeLogger.Start(diamondSquare.GetType().Name, diamondSquare.Resolution);
 
-                diamondSquareGPU.Apply(heightmap);
+            diamondSquare.Apply(heightmap);
 
-                TimeLogger.RecordSingleTimeInMilliseconds();
-            }
+            TimeLogger.RecordSingleTimeInMilliseconds();
 
             base.UpdateTerrainHeight(heightmap);
         }
