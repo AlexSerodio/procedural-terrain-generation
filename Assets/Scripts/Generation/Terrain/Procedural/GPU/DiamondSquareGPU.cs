@@ -2,19 +2,13 @@
 
 namespace Generation.Terrain.Procedural.GPU
 {
-    public class DiamondSquareGPU : ITerrainModifier
+    public class DiamondSquareGPU : DiamondSquare
     {
-        public int Resolution { get; set; }
         public ComputeShader Shader { get; set; }
 
         private ComputeBuffer buffer;
 
-        public DiamondSquareGPU()
-        {
-            Resolution = 1024;
-        }
-
-        public DiamondSquareGPU(ComputeShader shader) : this()
+        public DiamondSquareGPU(ComputeShader shader) : base()
         {
             Shader = shader;
         }
@@ -25,12 +19,9 @@ namespace Generation.Terrain.Procedural.GPU
             Shader = shader;
         }
 
-        public void Apply(float[,] heightmap)
+        public override void Apply(float[,] heightmap)
         {
-            if (Shader == null)
-                throw new System.InvalidOperationException("You must set at least the Shader property before call this operation.");
-
-            RandomizeCorners(heightmap);
+            base.RandomizeCorners(heightmap);
 
             float height = 1.0f;
             int squareSize = Resolution;
@@ -60,14 +51,6 @@ namespace Generation.Terrain.Procedural.GPU
 
             // For debug purposes only
             Debug.Log($"Number of threads used: {totalThreadsUsed}.");
-        }
-
-        private void RandomizeCorners(float[,] heightmap)
-        {
-            heightmap[0, 0] = RandomValue();
-            heightmap[0, Resolution] = RandomValue();
-            heightmap[Resolution, 0] = RandomValue();
-            heightmap[Resolution, Resolution] = RandomValue();
         }
 
         private int InitComputeShader(float[,] heightmap)
@@ -102,11 +85,6 @@ namespace Generation.Terrain.Procedural.GPU
         {
             buffer.GetData(heightmap);          // Receive the updated heightmap data from the buffer
             buffer.Dispose();                   // Dispose the buffer 
-        }
-
-        private float RandomValue(float range = 1f)
-        {
-            return UnityEngine.Random.Range(-range, range);
         }
     }
 }

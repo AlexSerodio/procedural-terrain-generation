@@ -6,14 +6,17 @@ namespace Generation.Terrain.Procedural
     {
         public int Resolution { get; set; }
 
-        public DiamondSquare() { }
+        public DiamondSquare()
+        {
+            Resolution = 1024;
+        }
 
         public DiamondSquare(int resolution)
         {
             Resolution = resolution;
         }
 
-        public void Apply(float[,] heightmap)
+        public virtual void Apply(float[,] heightmap)
         {
             if (Resolution == 0)
                 Resolution = heightmap.GetLength(0) - 1;
@@ -43,14 +46,6 @@ namespace Generation.Terrain.Procedural
             }
         }
 
-        private void RandomizeCorners(float[,] heightmap)
-        {
-            heightmap[0, 0] = RandomValue();
-            heightmap[0, Resolution] = RandomValue();
-            heightmap[Resolution, 0] = RandomValue();
-            heightmap[Resolution, Resolution] = RandomValue();
-        }
-
         private void DiamondSquareAlgorithm(int row, int col, int size, float offset, float[,] heightmap)
         {
             int halfSize = (int)(size * 0.5f);
@@ -68,6 +63,14 @@ namespace Generation.Terrain.Procedural
             heightmap[mid.X - halfSize, mid.Y] = (heightmap[topLeft.X, topLeft.Y] + heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
             heightmap[mid.X + halfSize, mid.Y] = (heightmap[topRight.X, topRight.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
             heightmap[bottomLeft.X + halfSize, bottomLeft.Y] = (heightmap[bottomLeft.X, bottomLeft.Y] + heightmap[bottomRight.X, bottomRight.Y] + heightmap[mid.X, mid.Y]) / 3 + RandomValue(offset);
+        }
+
+        protected void RandomizeCorners(float[,] heightmap)
+        {
+            heightmap[0, 0] = RandomValue();
+            heightmap[0, Resolution] = RandomValue();
+            heightmap[Resolution, 0] = RandomValue();
+            heightmap[Resolution, Resolution] = RandomValue();
         }
 
         private float RandomValue(float range = 1.0f)
