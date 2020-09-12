@@ -6,13 +6,11 @@ using UnityEngine;
 [CanEditMultipleObjects]
 public class DiamondSquareEditor : Editor
 {
-    private SerializedProperty resolution;
     private SerializedProperty shader;
     private SerializedProperty useGPU;
 
     void OnEnable()
     {
-        resolution = serializedObject.FindProperty("resolution");
         shader = serializedObject.FindProperty("shader");
         useGPU = serializedObject.FindProperty("useGPU");
     }
@@ -22,7 +20,6 @@ public class DiamondSquareEditor : Editor
         serializedObject.Update();
         DiamondSquareComponent component = (DiamondSquareComponent)target;
 
-        EditorGUILayout.PropertyField(resolution);
         EditorGUILayout.PropertyField(shader);
         EditorGUILayout.PropertyField(useGPU);
         

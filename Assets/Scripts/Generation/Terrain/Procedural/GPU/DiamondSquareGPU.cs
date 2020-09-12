@@ -38,7 +38,7 @@ namespace Generation.Terrain.Procedural.GPU
                 numthreads = i > 0 ? (i * 2) : 1;
                 i = numthreads;
 
-                RunOnGPU(kernelId, squareSize, height, numthreads);
+                RunComputeShader(kernelId, squareSize, height, numthreads);
 
                 squareSize /= 2;
                 height *= 0.5f;
@@ -62,15 +62,15 @@ namespace Generation.Terrain.Procedural.GPU
             // Set the initial data to be held in the buffer as the pre-generated heightmap
             buffer.SetData(heightmap);
 
-            int kernelId = Shader.FindKernel("CSMain");     // Gets the id of the main kernel of the shader
+            int kernelId = Shader.FindKernel("CSMain");         // Gets the id of the main kernel of the shader
 
-            Shader.SetBuffer(kernelId, "terrain", buffer);  // Set the terrain buffer
+            Shader.SetBuffer(kernelId, "heightmap", buffer);    // Set the heightmap buffer
             Shader.SetInt("width", Resolution);
 
             return kernelId;
         }
 
-        private void RunOnGPU(int kernelId, float squareSize, float height, int numthreads)
+        private void RunComputeShader(int kernelId, float squareSize, float height, int numthreads)
         {
             // Initializes the parameters needed for the shader
             Shader.SetFloat("height", height);

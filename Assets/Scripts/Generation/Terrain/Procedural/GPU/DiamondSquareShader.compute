@@ -1,6 +1,6 @@
 ﻿#pragma kernel CSMain
 
-RWStructuredBuffer<float> terrain;
+RWStructuredBuffer<float> heightmap;
 
 uint width;
 float height;
@@ -37,13 +37,13 @@ void DiamondSquareAlgorithm(uint row, uint col, uint size, uint seed)
 	uint bottomLeft = (row+size)*(width+1)+col;
 
 	// diamond step
-	terrain[mid] = (terrain[topLeft]+terrain[topLeft+size]+terrain[bottomLeft]+terrain[bottomLeft+size]) * 0.25 + random(seed, mid) * height;
+	heightmap[mid] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[bottomLeft]+heightmap[bottomLeft+size]) * 0.25 + random(seed, mid) * height;
 
 	// square step
-	terrain[topLeft+halfSize] = (terrain[topLeft]+terrain[topLeft+size]+terrain[mid]) / 3 + random(seed, topLeft+halfSize) * height;
-	terrain[mid-halfSize] = (terrain[topLeft]+terrain[bottomLeft]+terrain[mid]) / 3 + random(seed, mid-halfSize) * height;
-	terrain[mid+halfSize] = (terrain[topLeft+size]+terrain[bottomLeft+size]+terrain[mid]) / 3 + random(seed, mid+halfSize) * height;
-	terrain[bottomLeft+halfSize] = (terrain[bottomLeft]+terrain[bottomLeft+size]+terrain[mid]) / 3 + random(seed, bottomLeft+halfSize) * height;
+	heightmap[topLeft+halfSize] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[mid]) / 3 + random(seed, topLeft+halfSize) * height;
+	heightmap[mid-halfSize] = (heightmap[topLeft]+heightmap[bottomLeft]+heightmap[mid]) / 3 + random(seed, mid-halfSize) * height;
+	heightmap[mid+halfSize] = (heightmap[topLeft+size]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(seed, mid+halfSize) * height;
+	heightmap[bottomLeft+halfSize] = (heightmap[bottomLeft]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(seed, bottomLeft+halfSize) * height;
 }
 
 [numthreads(1,1,1)]

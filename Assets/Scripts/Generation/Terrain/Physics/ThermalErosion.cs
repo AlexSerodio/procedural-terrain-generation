@@ -20,10 +20,10 @@ namespace Generation.Terrain.Physics.Erosion
         /// Applies the DryErosion algorithm multiple times to get more realistic results.
         /// The amount of repetitions is controlled by the 'iterations' variable.
         /// </summary>
-        public void Erode(float[,] matrix, float talus = 1, float factor = 0.5f, int iterations = 500)
+        public virtual void Erode(float[,] heightmap, float talus = 1, float factor = 0.5f, int iterations = 500)
         {
             for (int i = 0; i < iterations; i++)
-                DryErosion(matrix, talus, factor);
+                DryErosion(heightmap, talus, factor);
         }
 
         /// <summary>
@@ -37,13 +37,13 @@ namespace Generation.Terrain.Physics.Erosion
         /// e talus representa a diferença máxima permitida.
         /// Olsen (2004, p. 6) sugere que o valor ideal para factor é 0,5.
         /// </summary>
-        /// <param name="matrix">Mapa de altura do relevo.</param>
+        /// <param name="heightmap">Mapa de altura do relevo.</param>
         /// <param name="talus">Diferença de altura máxima permitida.</param>
         /// <param name="factor">Fator limitante de movimentação.</param>
-        public void DryErosion(float[,] matrix, float talus = 1, float factor = 0.5f)
+        private void DryErosion(float[,] heightmap, float talus = 4, float factor = 0.5f)
         {
-            int maxX = matrix.GetLength(0);
-            int maxY = matrix.GetLength(1);
+            int maxX = heightmap.GetLength(0);
+            int maxY = heightmap.GetLength(1);
             for (int x = 0; x < maxX; x++)
             {
                 for (int y = 0; y < maxY; y++)
@@ -58,7 +58,7 @@ namespace Generation.Terrain.Physics.Erosion
                     // e a soma de todas as diferenças de altura que ultrapassam o limite talus.
                     foreach (var neighbor in neighbors)
                     {
-                        float heightDiff = matrix[x, y] - matrix[neighbor.X, neighbor.Y];
+                        float heightDiff = heightmap[x, y] - heightmap[neighbor.X, neighbor.Y];
                         if (heightDiff > maxHeightDiff)
                             maxHeightDiff = heightDiff;
                         if (heightDiff > talus)
@@ -72,7 +72,7 @@ namespace Generation.Terrain.Physics.Erosion
                     // Segundo loop é onde são feitas as alterações.
                     foreach (var neighbor in neighbors)
                     {
-                        float heightDiff = matrix[x, y] - matrix[neighbor.X, neighbor.Y];
+                        float heightDiff = heightmap[x, y] - heightmap[neighbor.X, neighbor.Y];
 
                         // Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
                         // remove material da posição atual e aplica ao vizinho.
@@ -80,8 +80,8 @@ namespace Generation.Terrain.Physics.Erosion
                         {
                             // Fórmula de distribuição do solo.
                             float sediment = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
-                            matrix[neighbor.X, neighbor.Y] += sediment;
-                            matrix[x, y] -= sediment;
+                            heightmap[neighbor.X, neighbor.Y] += sediment;
+                            heightmap[x, y] -= sediment;
                         }
                     }
                 }
