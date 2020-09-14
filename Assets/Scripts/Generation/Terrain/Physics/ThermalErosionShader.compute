@@ -9,7 +9,7 @@
 #define LEFT_DOWN 6
 #define RIGHT_DOWN 7
 
-#define NEIGHBORHOOD_SIZE 4
+#define NEIGHBORHOOD_SIZE 8
 
 RWStructuredBuffer<float> heightmap;
 
@@ -19,7 +19,6 @@ uint width;
 
 uint currentPosition;
 
-// stores position of all neighbors 
 uint neighbors[NEIGHBORHOOD_SIZE];
 
 void GetNeighbors()
@@ -28,10 +27,10 @@ void GetNeighbors()
 	neighbors[DOWN] = currentPosition + width;
 	neighbors[LEFT] = currentPosition - 1;
 	neighbors[RIGHT] = currentPosition + 1;
-	// neighbors[LEFT_UP] = (currentPosition - 1) - width;
-	// neighbors[RIGHT_UP] = (currentPosition + 1) - width;
-	// neighbors[LEFT_DOWN] = (currentPosition - 1) + width;
-	// neighbors[RIGHT_DOWN] = (currentPosition + 1) + width;
+	neighbors[LEFT_UP] = (currentPosition - 1) - width;
+	neighbors[RIGHT_UP] = (currentPosition + 1) - width;
+	neighbors[LEFT_DOWN] = (currentPosition - 1) + width;
+	neighbors[RIGHT_DOWN] = (currentPosition + 1) + width;
 }
 
 int isValidPosition(uint3 id)
