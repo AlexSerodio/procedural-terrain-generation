@@ -27,7 +27,7 @@ namespace Generation.Terrain.Physics.Erosion.GPU
             Shader.SetBuffer(kernelId, "heightmap", buffer);    // Set the heightmap buffer
             Shader.SetFloat("talus", talus);
             Shader.SetFloat("factor", factor);
-            Shader.SetFloat("width", heightmap.GetLength(0)-1);
+            Shader.SetInt("width", heightmap.GetLength(0));
 
             return kernelId;
         }

@@ -25,8 +25,7 @@ float normalize(uint x)
 
 float random(uint seed, uint offset)
 {
-	float normalizedRandom = normalize(wang_hash(seed+offset));
-	return normalizedRandom;
+	return normalize(wang_hash(seed+offset));
 }
 
 void DiamondSquareAlgorithm(uint row, uint col, uint size, uint seed)
@@ -52,7 +51,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 	uint col = (id.x) * squareSize;
 	uint row = (id.y) * squareSize;
 	
-	uint seed = id.xy + externalSeed;
+	uint seed = id.x + id.y + externalSeed;
 
 	DiamondSquareAlgorithm(row, col, squareSize, seed);
 }
