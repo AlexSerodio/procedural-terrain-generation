@@ -8,7 +8,6 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class DiamondSquareComponent : BaseComponent
     {
-        public int resolution;
         public ComputeShader shader;
         public bool useGPU;
 

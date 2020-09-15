@@ -1,0 +1,85 @@
+﻿#pragma kernel CSMain
+
+#define UP 0
+#define DOWN 1
+#define LEFT 2
+#define RIGHT 3
+#define LEFT_UP 4
+#define RIGHT_UP 5
+#define LEFT_DOWN 6
+#define RIGHT_DOWN 7
+
+#define NEIGHBORHOOD_SIZE 8
+
+RWStructuredBuffer<float> heightmap;
+
+float talus;
+float factor;
+uint width;
+
+uint currentPosition;
+
+uint neighbors[NEIGHBORHOOD_SIZE];
+
+void GetNeighbors()
+{
+	neighbors[UP] = currentPosition - width;
+	neighbors[DOWN] = currentPosition + width;
+	neighbors[LEFT] = currentPosition - 1;
+	neighbors[RIGHT] = currentPosition + 1;
+	neighbors[LEFT_UP] = (currentPosition - 1) - width;
+	neighbors[RIGHT_UP] = (currentPosition + 1) - width;
+	neighbors[LEFT_DOWN] = (currentPosition - 1) + width;
+	neighbors[RIGHT_DOWN] = (currentPosition + 1) + width;
+}
+
+int isValidPosition(uint3 id)
+{
+	return id.x > 1 && id.x < width-1 && 
+			id.y > 1 && id.y < width-1;
+}
+
+void ThermalErosion(uint3 id)
+{
+	float maxHeightDiff = 0;
+	float sumExceededDiffs = 0;
+
+	float heightDiff;
+	for(uint i = 0; i < NEIGHBORHOOD_SIZE; i++)
+	{
+		heightDiff = heightmap[currentPosition] - heightmap[neighbors[i]];
+		if (heightDiff > maxHeightDiff)
+			maxHeightDiff = heightDiff;
+		if (heightDiff > talus)
+			sumExceededDiffs += heightDiff;
+	}
+
+	if (sumExceededDiffs == 0)
+		return;
+
+	for(uint j = 0; j < NEIGHBORHOOD_SIZE; j++)
+	{
+		heightDiff = heightmap[currentPosition] - heightmap[neighbors[j]];
+
+		// Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
+		// remove material da posição atual e aplica ao vizinho.
+		if (heightDiff > talus && isValidPosition(id))
+		{
+			// Fórmula de distribuição do solo.
+			float sediment = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+			heightmap[neighbors[j]] += sediment;
+			heightmap[currentPosition] -= sediment;
+		}
+	}
+}
+
+[numthreads(32,32,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint x = id.x;
+	uint y = id.y * width;
+	currentPosition = x + y;
+
+	GetNeighbors();
+	ThermalErosion(id);
+}
