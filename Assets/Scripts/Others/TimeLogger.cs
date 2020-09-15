@@ -7,7 +7,7 @@ namespace TerrainGeneration.Analytics
 {
     public static class TimeLogger
     {
-        private static List<float> records;
+        private static List<int> records;
         private static string filename;
         private static Stopwatch stopWatch = new Stopwatch();
         private const string DATE_FORMAT = "dd-MM-yyyy-HH-mm-ss";
@@ -19,7 +19,7 @@ namespace TerrainGeneration.Analytics
         {
             System.IO.Directory.CreateDirectory(Destination);
 
-            records = new List<float>();
+            records = new List<int>();
             filename = $"{label}_{terrainLength}x{terrainLength}";
 
             stopWatch.Start();
@@ -28,19 +28,19 @@ namespace TerrainGeneration.Analytics
         public static void RecordTimeInMilliseconds()
         {
             stopWatch.Stop();
-            records.Add(stopWatch.Elapsed.Milliseconds);
+            records.Add((int)stopWatch.Elapsed.TotalMilliseconds);
             stopWatch.Reset();
         }
 
         public static void RecordSingleTimeInMilliseconds()
         {
             stopWatch.Stop();
-            records.Add(stopWatch.Elapsed.Milliseconds);
+            records.Add((int)stopWatch.Elapsed.TotalMilliseconds);
             stopWatch.Reset();
 
             using (StreamWriter writer = File.AppendText($"{Destination}/{filename}.log"))
             {
-                records.ForEach(time => writer.Write(time + ","));
+                records.ForEach(time => writer.Write(time + ", "));
             }
         }
 
