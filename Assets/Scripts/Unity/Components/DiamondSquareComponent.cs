@@ -8,6 +8,7 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class DiamondSquareComponent : BaseComponent
     {
+        public string seed;
         public ComputeShader shader;
         public bool useGPU;
 
@@ -17,11 +18,12 @@ namespace Unity.Components
         {
             float[,] heightmap = base.GetTerrainHeight();
             int resolution = base.meshGenerator.resolution;
+            int intSeed = CovertStringSeedToInt(seed);
 
             if (useGPU)
-                diamondSquare = new DiamondSquareGPU(resolution, shader);
+                diamondSquare = new DiamondSquareGPU(resolution, shader, intSeed);
             else
-                diamondSquare = new DiamondSquare(resolution);
+                diamondSquare = new DiamondSquare(resolution, intSeed);
 
             TimeLogger.Start(diamondSquare.GetType().Name, diamondSquare.Resolution);
 
@@ -30,6 +32,16 @@ namespace Unity.Components
             TimeLogger.RecordSingleTimeInMilliseconds();
 
             base.UpdateTerrainHeight(heightmap);
+        }
+
+        private int CovertStringSeedToInt(string stringSeed)
+        {
+            if(string.IsNullOrWhiteSpace(stringSeed))
+                return new System.Random().Next();
+
+            var md5Hasher = System.Security.Cryptography.MD5.Create();
+            var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(seed));
+            return System.BitConverter.ToInt32(hashed, 0);
         }
     }
 }

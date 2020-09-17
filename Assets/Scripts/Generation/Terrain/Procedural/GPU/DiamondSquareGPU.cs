@@ -8,14 +8,8 @@ namespace Generation.Terrain.Procedural.GPU
 
         private ComputeBuffer buffer;
 
-        public DiamondSquareGPU(ComputeShader shader) : base()
-        {
-            Shader = shader;
-        }
-
-        public DiamondSquareGPU(int resolution, ComputeShader shader)
-        {
-            Resolution = resolution;
+        public DiamondSquareGPU(int resolution, ComputeShader shader, int seed = 0)
+            : base(resolution, seed) {
             Shader = shader;
         }
 
@@ -66,6 +60,7 @@ namespace Generation.Terrain.Procedural.GPU
 
             Shader.SetBuffer(kernelId, "heightmap", buffer);    // Set the heightmap buffer
             Shader.SetInt("width", Resolution);
+            Shader.SetInt("externalSeed", random.Next());
 
             return kernelId;
         }
@@ -75,7 +70,6 @@ namespace Generation.Terrain.Procedural.GPU
             // Initializes the parameters needed for the shader
             Shader.SetFloat("height", height);
             Shader.SetFloat("squareSize", squareSize);
-            Shader.SetInt("externalSeed", new System.Random().Next());
 
             // Executes the compute shader on the GPU
             Shader.Dispatch(kernelId, numthreads, numthreads, 1);
