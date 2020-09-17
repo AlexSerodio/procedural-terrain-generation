@@ -1,4 +1,5 @@
 ﻿using Generation.Terrain.Utils;
+using System;
 
 namespace Generation.Terrain.Procedural
 {
@@ -6,14 +7,12 @@ namespace Generation.Terrain.Procedural
     {
         public int Resolution { get; set; }
 
-        public DiamondSquare()
-        {
-            Resolution = 1024;
-        }
+        protected Random random;
 
-        public DiamondSquare(int resolution)
+        public DiamondSquare(int resolution, int seed = int.MinValue)
         {
             Resolution = resolution;
+            random = seed > int.MinValue ? new Random(seed) : new Random();
         }
 
         public virtual void Apply(float[,] heightmap)
@@ -75,7 +74,10 @@ namespace Generation.Terrain.Procedural
 
         private float RandomValue(float range = 1.0f)
         {
-            return UnityEngine.Random.Range(-range, range);
+            float max = range;
+            float min = -range;
+            float x = (float)random.NextDouble();
+            return (max - min) * x + min;
         }
     }
 }

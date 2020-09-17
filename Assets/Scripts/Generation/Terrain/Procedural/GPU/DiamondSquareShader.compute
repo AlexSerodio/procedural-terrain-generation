@@ -23,12 +23,12 @@ float normalize(uint x)
 	return 2 * (x / 4294967295.0) - 1;		// equivalent to -> f(x) = 2 * ((x - min) / (max - min)) - 1
 }
 
-float random(uint seed, uint offset)
+float random(uint range)
 {
-	return normalize(wang_hash(seed+offset));
+	return normalize(wang_hash(externalSeed + range));
 }
 
-void DiamondSquareAlgorithm(uint row, uint col, uint size, uint seed)
+void DiamondSquareAlgorithm(uint row, uint col, uint size)
 {
 	uint halfSize = (uint)(size*0.5);
 	uint mid = (row+halfSize)*(width+1) + (col+halfSize);
@@ -36,13 +36,13 @@ void DiamondSquareAlgorithm(uint row, uint col, uint size, uint seed)
 	uint bottomLeft = (row+size)*(width+1)+col;
 
 	// diamond step
-	heightmap[mid] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[bottomLeft]+heightmap[bottomLeft+size]) * 0.25 + random(seed, mid) * height;
+	heightmap[mid] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[bottomLeft]+heightmap[bottomLeft+size]) * 0.25 + random(mid) * height;
 
 	// square step
-	heightmap[topLeft+halfSize] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[mid]) / 3 + random(seed, topLeft+halfSize) * height;
-	heightmap[mid-halfSize] = (heightmap[topLeft]+heightmap[bottomLeft]+heightmap[mid]) / 3 + random(seed, mid-halfSize) * height;
-	heightmap[mid+halfSize] = (heightmap[topLeft+size]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(seed, mid+halfSize) * height;
-	heightmap[bottomLeft+halfSize] = (heightmap[bottomLeft]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(seed, bottomLeft+halfSize) * height;
+	heightmap[topLeft+halfSize] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[mid]) / 3 + random(topLeft+halfSize) * height;
+	heightmap[mid-halfSize] = (heightmap[topLeft]+heightmap[bottomLeft]+heightmap[mid]) / 3 + random(mid-halfSize) * height;
+	heightmap[mid+halfSize] = (heightmap[topLeft+size]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(mid+halfSize) * height;
+	heightmap[bottomLeft+halfSize] = (heightmap[bottomLeft]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(bottomLeft+halfSize) * height;
 }
 
 [numthreads(1,1,1)]
@@ -50,8 +50,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint col = (id.x) * squareSize;
 	uint row = (id.y) * squareSize;
-	
-	uint seed = id.x + id.y + externalSeed;
 
-	DiamondSquareAlgorithm(row, col, squareSize, seed);
+	DiamondSquareAlgorithm(row, col, squareSize);
 }
