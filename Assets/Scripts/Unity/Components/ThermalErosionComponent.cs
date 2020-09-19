@@ -9,7 +9,7 @@ namespace Unity.Components
     public class ThermalErosionComponent : BaseComponent
     {
         public float factor;
-        public float talusFactor;
+        public int talusFactor;
         public int iterations;
         public ComputeShader shader;
         public bool useGPU;
@@ -22,7 +22,7 @@ namespace Unity.Components
             int resolution = base.meshGenerator.resolution;
 
             int N = heightmap.GetLength(0);
-            float talus = talusFactor / N;
+            float talus = (float)talusFactor / N;
 
             if (useGPU)
                 thermalErosion = new ThermalErosionGPU(shader);

@@ -26,9 +26,7 @@ namespace Unity.Components
                 diamondSquare = new DiamondSquare(resolution, intSeed);
 
             TimeLogger.Start(diamondSquare.GetType().Name, diamondSquare.Resolution);
-
             diamondSquare.Apply(heightmap);
-
             TimeLogger.RecordSingleTimeInMilliseconds();
 
             base.UpdateTerrainHeight(heightmap);
@@ -40,7 +38,7 @@ namespace Unity.Components
                 return new System.Random().Next();
 
             var md5Hasher = System.Security.Cryptography.MD5.Create();
-            var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(seed));
+            var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(stringSeed));
             return System.BitConverter.ToInt32(hashed, 0);
         }
     }
