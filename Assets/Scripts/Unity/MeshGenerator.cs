@@ -14,7 +14,7 @@ public class MeshGenerator : MonoBehaviour
     {
         get
         {
-            if (_heightmap == null)
+            if (_heightmap == null || _heightmap.GetLength(0) != resolution+1)
                 _heightmap = new float[resolution + 1, resolution + 1];
             return _heightmap;
         }
