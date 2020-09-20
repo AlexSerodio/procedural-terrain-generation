@@ -2,7 +2,7 @@
 using UnityEngine;
 using Unity.Components;
 
-public class TestManager : MonoBehaviour
+public class MainMenuManager : MonoBehaviour
 {
     public GameObject MenuPanel;
     public Text SizeField;

@@ -12,7 +12,12 @@ namespace TerrainGeneration.Analytics
         private static Stopwatch stopWatch = new Stopwatch();
         private const string DATE_FORMAT = "dd-MM-yyyy-HH-mm-ss";
 
-        private static string Destination { get => Directory.GetCurrentDirectory() + "/logs-terrain"; }
+        private static string _destination = Directory.GetCurrentDirectory() + "/logs-terrain";
+        public static string Destination
+        { 
+            get => _destination;
+            set => _destination = Directory.GetCurrentDirectory() + "/logs-terrain/" + value;
+        }
         private static string Timestamp { get => DateTime.Now.ToString(DATE_FORMAT); }
 
         public static void Start(string label, int terrainLength)
