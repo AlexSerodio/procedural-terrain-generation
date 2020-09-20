@@ -11,7 +11,6 @@ public class GeneralTerrainEditor : Editor
     void OnEnable()
     {
         smoothAmount = serializedObject.FindProperty("smoothAmount");
-        // Tools.current = Tool.None;  // hide gizmos
     }
 
     public override void OnInspectorGUI()

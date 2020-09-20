@@ -12,7 +12,7 @@ namespace TerrainGeneration.Analytics
         private static Stopwatch stopWatch = new Stopwatch();
         private const string DATE_FORMAT = "dd-MM-yyyy-HH-mm-ss";
 
-        private static string _destination = Directory.GetCurrentDirectory() + "/logs-terrain";
+        private static string _destination = Directory.GetCurrentDirectory() + "/logs-terrain/";
         public static string Destination
         { 
             get => _destination;
@@ -43,7 +43,7 @@ namespace TerrainGeneration.Analytics
             records.Add((int)stopWatch.Elapsed.TotalMilliseconds);
             stopWatch.Reset();
 
-            using (StreamWriter writer = File.AppendText($"{Destination}/{filename}.log"))
+            using (StreamWriter writer = File.AppendText($"{Destination}{filename}.log"))
             {
                 records.ForEach(time => writer.Write(time + ", "));
             }
@@ -51,7 +51,7 @@ namespace TerrainGeneration.Analytics
 
         public static void SaveLog()
         {
-            using (StreamWriter writer = File.AppendText($"{Destination}/{filename}_{Timestamp}.log"))
+            using (StreamWriter writer = File.AppendText($"{Destination}{filename}_{Timestamp}.log"))
             {
                 writer.WriteLine("Algorithm:," + filename);
                 writer.WriteLine("X Axis:, Iterations");
