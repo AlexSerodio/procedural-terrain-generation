@@ -1,5 +1,6 @@
 ﻿using Generation.Terrain.Procedural.GPU;
 using Generation.Terrain.Procedural;
+using Generation.Terrain.Evaluation;
 using TerrainGeneration.Analytics;
 using UnityEngine;
 
@@ -30,6 +31,9 @@ namespace Unity.Components
             TimeLogger.RecordSingleTimeInMilliseconds();
 
             base.UpdateTerrainHeight(heightmap);
+        
+            float erosionScore = ErosionScore.Evaluate(heightmap);
+            Debug.Log($"Erosion Score Diamond-Square: {erosionScore}");
         }
 
         private int CovertStringSeedToInt(string stringSeed)

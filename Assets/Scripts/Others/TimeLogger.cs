@@ -16,7 +16,7 @@ namespace TerrainGeneration.Analytics
         public static string Destination
         { 
             get => _destination;
-            set => _destination = Directory.GetCurrentDirectory() + "/logs-terrain/" + value;
+            set => _destination = $"{Directory.GetCurrentDirectory()}/logs-terrain/{value}/";
         }
         private static string Timestamp { get => DateTime.Now.ToString(DATE_FORMAT); }
 
