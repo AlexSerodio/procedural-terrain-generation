@@ -17,9 +17,7 @@ public class BenchmarkMenuManager : MonoBehaviour
 
     private ThermalErosionComponent thermalErosionComponent;
     private DiamondSquareComponent diamondSquareComponent;
-    private int resolution;
     private int repetitions;
-    private int iterations;
     private string algorithm;
     private string architecture;
 
@@ -51,8 +49,6 @@ public class BenchmarkMenuManager : MonoBehaviour
 
     public void RunBenchmarkButton()
     {
-        resolution = int.Parse(SizeField.text);
-        iterations = int.Parse(IterationsField.text);
         repetitions = int.Parse(RepetitionsField.text);
         algorithm = AlgorithmDropdown.options[AlgorithmDropdown.value].text;
         architecture = ArchitectureDropdown.options[ArchitectureDropdown.value].text;
@@ -80,7 +76,7 @@ public class BenchmarkMenuManager : MonoBehaviour
     private void PrepareDiamondSquare()
     {
         diamondSquareComponent.seed = SeedField.text;
-        diamondSquareComponent.meshGenerator.resolution = resolution;
+        diamondSquareComponent.meshGenerator.resolution = int.Parse(SizeField.text);
         diamondSquareComponent.meshGenerator.size = diamondSquareComponent.meshGenerator.resolution / 8;
         diamondSquareComponent.meshGenerator.heightFactor = diamondSquareComponent.meshGenerator.size / 6.0f;
     }
@@ -89,32 +85,21 @@ public class BenchmarkMenuManager : MonoBehaviour
     {
         thermalErosionComponent.factor = float.Parse(FactorField.text);
         thermalErosionComponent.talusFactor = float.Parse(TalusField.text);
-        thermalErosionComponent.iterations = iterations;
+        thermalErosionComponent.iterations = int.Parse(IterationsField.text);
     }
 
     private void RunAlgorithms(bool useGPU)
     {
-        TimeLogger.Destination = $"benchmark_{IterationsField.text}";
         diamondSquareComponent.useGPU = useGPU;
         thermalErosionComponent.useGPU = useGPU;
-        resolution = int.Parse(SizeField.text);
-        iterations = int.Parse(IterationsField.text);
+        TimeLogger.Destination = "benchmark/";
         
-        while(iterations >= 100)
+        for (int i = 0; i < repetitions; i++)
         {
-            while (resolution >= 32)
-            {
-                for (int i = 0; i < repetitions; i++)
-                {
-                    PrepareDiamondSquare();
+            PrepareDiamondSquare();
 
-                    diamondSquareComponent.UpdateComponent();
-                    thermalErosionComponent.UpdateComponent();
-                }
-                resolution /= 2;
-            }
-
-            iterations -= 100;
+            diamondSquareComponent.UpdateComponent();
+            thermalErosionComponent.UpdateComponent();
         }
     }
 }

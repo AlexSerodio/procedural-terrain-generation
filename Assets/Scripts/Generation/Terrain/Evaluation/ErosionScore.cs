@@ -1,0 +1,71 @@
+using Generation.Terrain.Utils;
+using System.Collections.Generic;
+using System;
+
+namespace Generation.Terrain.Evaluation
+{
+    public static class ErosionScore
+    {
+        public static float Evaluate(float[,] heightmap)
+        {
+            float[,] slopemap = GetSlopemap(heightmap);
+            
+            float meanValue = GetMeanValue(slopemap);
+            float standardDeviation = GetStandardDeviation(slopemap, meanValue);
+
+            return standardDeviation / meanValue;
+        }
+
+        private static float[,] GetSlopemap(float[,] heightmap)
+        {
+            int xSize = heightmap.GetLength(0);
+            int ySize = heightmap.GetLength(1);
+            float[,] slopemap = new float[xSize, ySize];
+
+            for (int x = 0; x < xSize; x++)
+                for (int y = 0; y < ySize; y++)
+                    slopemap[x, y] = GetGreaterSlopeBetweenNeighbors(new Coords(x, y), heightmap);
+
+            return slopemap;
+        }
+
+        private static float GetGreaterSlopeBetweenNeighbors(Coords currentPosition, float[,] heightmap)
+        {
+            List<Coords> neighbors = Neighborhood.Moore(currentPosition, heightmap.GetLength(0), heightmap.GetLength(1));
+            float greaterSlope = 0.0f;
+            foreach (Coords neighbor in neighbors)
+            {
+                float slope = heightmap[currentPosition.X, currentPosition.Y] - heightmap[neighbor.X, neighbor.Y];
+                if (slope > greaterSlope)
+                    greaterSlope = slope;
+            }
+
+            return greaterSlope;
+        }
+
+        private static float GetMeanValue(float[,] slopemap)
+        {
+            int amount = slopemap.Length;
+            float total = 0.0f;
+
+            for (int x = 0; x < slopemap.GetLength(0); x++)
+                for (int y = 0; y < slopemap.GetLength(1); y++)
+                    total += slopemap[x, y];
+            
+            return total / amount;
+        }
+
+        private static float GetStandardDeviation(float[,] slopemap, float meanValue)
+        {
+            int amount = slopemap.Length;
+            float total = 0.0f;
+
+            for (int x = 0; x < slopemap.GetLength(0); x++)
+                for (int y = 0; y < slopemap.GetLength(1); y++)
+                    total += slopemap[x, y] - meanValue;
+            
+            float totalSquared = total * total;
+            return (float) Math.Sqrt(totalSquared / amount);
+        }
+    }
+}

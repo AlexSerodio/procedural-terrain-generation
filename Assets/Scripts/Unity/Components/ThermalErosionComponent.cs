@@ -1,5 +1,6 @@
 ﻿using Generation.Terrain.Physics.Erosion;
 using Generation.Terrain.Physics.Erosion.GPU;
+using Generation.Terrain.Evaluation;
 using TerrainGeneration.Analytics;
 using UnityEngine;
 
@@ -34,6 +35,9 @@ namespace Unity.Components
             TimeLogger.RecordSingleTimeInMilliseconds();
 
             UpdateTerrainHeight(heightmap);
+
+            float erosionScore = ErosionScore.Evaluate(heightmap);
+            Debug.Log($"Erosion Score Thermal Erosion: {erosionScore}");
         }
     }
 }
