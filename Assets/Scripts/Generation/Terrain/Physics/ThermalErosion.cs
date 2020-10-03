@@ -1,5 +1,6 @@
 ﻿using Generation.Terrain.Utils;
 using System.Collections.Generic;
+using System;
 
 namespace Generation.Terrain.Physics.Erosion
 {
@@ -23,7 +24,7 @@ namespace Generation.Terrain.Physics.Erosion
         public virtual void Erode(float[,] heightmap, float talus = 1, float factor = 0.5f, int iterations = 500)
         {
             for (int i = 0; i < iterations; i++)
-                DryErosion(heightmap, talus, factor);
+                Erode(heightmap, talus, factor);
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace Generation.Terrain.Physics.Erosion
         /// <param name="heightmap">Mapa de altura do relevo.</param>
         /// <param name="talus">Diferença de altura máxima permitida.</param>
         /// <param name="factor">Fator limitante de movimentação.</param>
-        private void DryErosion(float[,] heightmap, float talus = 4, float factor = 0.5f)
+        private void Erode(float[,] heightmap, float talus = 4, float factor = 0.5f)
         {
             int maxX = heightmap.GetLength(0);
             int maxY = heightmap.GetLength(1);
@@ -51,7 +52,7 @@ namespace Generation.Terrain.Physics.Erosion
                     float maxHeightDiff = 0;            // Maior diferença encontrada entre os vizinhos.
                     float sumExceededDiffs = 0;         // Soma das diferenças que ultrapassam o limite talus.
 
-                    List<Coords> neighbors = Generation.Terrain.Utils.Neighborhood.Moore(new Coords(x, y), maxX, maxY);
+                    List<Coords> neighbors = Neighborhood.Moore(new Coords(x, y), maxX, maxY);
 
                     // Primeiro loop não realiza nenhuma alteração no relevo.
                     // Percorre os vizinhos calculando qual a maior diferença de altura entre todos
@@ -82,6 +83,9 @@ namespace Generation.Terrain.Physics.Erosion
                             float sediment = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
                             heightmap[neighbor.X, neighbor.Y] += sediment;
                             heightmap[x, y] -= sediment;
+
+                            heightmap[neighbor.X, neighbor.Y] = Math.Min(1f, heightmap[neighbor.X, neighbor.Y]);
+                            heightmap[x, y] = Math.Max(0f, heightmap[x, y]);
                         }
                     }
                 }

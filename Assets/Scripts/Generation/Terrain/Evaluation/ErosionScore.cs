@@ -1,4 +1,4 @@
-using Generation.Terrain.Utils;
+﻿using Generation.Terrain.Utils;
 using System.Collections.Generic;
 using System;
 
@@ -24,23 +24,23 @@ namespace Generation.Terrain.Evaluation
 
             for (int x = 0; x < xSize; x++)
                 for (int y = 0; y < ySize; y++)
-                    slopemap[x, y] = GetGreaterSlopeBetweenNeighbors(new Coords(x, y), heightmap);
+                    slopemap[x, y] = GetGreatestSlopeBetweenNeighbors(new Coords(x, y), heightmap);
 
             return slopemap;
         }
 
-        private static float GetGreaterSlopeBetweenNeighbors(Coords currentPosition, float[,] heightmap)
+        private static float GetGreatestSlopeBetweenNeighbors(Coords currentPosition, float[,] heightmap)
         {
-            List<Coords> neighbors = Neighborhood.Moore(currentPosition, heightmap.GetLength(0), heightmap.GetLength(1));
-            float greaterSlope = 0.0f;
+            List<Coords> neighbors = Neighborhood.VonNeumann(currentPosition, heightmap.GetLength(0), heightmap.GetLength(1));
+            float greatestSlope = 0.0f;
             foreach (Coords neighbor in neighbors)
             {
                 float slope = heightmap[currentPosition.X, currentPosition.Y] - heightmap[neighbor.X, neighbor.Y];
-                if (slope > greaterSlope)
-                    greaterSlope = slope;
+                if (slope > greatestSlope)
+                    greatestSlope = slope;
             }
 
-            return greaterSlope;
+            return greatestSlope;
         }
 
         private static float GetMeanValue(float[,] slopemap)

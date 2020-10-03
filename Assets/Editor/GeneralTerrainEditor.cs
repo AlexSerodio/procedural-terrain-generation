@@ -7,10 +7,12 @@ using UnityEngine;
 public class GeneralTerrainEditor : Editor
 {
     private SerializedProperty smoothAmount;
+    private SerializedProperty shader;
 
     void OnEnable()
     {
         smoothAmount = serializedObject.FindProperty("smoothAmount");
+        shader = serializedObject.FindProperty("shader");
     }
 
     public override void OnInspectorGUI()
@@ -26,6 +28,11 @@ public class GeneralTerrainEditor : Editor
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         if (GUILayout.Button("Reset Heights"))
             component.ResetTerrain();
+
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.PropertyField(shader);
+        if (GUILayout.Button("Compare"))
+            component.Compare();
 
         serializedObject.ApplyModifiedProperties();
     }

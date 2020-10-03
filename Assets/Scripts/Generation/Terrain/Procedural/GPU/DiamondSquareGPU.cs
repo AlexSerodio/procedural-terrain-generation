@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Generation.Terrain.Utils;
+using UnityEngine;
 
 namespace Generation.Terrain.Procedural.GPU
 {
@@ -25,7 +26,6 @@ namespace Generation.Terrain.Procedural.GPU
 
             int kernelId = InitComputeShader(heightmap);
 
-            // int totalThreadsUsed = 0;
             while (squareSize > 1)
             {
                 // Calculates the number of calls to DiamondSquare per iterations. Each call represents a new gpu thread
@@ -36,15 +36,11 @@ namespace Generation.Terrain.Procedural.GPU
 
                 squareSize /= 2;
                 height *= 0.5f;
-
-                // For debug purposes only
-                // totalThreadsUsed += numthreads;
             }
 
             FinishComputeShader(heightmap);
 
-            // For debug purposes only
-            // Debug.Log($"Number of threads used: {totalThreadsUsed}.");
+            heightmap = heightmap.Normalize();
         }
 
         private int InitComputeShader(float[,] heightmap)
