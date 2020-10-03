@@ -28,28 +28,57 @@ float random(uint range)
 	return normalize(wang_hash(externalSeed + range));
 }
 
-void DiamondSquareAlgorithm(uint row, uint col, uint size)
+bool isInsideLimits(uint3 id)
 {
-	uint halfSize = (uint)(size*0.5);
-	uint mid = (row+halfSize)*(width+1) + (col+halfSize);
-	uint topLeft = row * (width+1)+col;
-	uint bottomLeft = (row+size)*(width+1)+col;
-
-	// diamond step
-	heightmap[mid] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[bottomLeft]+heightmap[bottomLeft+size]) * 0.25 + random(mid) * height;
-
-	// square step
-	heightmap[topLeft+halfSize] = (heightmap[topLeft]+heightmap[topLeft+size]+heightmap[mid]) / 3 + random(topLeft+halfSize) * height;
-	heightmap[mid-halfSize] = (heightmap[topLeft]+heightmap[bottomLeft]+heightmap[mid]) / 3 + random(mid-halfSize) * height;
-	heightmap[mid+halfSize] = (heightmap[topLeft+size]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(mid+halfSize) * height;
-	heightmap[bottomLeft+halfSize] = (heightmap[bottomLeft]+heightmap[bottomLeft+size]+heightmap[mid]) / 3 + random(bottomLeft+halfSize) * height;
+	return id.x > 1 && id.x < width-1 && 
+		id.y > 1 && id.y < width-1;
 }
 
-[numthreads(1,1,1)]
+float getHeight(uint2 position)
+{
+	return heightmap[position.x + position.y];
+}
+
+float getHeightIfValid(uint position, uint3 id)
+{
+	return isInsideLimits(id) ? heightmap[position] : 0;
+}
+
+float average(float a, float b, float c, float d)
+{
+	return (d == 0) ? (a + b + c) / 3.0 : (a + b + c + d) * 0.25;
+}
+
+void DiamondSquareAlgorithm(uint size, uint3 id)
+{
+	uint col = id.x * squareSize;
+	uint row = id.y * squareSize;
+
+	uint halfSize = size / 2;
+
+	uint mid = (row+halfSize)*(width+1) + (col + halfSize);
+	uint topLeft = row*(width+1) + col;
+	uint topRight = row*(width+1) + (col + size);
+	uint bottomLeft = (row+size)*(width+1) + col;
+	uint bottomRight = (row+size)*(width+1) + (col + size);
+
+	// diamond step
+	heightmap[mid] = average(heightmap[topLeft], heightmap[topRight], heightmap[bottomLeft], heightmap[bottomRight]) + random(mid) * height;
+
+	uint up = topLeft + halfSize;
+	uint down = bottomLeft + halfSize;
+	uint left = mid - halfSize;
+	uint right = mid + halfSize;
+
+	// square step
+	heightmap[up] = average(heightmap[topLeft], heightmap[topRight], heightmap[mid], getHeightIfValid(up + halfSize, id)) + random(up) * height;
+	heightmap[down] = average(heightmap[bottomLeft], heightmap[bottomRight], heightmap[mid], getHeightIfValid(down - halfSize, id)) + random(down) * height;
+	heightmap[left] = average(heightmap[topLeft], heightmap[bottomLeft], heightmap[mid], getHeightIfValid(left - halfSize, id)) + random(left) * height;
+	heightmap[right] = average(heightmap[topRight], heightmap[bottomRight], heightmap[mid], getHeightIfValid(right + halfSize, id)) + random(right) * height;
+}
+
+[numthreads(1, 1, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-	uint col = (id.x) * squareSize;
-	uint row = (id.y) * squareSize;
-
-	DiamondSquareAlgorithm(row, col, squareSize);
+	DiamondSquareAlgorithm(squareSize, id);
 }

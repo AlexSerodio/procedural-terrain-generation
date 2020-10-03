@@ -16,7 +16,9 @@ namespace Generation.Terrain.Procedural.GPU
 
         public override void Apply(float[,] heightmap)
         {
-            base.RandomizeCorners(heightmap);
+            base.Heightmap = heightmap;
+
+            base.RandomizeCorners();
 
             float height = 1.0f;
             int squareSize = Resolution;
@@ -24,7 +26,7 @@ namespace Generation.Terrain.Procedural.GPU
             int i = 0;
             int numthreads = 0;
 
-            int kernelId = InitComputeShader(heightmap);
+            int kernelId = InitComputeShader();
 
             while (squareSize > 1)
             {
@@ -38,19 +40,19 @@ namespace Generation.Terrain.Procedural.GPU
                 height *= 0.5f;
             }
 
-            FinishComputeShader(heightmap);
+            FinishComputeShader();
 
-            heightmap = heightmap.Normalize();
+            Heightmap = Heightmap.Normalize();
         }
 
-        private int InitComputeShader(float[,] heightmap)
+        private int InitComputeShader()
         {
             // Creates a read/writable buffer that contains the heightmap data and sends it to the GPU.
             // The buffer needs to be the same length as the heightmap, and each element in the heightmap is a single float which is 4 bytes long.
-            buffer = new ComputeBuffer(heightmap.Length, 4);
+            buffer = new ComputeBuffer(Heightmap.Length, 4);
 
             // Set the initial data to be held in the buffer as the pre-generated heightmap
-            buffer.SetData(heightmap);
+            buffer.SetData(Heightmap);
 
             int kernelId = Shader.FindKernel("CSMain");         // Gets the id of the main kernel of the shader
 
@@ -71,9 +73,9 @@ namespace Generation.Terrain.Procedural.GPU
             Shader.Dispatch(kernelId, numthreads, numthreads, 1);
         }
 
-        private void FinishComputeShader(float[,] heightmap)
+        private void FinishComputeShader()
         {
-            buffer.GetData(heightmap);          // Receive the updated heightmap data from the buffer
+            buffer.GetData(Heightmap);          // Receive the updated heightmap data from the buffer
             buffer.Dispose();                   // Dispose the buffer 
         }
     }
