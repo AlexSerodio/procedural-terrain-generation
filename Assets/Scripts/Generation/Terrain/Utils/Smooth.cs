@@ -33,7 +33,7 @@ namespace Generation.Terrain.Utils
                 {
                     float totalHeight = matrix[x, y];
 
-                    List<Coords> neighbors = Neighborhood.Moore(new Coords(x, y), width, height);
+                    List<Coords> neighbors = Neighborhood.VonNeumann(new Coords(x, y), width, height);
                     foreach (Coords neighbor in neighbors)
                         totalHeight += matrix[neighbor.X, neighbor.Y];
 

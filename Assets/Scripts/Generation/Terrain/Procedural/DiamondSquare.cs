@@ -43,6 +43,8 @@ namespace Generation.Terrain.Procedural
                 squareSize /= 2;
                 height *= 0.5f;
             }
+
+            heightmap = heightmap.Normalize();
         }
 
         private void DiamondSquareAlgorithm(int row, int col, int size, float offset, float[,] heightmap)
