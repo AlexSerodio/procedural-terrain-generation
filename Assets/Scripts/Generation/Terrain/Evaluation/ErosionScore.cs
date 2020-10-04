@@ -32,10 +32,10 @@ namespace Generation.Terrain.Evaluation
         private static float GetGreatestSlopeBetweenNeighbors(Coords currentPosition, float[,] heightmap)
         {
             List<Coords> neighbors = Neighborhood.VonNeumann(currentPosition, heightmap.GetLength(0), heightmap.GetLength(1));
-            float greatestSlope = 0.0f;
+            float greatestSlope = float.MinValue;
             foreach (Coords neighbor in neighbors)
             {
-                float slope = heightmap[currentPosition.X, currentPosition.Y] - heightmap[neighbor.X, neighbor.Y];
+                float slope = Math.Abs(heightmap[currentPosition.X, currentPosition.Y] - heightmap[neighbor.X, neighbor.Y]);
                 if (slope > greatestSlope)
                     greatestSlope = slope;
             }
@@ -62,10 +62,10 @@ namespace Generation.Terrain.Evaluation
 
             for (int x = 0; x < slopemap.GetLength(0); x++)
                 for (int y = 0; y < slopemap.GetLength(1); y++)
-                    total += slopemap[x, y] - meanValue;
+                    total += (slopemap[x, y] - meanValue) * (slopemap[x, y] - meanValue);
             
-            float totalSquared = total * total;
-            return (float) Math.Sqrt(totalSquared / amount);
+            float variant = total / amount;
+            return (float) Math.Sqrt(variant);
         }
     }
 }
