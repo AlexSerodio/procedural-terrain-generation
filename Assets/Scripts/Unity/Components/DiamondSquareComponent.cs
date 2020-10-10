@@ -30,10 +30,10 @@ namespace Unity.Components
             diamondSquare.Apply(heightmap);
             TimeLogger.RecordSingleTimeInMilliseconds();
 
-            base.UpdateTerrainHeight(heightmap);
+            Debug.Log($"Erosion Score Diamond-Square: {ErosionScore.Evaluate(heightmap)}");
+            Debug.Log($"Benford's Law Diamond-Square: {BenfordsLaw.Evaluate(heightmap)}");
         
-            float erosionScore = ErosionScore.Evaluate(heightmap);
-            Debug.Log($"Erosion Score Diamond-Square: {erosionScore}");
+            base.UpdateTerrainHeight(heightmap);
         }
 
         private int CovertStringSeedToInt(string stringSeed)
