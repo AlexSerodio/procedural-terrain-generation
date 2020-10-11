@@ -13,7 +13,7 @@ namespace Generation.Terrain.Evaluation
             {
                 for (int j = 0; j < heightmap.GetLength(1); j++)
                 {
-                    float scaledHeight = heightmap[i, j] * 100f;
+                    float scaledHeight = heightmap[i, j] * 100000000000000f;
                     scaledHeight = scaledHeight == 0 ? 1 : scaledHeight;
                     int firstDigit = Convert.ToInt32(scaledHeight.ToString().Substring(0, 1));
 
