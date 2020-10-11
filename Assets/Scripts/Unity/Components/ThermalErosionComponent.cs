@@ -34,10 +34,10 @@ namespace Unity.Components
             thermalErosion.Erode(heightmap, talus, factor, iterations);
             TimeLogger.RecordSingleTimeInMilliseconds();
 
-            UpdateTerrainHeight(heightmap);
+            Debug.Log($"Erosion Score Thermal Erosion: {ErosionScore.Evaluate(heightmap)}");
+            Debug.Log($"Benford's Law Thermal Erosion: {BenfordsLaw.Evaluate(heightmap)}");
 
-            float erosionScore = ErosionScore.Evaluate(heightmap);
-            Debug.Log($"Erosion Score Thermal Erosion: {erosionScore}");
+            UpdateTerrainHeight(heightmap);
         }
     }
 }
