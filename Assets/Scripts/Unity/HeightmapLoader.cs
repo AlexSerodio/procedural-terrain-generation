@@ -6,65 +6,48 @@ public class HeightmapLoader
 {
     public float[,] Load(Texture2D image, float[,] heightmap)
     {
-        int w = image.width;
-        int h = image.height;
-        int w2 = heightmap.GetLength(0);
+        int terrainWidth = heightmap.GetLength(0);
 
-        Color[] map = SameSize(w, h, w2) ? image.GetPixels() : Resize(image, w, h, w2);
+        Color[] map = SameSize(image, terrainWidth) ? image.GetPixels() : Resize(image, terrainWidth);
 
-        for (int y = 0; y < w2; y++)
-            for (int x = 0; x < w2; x++)
-                heightmap[y, x] = map[y * w2 + x].grayscale;
+        for (int y = 0; y < terrainWidth; y++)
+            for (int x = 0; x < terrainWidth; x++)
+                heightmap[y, x] = map[y * terrainWidth + x].grayscale;
 
         LogResults(heightmap);
 
         return heightmap;
     }
 
-    private bool SameSize(int w, int h, int w2) => w2 == w && h == w;
+    private bool SameSize(Texture2D image, int terrainWidth)
+    {
+        return terrainWidth == image.width && image.height == image.width;
+    }
 
-    private Color[] Resize(Texture2D image, int w, int h, int w2)
+    private Color[] Resize(Texture2D image, int terrainWidth)
     {
         Color[] pixels = image.GetPixels();
-        Color[] map = new Color[w2 * w2];
+        Color[] map = new Color[terrainWidth * terrainWidth];
 
-        // Resize using nearest-neighbor scaling if texture has no filtering
-        if (image.filterMode == FilterMode.Point)
+        float ratioX = (1.0f / ((float)terrainWidth / (image.width - 1)));
+        float ratioY = (1.0f / ((float)terrainWidth / (image.height - 1)));
+        for (int y = 0; y < terrainWidth; y++)
         {
-            float dx = (float)w / (float)w2;
-            float dy = (float)h / (float)w2;
-            for (int y = 0; y < w2; y++)
+            int yy = Mathf.FloorToInt(y * ratioY);
+            int y1 = yy * image.width;
+            int y2 = (yy + 1) * image.width;
+            int yw = y * terrainWidth;
+
+            for (int x = 0; x < terrainWidth; x++)
             {
-                int thisY = Mathf.FloorToInt(dy * y) * w;
-                int yw = y * w2;
+                int xx = Mathf.FloorToInt(x * ratioX);
+                Color bl = pixels[y1 + xx];
+                Color br = pixels[y1 + xx + 1];
+                Color tl = pixels[y2 + xx];
+                Color tr = pixels[y2 + xx + 1];
+                float xLerp = x * ratioX - xx;
 
-                for (int x = 0; x < w2; x++)
-                    map[yw + x] = pixels[Mathf.FloorToInt(thisY + dx * x)];
-            }
-        }
-        // Otherwise resize using bilinear filtering
-        else
-        {
-            float ratioX = (1.0f / ((float)w2 / (w - 1)));
-            float ratioY = (1.0f / ((float)w2 / (h - 1)));
-            for (int y = 0; y < w2; y++)
-            {
-                int yy = Mathf.FloorToInt(y * ratioY);
-                int y1 = yy * w;
-                int y2 = (yy + 1) * w;
-                int yw = y * w2;
-
-                for (int x = 0; x < w2; x++)
-                {
-                    int xx = Mathf.FloorToInt(x * ratioX);
-                    Color bl = pixels[y1 + xx];
-                    Color br = pixels[y1 + xx + 1];
-                    Color tl = pixels[y2 + xx];
-                    Color tr = pixels[y2 + xx + 1];
-                    float xLerp = x * ratioX - xx;
-
-                    map[yw + x] = Color.Lerp(Color.Lerp(bl, br, xLerp), Color.Lerp(tl, tr, xLerp), y * ratioY - (float)yy);
-                }
+                map[yw + x] = Color.Lerp(Color.Lerp(bl, br, xLerp), Color.Lerp(tl, tr, xLerp), y * ratioY - (float)yy);
             }
         }
 
