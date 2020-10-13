@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using Generation.Terrain.Evaluation;
+using TerrainGeneration.Analytics;
 using UnityEditor;
+using UnityEngine;
 
 namespace GameSurgeon.HeightMapper
 {
@@ -19,6 +21,7 @@ namespace GameSurgeon.HeightMapper
             float[,] heightmapData = terrain.GetHeights(0, 0, w2, w2);
             Color[] mapColors = heightmap.GetPixels();
             Color[] map = new Color[w2 * w2];
+            
             if (w2 != w || h != w)
             {
                 // Resize using nearest-neighbor scaling if texture has no filtering
@@ -82,6 +85,10 @@ namespace GameSurgeon.HeightMapper
                     heightmapData[y, x] = map[y * w2 + x].grayscale;
                 }
             }
+
+            EvaluationLogger.RecordSingleTimeInMilliseconds("erosion_score", heightmapData.GetLength(0), ErosionScore.Evaluate(heightmapData).ToString());
+            EvaluationLogger.RecordSingleTimeInMilliseconds("benfords_law", heightmapData.GetLength(0), BenfordsLaw.Evaluate(heightmapData));
+            
             terrain.SetHeights(0, 0, heightmapData);
         }
     }

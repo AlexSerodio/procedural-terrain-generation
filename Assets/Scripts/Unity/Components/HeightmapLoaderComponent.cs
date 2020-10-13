@@ -1,4 +1,5 @@
-﻿using Generation.Terrain.Utils;
+﻿using Generation.Terrain.Evaluation;
+using Generation.Terrain.Utils;
 using UnityEngine;
 
 namespace Unity.Components
@@ -16,7 +17,11 @@ namespace Unity.Components
 
             loader.Load(heightmap, texture);
 
-            heightmap = heightmap.Normalize();
+            // heightmap = heightmap.Normalize();
+
+            Debug.Log($"Erosion Score Diamond-Square: {ErosionScore.Evaluate(heightmap)}");
+            Debug.Log($"Benford's Law Diamond-Square: {BenfordsLaw.Evaluate(heightmap)}");
+            
             UpdateTerrainHeight(heightmap);
         }
     }
