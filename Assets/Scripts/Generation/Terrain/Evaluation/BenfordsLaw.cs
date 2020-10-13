@@ -28,7 +28,7 @@ namespace Generation.Terrain.Evaluation
             for (int i = 0; i < percentages.Length; i++)
                 sum += percentages[i];
 
-            return string.Join("%, ", percentages) + "% -> " + sum + "%";
+            return string.Join(", ", percentages) + " -> " + sum;
         }
     }
 }

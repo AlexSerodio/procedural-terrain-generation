@@ -1,31 +1,33 @@
-﻿using UnityEngine;
+﻿using Generation.Terrain.Evaluation;
+using TerrainGeneration.Analytics;
+using UnityEngine;
 
 public class HeightmapLoader
 {
-    public void Load(float[,] heightmap, Texture2D image)
+    public float[,] Load(Texture2D image, float[,] heightmap)
     {
         int w = image.width;
         int h = image.height;
         int w2 = heightmap.GetLength(0);
 
-        Color[] mapColors = image.GetPixels();
-        Color[] map = new Color[w2 * w2];
+        Color[] map = SameSize(w, h, w2) ? image.GetPixels() : Resize(image, w, h, w2);
 
-        if (NotSameSize(w, h, w2))
-            Resize(image, w, h, w2, mapColors, map);
-        else
-            map = mapColors;
-
-        // Assign texture data to heightmap
         for (int y = 0; y < w2; y++)
             for (int x = 0; x < w2; x++)
                 heightmap[y, x] = map[y * w2 + x].grayscale;
+
+        LogResults(heightmap);
+
+        return heightmap;
     }
 
-    private bool NotSameSize(int w, int h, int w2) => w2 != w || h != w;
+    private bool SameSize(int w, int h, int w2) => w2 == w && h == w;
 
-    private void Resize(Texture2D image, int w, int h, int w2, Color[] mapColors, Color[] map)
+    private Color[] Resize(Texture2D image, int w, int h, int w2)
     {
+        Color[] pixels = image.GetPixels();
+        Color[] map = new Color[w2 * w2];
+
         // Resize using nearest-neighbor scaling if texture has no filtering
         if (image.filterMode == FilterMode.Point)
         {
@@ -37,10 +39,11 @@ public class HeightmapLoader
                 int yw = y * w2;
 
                 for (int x = 0; x < w2; x++)
-                    map[yw + x] = mapColors[Mathf.FloorToInt(thisY + dx * x)];
+                    map[yw + x] = pixels[Mathf.FloorToInt(thisY + dx * x)];
             }
         }
-        else    // Otherwise resize using bilinear filtering
+        // Otherwise resize using bilinear filtering
+        else
         {
             float ratioX = (1.0f / ((float)w2 / (w - 1)));
             float ratioY = (1.0f / ((float)w2 / (h - 1)));
@@ -54,15 +57,26 @@ public class HeightmapLoader
                 for (int x = 0; x < w2; x++)
                 {
                     int xx = Mathf.FloorToInt(x * ratioX);
-                    Color bl = mapColors[y1 + xx];
-                    Color br = mapColors[y1 + xx + 1];
-                    Color tl = mapColors[y2 + xx];
-                    Color tr = mapColors[y2 + xx + 1];
+                    Color bl = pixels[y1 + xx];
+                    Color br = pixels[y1 + xx + 1];
+                    Color tl = pixels[y2 + xx];
+                    Color tr = pixels[y2 + xx + 1];
                     float xLerp = x * ratioX - xx;
 
                     map[yw + x] = Color.Lerp(Color.Lerp(bl, br, xLerp), Color.Lerp(tl, tr, xLerp), y * ratioY - (float)yy);
                 }
             }
         }
+
+        return map;
+    }
+
+    private void LogResults(float[,] heightmap)
+    {
+        string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
+        string benfordsLaw = BenfordsLaw.Evaluate(heightmap);
+
+        EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), erosionScore);
+        EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), benfordsLaw);
     }
 }
