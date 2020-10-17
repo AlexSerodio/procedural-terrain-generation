@@ -61,12 +61,10 @@ void ThermalErosion(uint3 id)
 	{
 		heightDiff = heightmap[currentPosition] - heightmap[neighbors[j]];
 
-		// Se a diferença de altura entre a posição atual e algum vizinho for maior que o limite talus,
-		// remove material da posição atual e aplica ao vizinho.
 		if (heightDiff > talus && isValidPosition(id))
 		{
-			// Fórmula de distribuição do solo.
 			float sediment = factor * (maxHeightDiff - talus) * (heightDiff / sumExceededDiffs);
+			
 			heightmap[neighbors[j]] += sediment;
 			heightmap[currentPosition] -= sediment;
 
@@ -76,7 +74,7 @@ void ThermalErosion(uint3 id)
 	}
 }
 
-[numthreads(32,32,1)]
+[numthreads(32, 32, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint x = id.x;

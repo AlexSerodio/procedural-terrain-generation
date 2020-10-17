@@ -65,13 +65,13 @@ namespace Generation.Terrain.Procedural
             Coords down = new Coords(bottomLeft.X + halfSize, bottomLeft.Y);
 
             // diamond step
-            Heightmap[mid.X, mid.Y] = Average(GetHeight(topLeft), GetHeight(topRight), GetHeight(bottomLeft), GetHeight(bottomRight)) + RandomValue(offset);
+            Heightmap[mid.X, mid.Y] = Average(Heightmap[topLeft.X, topLeft.Y], Heightmap[topRight.X, topRight.Y], Heightmap[bottomLeft.X, bottomLeft.Y], Heightmap[bottomRight.X, bottomRight.Y]) + RandomValue(offset);
 
             // square step
-            Heightmap[up.X, up.Y] = Average(GetHeight(topLeft), GetHeight(topRight), GetHeight(mid), GetHeight(up.X, up.Y + halfSize)) + RandomValue(offset);
-            Heightmap[left.X, left.Y] = Average(GetHeight(topLeft), GetHeight(bottomLeft), GetHeight(mid), GetHeight(left.X - halfSize, left.Y)) + RandomValue(offset);
-            Heightmap[right.X, right.Y] = Average(GetHeight(topRight), GetHeight(bottomRight), GetHeight(mid), GetHeight(right.X + halfSize, right.Y)) + RandomValue(offset);
-            Heightmap[down.X, down.Y] = Average(GetHeight(bottomLeft), GetHeight(bottomRight), GetHeight(mid), GetHeight(down.X, down.Y - halfSize)) + RandomValue(offset);
+            Heightmap[up.X, up.Y] = Average(Heightmap[topLeft.X, topLeft.Y], Heightmap[topRight.X, topRight.Y], Heightmap[mid.X, mid.Y], GetHeight(up.X, up.Y + halfSize)) + RandomValue(offset);
+            Heightmap[left.X, left.Y] = Average(Heightmap[topLeft.X, topLeft.Y], Heightmap[bottomLeft.X, bottomLeft.Y], Heightmap[mid.X, mid.Y], GetHeight(left.X - halfSize, left.Y)) + RandomValue(offset);
+            Heightmap[right.X, right.Y] = Average(Heightmap[topRight.X, topRight.Y], Heightmap[bottomRight.X, bottomRight.Y], Heightmap[mid.X, mid.Y], GetHeight(right.X + halfSize, right.Y)) + RandomValue(offset);
+            Heightmap[down.X, down.Y] = Average(Heightmap[bottomLeft.X, bottomLeft.Y], Heightmap[bottomRight.X, bottomRight.Y], Heightmap[mid.X, mid.Y], GetHeight(down.X, down.Y - halfSize)) + RandomValue(offset);
         }
 
         private float Average(float a, float b, float c, float d) => (d == 0.0f) ? (a + b + c) / 3.0f : (a + b + c + d) * 0.25f;

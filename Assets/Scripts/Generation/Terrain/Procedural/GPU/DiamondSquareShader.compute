@@ -28,10 +28,12 @@ float random(uint range)
 	return normalize(wang_hash(externalSeed + range));
 }
 
-bool isInsideLimits(uint3 id)
+bool isOutOfLimits(uint position)
 {
-	return id.x > 1 && id.x < width-1 && 
-		id.y > 1 && id.y < width-1;
+	return position < width
+		|| position >= (width * width) - (width-1)
+		|| position % width == 0
+		|| (position - (width-1)) % width == 0;
 }
 
 float getHeight(uint2 position)
@@ -39,9 +41,9 @@ float getHeight(uint2 position)
 	return heightmap[position.x + position.y];
 }
 
-float getHeightIfValid(uint position, uint3 id)
+float getHeightIfValid(uint position)
 {
-	return isInsideLimits(id) ? heightmap[position] : 0;
+	return isOutOfLimits(position) ? 0 : heightmap[position];
 }
 
 float average(float a, float b, float c, float d)
@@ -71,10 +73,10 @@ void DiamondSquareAlgorithm(uint size, uint3 id)
 	uint right = mid + halfSize;
 
 	// square step
-	heightmap[up] = average(heightmap[topLeft], heightmap[topRight], heightmap[mid], getHeightIfValid(up + halfSize, id)) + random(up) * height;
-	heightmap[down] = average(heightmap[bottomLeft], heightmap[bottomRight], heightmap[mid], getHeightIfValid(down - halfSize, id)) + random(down) * height;
-	heightmap[left] = average(heightmap[topLeft], heightmap[bottomLeft], heightmap[mid], getHeightIfValid(left - halfSize, id)) + random(left) * height;
-	heightmap[right] = average(heightmap[topRight], heightmap[bottomRight], heightmap[mid], getHeightIfValid(right + halfSize, id)) + random(right) * height;
+	heightmap[up] = average(heightmap[topLeft], heightmap[topRight], heightmap[mid], getHeightIfValid(up + halfSize)) + random(up) * height;
+	heightmap[down] = average(heightmap[bottomLeft], heightmap[bottomRight], heightmap[mid], getHeightIfValid(down - halfSize)) + random(down) * height;
+	heightmap[left] = average(heightmap[topLeft], heightmap[bottomLeft], heightmap[mid], getHeightIfValid(left - halfSize)) + random(left) * height;
+	heightmap[right] = average(heightmap[topRight], heightmap[bottomRight], heightmap[mid], getHeightIfValid(right + halfSize)) + random(right) * height;
 }
 
 [numthreads(1, 1, 1)]

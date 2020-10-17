@@ -30,9 +30,14 @@ namespace Unity.Components
             diamondSquare.Apply(heightmap);
             TimeLogger.RecordSingleTimeInMilliseconds();
 
-            Debug.Log($"Erosion Score Diamond-Square: {ErosionScore.Evaluate(heightmap)}");
-            Debug.Log($"Benford's Law Diamond-Square: {BenfordsLaw.Evaluate(heightmap)}");
-        
+            string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
+            string benfordsLaw = BenfordsLaw.Evaluate(heightmap);
+
+            Debug.Log($"Erosion Score Diamond-Square: {erosionScore}");
+            Debug.Log($"Benford's Law Diamond-Square: {benfordsLaw}");
+            EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), erosionScore);
+            EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), benfordsLaw);
+
             base.UpdateTerrainHeight(heightmap);
         }
 
