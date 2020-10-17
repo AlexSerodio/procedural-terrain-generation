@@ -1,4 +1,5 @@
-﻿using Generation.Terrain.Utils;
+﻿using System;
+using Generation.Terrain.Utils;
 using UnityEngine;
 
 namespace Generation.Terrain.Procedural.GPU
@@ -28,7 +29,7 @@ namespace Generation.Terrain.Procedural.GPU
 
             int kernelId = InitComputeShader();
 
-            while (squareSize > 1)
+            while (squareSize > 0)
             {
                 // Calculates the number of calls to DiamondSquare per iterations. Each call represents a new gpu thread
                 numthreads = i > 0 ? (i * 2) : 1;
@@ -42,11 +43,19 @@ namespace Generation.Terrain.Procedural.GPU
 
             FinishComputeShader();
 
+            int size = Heightmap.GetLength(0) - 1;
+            for (int x = 0; x <= size; x++) {
+                Heightmap[x, size] = Heightmap[x, size-1] = Heightmap[x, size-2]  = Heightmap[x, size-3];
+                Heightmap[x, 0] = Heightmap[x, 1];
+            }
+
             Heightmap = Heightmap.Normalize();
         }
 
         private int InitComputeShader()
         {
+            Array.Clear(Heightmap, 0, Heightmap.Length);
+            
             // Creates a read/writable buffer that contains the heightmap data and sends it to the GPU.
             // The buffer needs to be the same length as the heightmap, and each element in the heightmap is a single float which is 4 bytes long.
             buffer = new ComputeBuffer(Heightmap.Length, 4);
