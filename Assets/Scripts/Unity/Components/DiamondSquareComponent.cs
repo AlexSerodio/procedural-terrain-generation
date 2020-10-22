@@ -9,25 +9,52 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class DiamondSquareComponent : BaseComponent
     {
-        public string seed;
+        public bool randomGeneration;
+
+        [ShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(randomGeneration))]
+        public int seed;
+        
         public ComputeShader shader;
         public bool useGPU;
+        public bool onlyBestResults;
+
+        [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
+        public int tries;
+        [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
+        public int minimumFirstValue;
 
         private DiamondSquare diamondSquare;
 
         public override void UpdateComponent()
         {
+            if(randomGeneration)
+                seed = new System.Random().Next();
+
             float[,] heightmap = base.GetTerrainHeight();
             int resolution = base.meshGenerator.resolution;
-            int intSeed = CovertStringSeedToInt(seed);
 
             if (useGPU)
-                diamondSquare = new DiamondSquareGPU(resolution, shader, intSeed);
+                diamondSquare = new DiamondSquareGPU(resolution, shader, seed);
             else
-                diamondSquare = new DiamondSquare(resolution, intSeed);
+                diamondSquare = new DiamondSquare(resolution, seed);
 
             TimeLogger.Start(diamondSquare.GetType().Name, diamondSquare.Resolution);
-            diamondSquare.Apply(heightmap);
+
+            if(!onlyBestResults)
+                diamondSquare.Apply(heightmap);
+            else 
+            {
+                diamondSquare.Apply(heightmap);
+                int count = 0;
+                while (!BenfordsLaw.StartsWith(heightmap, minimumFirstValue))
+                {
+                    if(count >= tries)
+                        break;
+
+                    diamondSquare.Apply(heightmap);
+                    count++;
+                }
+            }
             TimeLogger.RecordSingleTimeInMilliseconds();
 
             string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
@@ -35,20 +62,10 @@ namespace Unity.Components
 
             Debug.Log($"Erosion Score Diamond-Square: {erosionScore}");
             Debug.Log($"Benford's Law Diamond-Square: {benfordsLaw}");
-            EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), erosionScore);
-            EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), benfordsLaw);
+            EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), seed, erosionScore);
+            EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), seed, benfordsLaw);
 
             base.UpdateTerrainHeight(heightmap);
-        }
-
-        private int CovertStringSeedToInt(string stringSeed)
-        {
-            if(string.IsNullOrWhiteSpace(stringSeed))
-                return new System.Random().Next();
-
-            var md5Hasher = System.Security.Cryptography.MD5.Create();
-            var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(stringSeed));
-            return System.BitConverter.ToInt32(hashed, 0);
         }
     }
 }

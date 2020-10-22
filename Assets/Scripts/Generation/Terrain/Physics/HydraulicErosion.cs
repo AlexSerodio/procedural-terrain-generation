@@ -49,8 +49,8 @@ namespace Generation.Terrain.Physics.Erosion
             {
                 for (int y = 0; y < maxY; y++)
                 {
-                    sediment[x, y] += solubility * water[x, y];
                     heightmap[x, y] -= solubility * water[x, y];
+                    sediment[x, y] += solubility * water[x, y];
 
                     heightmap[x, y] = Math.Max(0f, heightmap[x, y]);
                 }
@@ -70,10 +70,10 @@ namespace Generation.Terrain.Physics.Erosion
                     if (water[x, y] < 0)
                         return;
 
-                    float a = heightmap[x, y] + water[x, y];                 // Altura total atual.
-                    float total = 0f;                                                   // Média das alturas das superfícies vizinhas
+                    float a = heightmap[x, y] + water[x, y];
+                    float aTotal = 0f;
                     int count = 0;
-                    float dTotal = 0f;                                                 // Soma das alturas de todos s vizinhos inferiores a posição atual
+                    float dTotal = 0f;
 
                     List<Coords> neighbors = Neighborhood.VonNeumann(new Coords(x, y), maxX, maxY);
 
@@ -81,37 +81,31 @@ namespace Generation.Terrain.Physics.Erosion
                     {
                         float ai = heightmap[neighbor.X, neighbor.Y] + water[neighbor.X, neighbor.Y];
                         float di = a - ai;
-                        // Se a altura total atual for menor que a altura total do vizinho, skip 
-                        if (di < 0)
-                            continue;
 
                         dTotal += di;
-                        total += ai;
+                        aTotal += ai;
                         count++;
                     }
 
-                    // Se não houver diferença de altura, a água está estabilizada.
                     if (dTotal == 0)
                         return;
 
-                    float avg = total / count;
+                    float average = aTotal / count;
+                    float deltaA = a - average;
+                    float minVal = Math.Min(water[x, y], deltaA);
 
                     foreach (var neighbor in neighbors)
                     {
                         float ai = heightmap[neighbor.X, neighbor.Y] + water[neighbor.X, neighbor.Y];
                         float di = a - ai;
-                        if (di < 0)
-                            continue;
-
-                        // Fórmula de distribuição de água e sedimento.
-                        float deltaW = Math.Min(water[x, y], (a - avg)) * (di / dTotal);
-                        float deltaM = sediment[x, y] * (deltaW / water[x, y]);
-
-                        water[neighbor.X, neighbor.Y] += deltaW;
-                        sediment[neighbor.X, neighbor.Y] += deltaM;
-
+                        
+                        float deltaW = minVal * di / dTotal;
                         water[x, y] -= deltaW;
+                        water[neighbor.X, neighbor.Y] += deltaW;
+
+                        float deltaM = sediment[x, y] * deltaW / water[x, y];
                         sediment[x, y] -= deltaM;
+                        sediment[neighbor.X, neighbor.Y] += deltaM;
                     }
                 }
             }
@@ -130,12 +124,10 @@ namespace Generation.Terrain.Physics.Erosion
                     water[x, y] = water[x, y] * (1f - evaporationFactor);
 
                     float maxSediment = sedimentCapacity * water[x, y];
-                    float deltaM = Math.Max(0, sediment[x, y] - maxSediment);
+                    float deltaS = Math.Max(0, sediment[x, y] - maxSediment);
                     
-                    sediment[x, y] -= deltaM;
-                    heightmap[x, y] += deltaM;
-
-                    heightmap[x, y] = Math.Min(1f, heightmap[x, y]);
+                    sediment[x, y] -= deltaS;
+                    heightmap[x, y] += deltaS;
                 }
             }
         }

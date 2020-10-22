@@ -22,5 +22,16 @@ namespace TerrainGeneration.Analytics
                 writer.WriteLine(value);
             }
         }
+
+        public static void RecordValue(string label, int terrainLength, int seed, string value)
+        {
+            System.IO.Directory.CreateDirectory(Destination);
+            string filename = $"{label}_{terrainLength}x{terrainLength}";
+
+            using (StreamWriter writer = File.AppendText($"{Destination}{filename}.log"))
+            {
+                writer.WriteLine(seed + " -> " + value);
+            }
+        }
     }
 }

@@ -6,6 +6,17 @@ namespace Generation.Terrain.Evaluation
     {
         public static string Evaluate(float[,] heightmap)
         {
+            float[] percentages = CalculatePercentages(heightmap);
+
+            float sum = 0;
+            for (int i = 0; i < percentages.Length; i++)
+                sum += percentages[i];
+
+            return string.Join(", ", percentages) + " -> " + sum;
+        }
+
+        private static float[] CalculatePercentages(float[,] heightmap)
+        {
             float[] percentages = new float[9];
             int total = heightmap.Length;
 
@@ -24,11 +35,12 @@ namespace Generation.Terrain.Evaluation
             for (int i = 0; i < percentages.Length; i++)
                 percentages[i] = (float)Math.Round((percentages[i] / total) * 100f);
 
-            float sum = 0;
-            for (int i = 0; i < percentages.Length; i++)
-                sum += percentages[i];
+            return percentages;
+        }
 
-            return string.Join(", ", percentages) + " -> " + sum;
+        public static bool StartsWith(float[,] heightmap, int percentage)
+        {
+            return CalculatePercentages(heightmap)[0] >= percentage;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
 using Unity.Components;
+using System;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void DiamondSquareButton()
     {
-        diamondSquareComponent.seed = SeedField.text;
+        diamondSquareComponent.seed = Convert.ToInt32(SeedField.text);
         diamondSquareComponent.meshGenerator.resolution = int.Parse(SizeField.text);
         diamondSquareComponent.meshGenerator.size = diamondSquareComponent.meshGenerator.resolution / 8;
         diamondSquareComponent.meshGenerator.heightFactor = diamondSquareComponent.meshGenerator.size / 6.0f;

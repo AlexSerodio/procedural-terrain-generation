@@ -10,10 +10,10 @@ namespace Generation.Terrain.Procedural
         protected Random random;
         protected float[,] Heightmap;
 
-        public DiamondSquare(int resolution, int seed = int.MinValue)
+        public DiamondSquare(int resolution, int seed = 0)
         {
             Resolution = resolution;
-            random = seed > int.MinValue ? new Random(seed) : new Random();
+            random = seed > 0 ? new Random(seed) : new Random();
         }
 
         public virtual void Apply(float[,] heightmap)
