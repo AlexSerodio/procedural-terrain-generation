@@ -13,6 +13,16 @@ namespace Generation.Terrain.Physics.Erosion.GPU
             Shader = shader;
         }
 
+        public override void Erode(float[,] heightmap, float talus = 4, float factor = 0.5f, int iterations = 500)
+        {
+            int kernelId = InitComputeShader(heightmap, talus, factor);
+
+            for (int i = 0; i < iterations; i++)
+                RunComputeShader(kernelId);
+        
+            FinishComputeShader(heightmap);
+        }
+
         private int InitComputeShader(float[,] heightmap, float talus, float factor)
         {
             // Creates a read/writable buffer that contains the heightmap data and sends it to the GPU.
@@ -30,16 +40,6 @@ namespace Generation.Terrain.Physics.Erosion.GPU
             Shader.SetInt("width", heightmap.GetLength(0));
 
             return kernelId;
-        }
-
-        public override void Erode(float[,] heightmap, float talus = 4, float factor = 0.5f, int iterations = 500)
-        {
-            int kernelId = InitComputeShader(heightmap, talus, factor);
-
-            for (int i = 0; i < iterations; i++)
-                RunComputeShader(kernelId);
-        
-            FinishComputeShader(heightmap);
         }
 
         private void RunComputeShader(int kernelId)

@@ -1,0 +1,29 @@
+﻿#pragma kernel CSMain
+
+RWStructuredBuffer<float> heightmap;
+RWStructuredBuffer<float> watermap;
+
+float evaporationFactor;
+float solubility;
+
+uint width;
+
+[numthreads(25, 25, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint currentPosition = id.x + (id.y * width);
+
+    if (evaporationFactor == 0)
+        return;
+
+    float evaporationPercent = 1 - evaporationFactor;
+    float waterVolume = watermap[currentPosition] - heightmap[currentPosition];
+
+    if (waterVolume <= 0) 
+        return;
+
+    float delta = waterVolume - (waterVolume * evaporationPercent);
+    
+    watermap[currentPosition] = max(0, watermap[currentPosition] - delta);
+    heightmap[currentPosition] = min(1, heightmap[currentPosition] + (solubility * delta));
+}

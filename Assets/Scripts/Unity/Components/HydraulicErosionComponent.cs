@@ -1,5 +1,7 @@
 ﻿using Generation.Terrain.Evaluation;
 using Generation.Terrain.Physics.Erosion;
+using Generation.Terrain.Physics.Erosion.GPU;
+using TerrainGeneration.Analytics;
 using UnityEngine;
 
 namespace Unity.Components
@@ -10,33 +12,37 @@ namespace Unity.Components
         public float rainFactor;
         public float solubility;
         public float evaporationFactor;
-        public float sedimentCapacity;
         public int iterations;
 
-        public bool diegoli;
+        public ComputeShader pourAndDissolveShader;
+        public ComputeShader waterFlowShader;
+        public ComputeShader drainWaterShader;
+        public bool useGPU;
 
         private HydraulicErosionDiegoli hydraulicErosionDiegoli;
-        private HydraulicErosion hydraulicErosion;
 
         public override void UpdateComponent()
         {
             float[,] heightmap = GetTerrainHeight();
 
-            if(diegoli)
-            {
-                hydraulicErosionDiegoli = new HydraulicErosionDiegoli();
-                hydraulicErosionDiegoli.Erode(heightmap, rainFactor, solubility, evaporationFactor, iterations);
-            }
+            if(useGPU)
+                hydraulicErosionDiegoli = new HydraulicErosionGPU(pourAndDissolveShader, waterFlowShader, drainWaterShader);
             else
-            {
-                hydraulicErosion = new HydraulicErosion();
-                hydraulicErosion.Erode(heightmap, rainFactor, solubility, evaporationFactor, sedimentCapacity, iterations);
-            }
+                hydraulicErosionDiegoli = new HydraulicErosionDiegoliOptimized();
+
+            TimeLogger.Start(hydraulicErosionDiegoli.GetType().Name, heightmap.GetLength(0));
+            hydraulicErosionDiegoli.Erode(heightmap, rainFactor, solubility, evaporationFactor, iterations);
+            TimeLogger.RecordSingleTimeInMilliseconds();
+
+            int seed = FindObjectOfType<DiamondSquareComponent>().seed;
+            string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
+            string benfordsLaw = BenfordsLaw.Evaluate(heightmap);
+
+            Debug.Log($"Hydraulic Erosion: {erosionScore} -> {benfordsLaw}");
+            EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), seed, erosionScore);
+            EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), seed, benfordsLaw);
 
             UpdateTerrainHeight(heightmap);
-
-            float erosionScore = ErosionScore.Evaluate(heightmap);
-            Debug.Log($"Erosion Score Hydraulic Erosion: {erosionScore}");
         }
     }
 }
