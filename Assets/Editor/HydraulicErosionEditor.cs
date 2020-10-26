@@ -9,19 +9,22 @@ public class HydraulicErosionEditor : Editor
     private SerializedProperty rainFactor;
     private SerializedProperty solubility;
     private SerializedProperty evaporationFactor;
-    private SerializedProperty sedimentCapacity;
     private SerializedProperty iterations;
-
-    private SerializedProperty diegoli;
+    private SerializedProperty pourAndDissolveShader;
+    private SerializedProperty waterFlowShader;
+    private SerializedProperty drainWaterShader;
+    private SerializedProperty useGPU;
     
     void OnEnable()
     {
         rainFactor = serializedObject.FindProperty("rainFactor");
         solubility = serializedObject.FindProperty("solubility");
         evaporationFactor = serializedObject.FindProperty("evaporationFactor");
-        sedimentCapacity = serializedObject.FindProperty("sedimentCapacity");
         iterations = serializedObject.FindProperty("iterations");
-        diegoli = serializedObject.FindProperty("diegoli");
+        pourAndDissolveShader = serializedObject.FindProperty("pourAndDissolveShader");
+        waterFlowShader = serializedObject.FindProperty("waterFlowShader");
+        drainWaterShader = serializedObject.FindProperty("drainWaterShader");
+        useGPU = serializedObject.FindProperty("useGPU");
     }
 
     public override void OnInspectorGUI()
@@ -32,9 +35,11 @@ public class HydraulicErosionEditor : Editor
         EditorGUILayout.PropertyField(rainFactor);
         EditorGUILayout.PropertyField(solubility);
         EditorGUILayout.PropertyField(evaporationFactor);
-        EditorGUILayout.PropertyField(sedimentCapacity);
         EditorGUILayout.PropertyField(iterations);
-        EditorGUILayout.PropertyField(diegoli);
+        EditorGUILayout.PropertyField(pourAndDissolveShader);
+        EditorGUILayout.PropertyField(waterFlowShader);
+        EditorGUILayout.PropertyField(drainWaterShader);
+        EditorGUILayout.PropertyField(useGPU);
         
         if (GUILayout.Button("Apply"))
             component.UpdateComponent();

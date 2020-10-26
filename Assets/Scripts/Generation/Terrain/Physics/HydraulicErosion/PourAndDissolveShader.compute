@@ -1,0 +1,29 @@
+﻿#pragma kernel CSMain
+
+RWStructuredBuffer<float> heightmap;
+RWStructuredBuffer<float> watermap;
+
+float rainFactor;
+float solubility;
+uint width;
+
+[numthreads(25, 25, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint currentPosition = id.x + (id.y * width);
+
+    // Pour Water
+    watermap[currentPosition] += rainFactor;
+    
+    // Dissolve    
+    if(solubility <= 0)
+        return;
+
+    float waterVolume = watermap[currentPosition] - heightmap[currentPosition];
+    if (waterVolume <= 0)
+        return;
+
+    float amountToRemove = solubility * waterVolume;
+    heightmap[currentPosition] -= amountToRemove;
+    heightmap[currentPosition] = max(0, heightmap[currentPosition]);
+}

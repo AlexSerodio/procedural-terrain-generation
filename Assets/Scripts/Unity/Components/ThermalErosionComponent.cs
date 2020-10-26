@@ -34,8 +34,13 @@ namespace Unity.Components
             thermalErosion.Erode(heightmap, talus, factor, iterations);
             TimeLogger.RecordSingleTimeInMilliseconds();
 
-            Debug.Log($"Erosion Score Thermal Erosion: {ErosionScore.Evaluate(heightmap)}");
-            Debug.Log($"Benford's Law Thermal Erosion: {BenfordsLaw.Evaluate(heightmap)}");
+            int seed = FindObjectOfType<DiamondSquareComponent>().seed;
+            string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
+            string benfordsLaw = BenfordsLaw.Evaluate(heightmap);
+            
+            Debug.Log($"Thermal Erosion: {erosionScore} -> {benfordsLaw}");
+            EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), seed, erosionScore);
+            EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), seed, benfordsLaw);
 
             UpdateTerrainHeight(heightmap);
         }
