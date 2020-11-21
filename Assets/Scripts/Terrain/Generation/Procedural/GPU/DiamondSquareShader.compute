@@ -1,0 +1,77 @@
+﻿#pragma kernel CSMain
+
+RWStructuredBuffer<float> heightmap;
+
+uint width;
+float height;
+float squareSize;
+uint externalSeed;
+
+uint wang_hash(uint seed)
+{
+    seed = (seed ^ 61) ^ (seed >> 16);
+    seed *= 9;
+    seed = seed ^ (seed >> 4);
+    seed *= 0x27d4eb2d;
+    seed = seed ^ (seed >> 15);
+    return seed;
+}
+
+// normalizes the given value between -1 and 1
+float normalize(uint x)
+{
+	return 2 * (x / 4294967295.0) - 1;		// equivalent to -> f(x) = 2 * ((x - min) / (max - min)) - 1
+}
+
+float random(uint range)
+{
+	return normalize(wang_hash(externalSeed + range));
+}
+
+bool isOutOfLimits(uint position)
+{
+	return position < width
+		|| position >= (width * width) - (width-1)
+		|| position % width == 0
+		|| (position - (width-1)) % width == 0;
+}
+
+float getHeightIfValid(uint position)
+{
+	return isOutOfLimits(position) ? 0 : heightmap[position];
+}
+
+float average(float a, float b, float c, float d)
+{
+	return (d == 0) ? (a + b + c) / 3.0 : (a + b + c + d) * 0.25;
+}
+
+[numthreads(1, 1, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint col = id.x * squareSize;
+	uint row = id.y * squareSize;
+
+	uint rowSize = width + 1;
+	uint halfSize = squareSize / 2;
+
+	uint mid = (row + halfSize) * rowSize + (col + halfSize);
+	uint topLeft = row * rowSize + col;
+	uint topRight = row * rowSize + (col + squareSize);
+	uint bottomLeft = (row + squareSize) * rowSize + col;
+	uint bottomRight = (row + squareSize) * rowSize + (col + squareSize);
+
+	uint up = topLeft + halfSize;
+	uint down = bottomLeft + halfSize;
+	uint left = mid - halfSize;
+	uint right = mid + halfSize;
+
+	// diamond step
+	heightmap[mid] = average(heightmap[topLeft], heightmap[topRight], heightmap[bottomLeft], heightmap[bottomRight]) + random(mid) * height;
+
+	// square step
+	heightmap[up] = average(heightmap[topLeft], heightmap[topRight], heightmap[mid], getHeightIfValid(up + halfSize)) + random(up) * height;
+	heightmap[down] = average(heightmap[bottomLeft], heightmap[bottomRight], heightmap[mid], getHeightIfValid(down - halfSize)) + random(down) * height;
+	heightmap[left] = average(heightmap[topLeft], heightmap[bottomLeft], heightmap[mid], getHeightIfValid(left - halfSize)) + random(left) * height;
+	heightmap[right] = average(heightmap[topRight], heightmap[bottomRight], heightmap[mid], getHeightIfValid(right + halfSize)) + random(right) * height;
+}

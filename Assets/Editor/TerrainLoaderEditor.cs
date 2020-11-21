@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using Unity.Components;
+using Terrain.Utils;
 
 [CustomEditor(typeof(TerrainLoaderComponent))]
 [CanEditMultipleObjects]

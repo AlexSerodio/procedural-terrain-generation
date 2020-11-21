@@ -1,4 +1,5 @@
-﻿using Generation.Terrain.Evaluation;
+﻿using Terrain.Evaluation;
+using Terrain.Utils;
 using UnityEngine;
 
 namespace Unity.Components
@@ -7,7 +8,7 @@ namespace Unity.Components
     public class TerrainLoaderComponent : MonoBehaviour
     {
         public Texture2D texture;
-        public Terrain terrain;
+        public UnityEngine.Terrain terrain;
 
         private HeightmapLoader loader = new HeightmapLoader();
 

@@ -1,4 +1,5 @@
-﻿using Generation.Terrain.Evaluation;
+﻿using Terrain.Evaluation;
+using Terrain.Utils;
 using UnityEngine;
 
 namespace Unity.Components

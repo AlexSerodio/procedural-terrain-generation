@@ -1,0 +1,79 @@
+﻿#pragma kernel CSMain
+
+#define UP 0
+#define DOWN 1
+#define LEFT 2
+#define RIGHT 3
+// #define LEFT_UP 4
+// #define RIGHT_UP 5
+// #define LEFT_DOWN 6
+// #define RIGHT_DOWN 7
+
+#define NEIGHBORHOOD_SIZE 4
+
+RWStructuredBuffer<float> heightmap;
+
+float talus;
+float factor;
+uint width;
+
+uint neighbors[NEIGHBORHOOD_SIZE];
+
+void getNeighbors(uint currentPosition)
+{
+	neighbors[UP] = currentPosition - width;
+	neighbors[DOWN] = currentPosition + width;
+	neighbors[LEFT] = currentPosition - 1;
+	neighbors[RIGHT] = currentPosition + 1;
+	// neighbors[LEFT_UP] = (currentPosition - 1) - width;
+	// neighbors[RIGHT_UP] = (currentPosition + 1) - width;
+	// neighbors[LEFT_DOWN] = (currentPosition - 1) + width;
+	// neighbors[RIGHT_DOWN] = (currentPosition + 1) + width;
+}
+
+int isValidPosition(uint3 id)
+{
+	return id.x > 1 && id.x < width-1 && 
+			id.y > 1 && id.y < width-1;
+}
+
+[numthreads(32, 32, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint currentPosition = id.x + (id.y * width);
+
+	getNeighbors(currentPosition);
+
+	float dMax = 0;
+	float dTotal = 0;
+
+	float d;
+	for(uint i = 0; i < NEIGHBORHOOD_SIZE; i++)
+	{
+		d = heightmap[currentPosition] - heightmap[neighbors[i]];
+		if (d > talus) {
+			dTotal += d;
+			if (d > dMax)
+				dMax = d;
+		}
+	}
+
+	if (dTotal == 0)
+		return;
+
+	for(uint j = 0; j < NEIGHBORHOOD_SIZE; j++)
+	{
+		d = heightmap[currentPosition] - heightmap[neighbors[j]];
+
+		if (d > talus && isValidPosition(id))
+		{
+			float sediment = factor * (dMax - talus) * (d / dTotal);
+			
+			heightmap[neighbors[j]] += sediment;
+			heightmap[currentPosition] -= sediment;
+
+			heightmap[neighbors[j]] = min(1, heightmap[neighbors[j]]);
+			heightmap[currentPosition] = max(0, heightmap[currentPosition]);
+		}
+	}
+}

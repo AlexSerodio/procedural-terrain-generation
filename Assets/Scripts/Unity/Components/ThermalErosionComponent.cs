@@ -1,6 +1,8 @@
 ﻿using Generation.Terrain.Physics.Erosion;
 using Generation.Terrain.Physics.Erosion.GPU;
-using Generation.Terrain.Evaluation;
+using Terrain;
+using Terrain.Evaluation;
+using Terrain.Generation.Configurations;
 using TerrainGeneration.Analytics;
 using UnityEngine;
 
@@ -15,7 +17,7 @@ namespace Unity.Components
         public ComputeShader shader;
         public bool useGPU;
 
-        private ThermalErosion thermalErosion;
+        private ITerrainModifier terrainModifier;
 
         public override void UpdateComponent()
         {
@@ -25,22 +27,28 @@ namespace Unity.Components
             int N = heightmap.GetLength(0);
             float talus = talusFactor / N;
 
-            if (useGPU)
-                thermalErosion = new ThermalErosionGPU(shader);
-            else
-                thermalErosion = new ThermalErosion();
+            ThermalErosionConfig configuration = new ThermalErosionConfig {
+                Talus = talus,
+                Strength = factor,
+                Iterations = iterations
+            };
 
-            TimeLogger.Start(thermalErosion.GetType().Name, resolution);
-            thermalErosion.Erode(heightmap, talus, factor, iterations);
-            TimeLogger.RecordSingleTimeInMilliseconds();
+            if (useGPU)
+                terrainModifier = new ThermalErosionGPU(configuration, shader);
+            else
+                terrainModifier = new ThermalErosion(configuration);
+
+            // TimeLogger.Start(terrainModifier.GetType().Name, resolution);
+            terrainModifier.Apply(heightmap);
+            // TimeLogger.RecordSingleTimeInMilliseconds();
 
             int seed = FindObjectOfType<DiamondSquareComponent>().seed;
             string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
             string benfordsLaw = BenfordsLaw.Evaluate(heightmap);
             
             Debug.Log($"Thermal Erosion: {erosionScore} -> {benfordsLaw}");
-            EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), seed, erosionScore);
-            EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), seed, benfordsLaw);
+            // EvaluationLogger.RecordValue("erosion_score", heightmap.GetLength(0), seed, erosionScore);
+            // EvaluationLogger.RecordValue("benfords_law", heightmap.GetLength(0), seed, benfordsLaw);
 
             UpdateTerrainHeight(heightmap);
         }

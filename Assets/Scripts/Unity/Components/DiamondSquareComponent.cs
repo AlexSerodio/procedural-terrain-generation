@@ -1,8 +1,8 @@
 ﻿using Generation.Terrain.Procedural.GPU;
 using Generation.Terrain.Procedural;
-using Generation.Terrain.Evaluation;
-using TerrainGeneration.Analytics;
+using Terrain.Evaluation;
 using UnityEngine;
+using Terrain;
 
 namespace Unity.Components
 {
@@ -11,19 +11,19 @@ namespace Unity.Components
     {
         public bool randomGeneration;
 
-        [ShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(randomGeneration))]
+        // [ShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(randomGeneration))]
         public int seed;
         
         public ComputeShader shader;
         public bool useGPU;
         public bool onlyBestResults;
 
-        [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
+        // [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
         public int tries;
-        [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
+        // [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
         public int minimumFirstValue;
 
-        private DiamondSquare diamondSquare;
+        private ITerrainModifier terrainModifier;
 
         public override void UpdateComponent()
         {
@@ -31,31 +31,30 @@ namespace Unity.Components
                 seed = new System.Random().Next();
 
             float[,] heightmap = base.GetTerrainHeight();
-            int resolution = base.meshGenerator.resolution;
 
             if (useGPU)
-                diamondSquare = new DiamondSquareGPU(resolution, shader, seed);
+                terrainModifier = new DiamondSquareGPU(shader, seed);
             else
-                diamondSquare = new DiamondSquare(resolution, seed);
+                terrainModifier = new DiamondSquare(seed);
 
-            TimeLogger.Start(diamondSquare.GetType().Name, diamondSquare.Resolution);
+            // TimeLogger.Start(terrainModifier.GetType().Name, base.meshGenerator.resolution);
 
             if(!onlyBestResults)
-                diamondSquare.Apply(heightmap);
+                terrainModifier.Apply(heightmap);
             else 
             {
-                diamondSquare.Apply(heightmap);
+                terrainModifier.Apply(heightmap);
                 int count = 0;
                 while (!BenfordsLaw.StartsWith(heightmap, minimumFirstValue))
                 {
                     if(count >= tries)
                         break;
 
-                    diamondSquare.Apply(heightmap);
+                    terrainModifier.Apply(heightmap);
                     count++;
                 }
             }
-            TimeLogger.RecordSingleTimeInMilliseconds();
+            // TimeLogger.RecordSingleTimeInMilliseconds();
 
             string erosionScore = ErosionScore.Evaluate(heightmap).ToString();
             string benfordsLaw = BenfordsLaw.Evaluate(heightmap);
