@@ -327,7 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a56b501868920d43b73c863081e13ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texture: {fileID: 2800000, guid: 365bf24d5a18af840abb32e49b130499, type: 3}
+  texture: {fileID: 2800000, guid: eed51641f5e247247ad6e752df001329, type: 3}
   terrain: {fileID: 1718366777}
 --- !u!4 &1044072053
 Transform:

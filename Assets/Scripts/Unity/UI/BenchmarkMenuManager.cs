@@ -19,7 +19,7 @@ namespace Unity.UI
         public Text RainField;
         public Text SolubilityField;
         public Text EvaporationField;
-        
+
         public Text IterationsField;
 
         public Dropdown AlgorithmDropdown;
@@ -38,7 +38,7 @@ namespace Unity.UI
         private DiamondSquare diamondSquare;
         private ThermalErosion thermalErosion;
         private HydraulicErosionDiegoli hydraulicErosion;
-        
+
         private DiamondSquareGPU diamondSquareGPU;
         private ThermalErosionGPU thermalErosionGPU;
         private HydraulicErosionGPU hydraulicErosionGPU;
@@ -104,6 +104,7 @@ namespace Unity.UI
 
         private void RunAlgorithms(bool useGPU)
         {
+            int resolution = 1025;
             string architecture = useGPU ? "GPU" : "CPU";
 
             foreach (int iteration in iterations)
@@ -111,53 +112,42 @@ namespace Unity.UI
                 thermalConfig.Iterations = iteration;
                 hydraulicConfig.Iterations = iteration;
 
-                foreach (var resolution in resolutions)
+                float[,] heightmap = new float[resolution, resolution];
+
+                TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/";
+
+                if(!useGPU)
                 {
-                    float[,] heightmap = new float[resolution, resolution];
-                    
-                    if(!useGPU)
+                    foreach (int seed in seeds)
                     {
-                        foreach (int seed in seeds)
-                        {
-                            diamondSquare = new DiamondSquare(seed);
-                            thermalErosion = new ThermalErosion(thermalConfig);
-                            hydraulicErosion = new HydraulicErosionDiegoli(hydraulicConfig);
+                        diamondSquare = new DiamondSquare(seed);
+                        thermalErosion = new ThermalErosion(thermalConfig);
+                        hydraulicErosion = new HydraulicErosionDiegoli(hydraulicConfig);
 
-                            TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/diamond_square/";
-                            diamondSquare.Apply(heightmap);
-                            
-                            TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/thermal_erosion/";
-                            thermalErosion.Apply(heightmap);
-                            
-                            TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/hydraulic_erosion/";
-                            hydraulicErosion.Apply(heightmap);
-                        }
-                    } 
-                    else
-                    {
-                        foreach (int seed in seeds)
-                        {
-                            diamondSquareGPU = new DiamondSquareGPU(diamondShader, seed);
-                            thermalErosionGPU = new ThermalErosionGPU(thermalConfig, thermalShader);
-                            hydraulicErosionGPU = new HydraulicErosionGPU(hydraulicConfig, hydraulicRainShader, hydraulicWaterflowShader, hydraulicDrainWaterShader);
-
-                            TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/diamond_square/";
-                            diamondSquareGPU.Apply(heightmap);
-
-                            TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/thermal_erosion/";
-                            thermalErosionGPU.Apply(heightmap);
-
-                            TimeLogger.Destination = $"benchmark/{architecture}/{thermalConfig.Iterations}/hydraulic_erosion/";
-                            hydraulicErosionGPU.Apply(heightmap);
-                        }
+                        diamondSquare.Apply(heightmap);
+                        thermalErosion.Apply(heightmap);
+                        hydraulicErosion.Apply(heightmap);
                     }
-                }    
+                }
+                else
+                {
+                    foreach (int seed in seeds)
+                    {
+                        diamondSquareGPU = new DiamondSquareGPU(diamondShader, seed);
+                        thermalErosionGPU = new ThermalErosionGPU(thermalConfig, thermalShader);
+                        hydraulicErosionGPU = new HydraulicErosionGPU(hydraulicConfig, hydraulicRainShader, hydraulicWaterflowShader, hydraulicDrainWaterShader);
+
+                        diamondSquareGPU.Apply(heightmap);
+                        thermalErosionGPU.Apply(heightmap);
+                        hydraulicErosionGPU.Apply(heightmap);
+                    }
+                }
             }
         }
 
-        private int[] resolutions = new int[] {
-            65, 129, 257, 513, 1025
-        };
+        // private int[] resolutions = new int[] {
+        //     65, 129, 257, 513, 1025
+        // };
 
         private int[] iterations = new int[] {
             100, 200, 300, 400, 500

@@ -9,6 +9,8 @@ namespace Generation.Terrain.Physics.Erosion.GPU
         public ComputeShader Shader { get; }
 
         private ComputeBuffer buffer;
+        private const int threadGroupsX = 41;
+        private const int threadGroupsY = 41;
         
         public ThermalErosionGPU(ThermalErosionConfig configuration, ComputeShader shader)
             : base(configuration)
@@ -51,7 +53,7 @@ namespace Generation.Terrain.Physics.Erosion.GPU
 
         private void RunComputeShader(int kernelId)
         {
-            Shader.Dispatch(kernelId, 32, 32, 1);
+            Shader.Dispatch(kernelId, threadGroupsX, threadGroupsX, 1);
         }
 
         private void FinishComputeShader(float[,] heightmap)

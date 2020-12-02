@@ -1,7 +1,6 @@
 ﻿using Terrain.Evaluation;
 using Generation.Terrain.Physics.Erosion;
 using Generation.Terrain.Physics.Erosion.GPU;
-using TerrainGeneration.Analytics;
 using UnityEngine;
 using Terrain.Generation.Configurations;
 using Terrain;

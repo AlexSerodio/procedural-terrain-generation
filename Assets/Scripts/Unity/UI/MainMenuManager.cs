@@ -2,6 +2,7 @@
 using UnityEngine;
 using Unity.Components;
 using System;
+using System.IO;
 
 namespace Unity.UI
 {
@@ -20,17 +21,21 @@ namespace Unity.UI
         public Text HydraulicErosionSolubilityField;
         public Text HydraulicErosionEvaporationField;
         public Text HydraulicErosionIterationsField;
+        public Text TexturePathField;
         public Toggle HydraulicErosionGpu;
 
         private DiamondSquareComponent diamondSquareComponent;
         private ThermalErosionComponent thermalErosionComponent;
         private HydraulicErosionComponent hydraulicErosionComponent;
 
+        private HeightmapLoaderComponent heightmapLoaderComponent;
+
         void Start()
         {
             diamondSquareComponent = FindObjectOfType<DiamondSquareComponent>();
             thermalErosionComponent = FindObjectOfType<ThermalErosionComponent>();
             hydraulicErosionComponent = FindObjectOfType<HydraulicErosionComponent>();
+            heightmapLoaderComponent = FindObjectOfType<HeightmapLoaderComponent>();
 
             MenuPanel.SetActive(true);
         }
@@ -43,12 +48,12 @@ namespace Unity.UI
 
         public void DiamondSquareButton()
         {
+            diamondSquareComponent.seed = Convert.ToInt32(SeedField.text);
             if(SeedField.text.Length == 0)
                 diamondSquareComponent.randomGeneration = true;
-            else            
-                diamondSquareComponent.seed = Convert.ToInt32(SeedField.text);
+            else
+                diamondSquareComponent.randomGeneration = false;
             
-            // diamondSquareComponent.meshGenerator.resolution = 65;
             diamondSquareComponent.useGPU = DiamondSquareGpu.isOn;
 
             diamondSquareComponent.UpdateComponent();
@@ -73,6 +78,32 @@ namespace Unity.UI
             hydraulicErosionComponent.useGPU = HydraulicErosionGpu.isOn;
 
             hydraulicErosionComponent.UpdateComponent();
+        }
+
+        public void ImportHeightmapButton()
+        {
+            // TODO: recuperar de alguma forma
+            string test = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Assets\\Heightmaps\\1 Height Map (Merged).png";
+            // heightmapLoaderComponent.texture = LoadImageFromDisk(TexturePathField.text);
+            heightmapLoaderComponent.texture = LoadImageFromDisk(test);
+            heightmapLoaderComponent.UpdateComponent();
+        }
+
+        private Texture2D LoadImageFromDisk(string filePath)
+        {
+            Texture2D texture = null;
+            byte[] fileData;
+        
+            if (File.Exists(filePath))
+            {
+                fileData = File.ReadAllBytes(filePath);
+
+                int size = heightmapLoaderComponent.meshGenerator.resolution;
+                texture = new Texture2D(size, size);
+                texture.LoadImage(fileData);
+            }
+
+            return texture;
         }
 
         public void QuitButton()

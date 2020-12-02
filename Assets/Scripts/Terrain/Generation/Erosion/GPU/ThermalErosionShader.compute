@@ -37,7 +37,7 @@ int isValidPosition(uint3 id)
 			id.y > 1 && id.y < width-1;
 }
 
-[numthreads(32, 32, 1)]
+[numthreads(25, 25, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	uint currentPosition = id.x + (id.y * width);

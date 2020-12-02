@@ -43,8 +43,6 @@ namespace Generation.Terrain.Procedural.GPU
                 height *= 0.5f;
             }
 
-            Debug.Log($"Total Threads: {totalThreads}");
-
             FinishComputeShader();
 
             TimeLogger.RecordSingleTimeInMilliseconds();
