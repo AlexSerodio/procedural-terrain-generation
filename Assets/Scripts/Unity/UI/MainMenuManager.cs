@@ -3,6 +3,8 @@ using UnityEngine;
 using Unity.Components;
 using System;
 using System.IO;
+using System.Collections;
+using SimpleFileBrowser;
 
 namespace Unity.UI
 {
@@ -21,7 +23,6 @@ namespace Unity.UI
         public Text HydraulicErosionSolubilityField;
         public Text HydraulicErosionEvaporationField;
         public Text HydraulicErosionIterationsField;
-        public Text TexturePathField;
         public Toggle HydraulicErosionGpu;
 
         private DiamondSquareComponent diamondSquareComponent;
@@ -48,11 +49,13 @@ namespace Unity.UI
 
         public void DiamondSquareButton()
         {
-            diamondSquareComponent.seed = Convert.ToInt32(SeedField.text);
             if(SeedField.text.Length == 0)
                 diamondSquareComponent.randomGeneration = true;
             else
+            {
+                diamondSquareComponent.seed = Convert.ToInt32(SeedField.text);
                 diamondSquareComponent.randomGeneration = false;
+            }
             
             diamondSquareComponent.useGPU = DiamondSquareGpu.isOn;
 
@@ -80,23 +83,65 @@ namespace Unity.UI
             hydraulicErosionComponent.UpdateComponent();
         }
 
+        // TODO: block all screen interaction while dialog is open 
         public void ImportHeightmapButton()
         {
-            // TODO: recuperar de alguma forma
-            string test = "D:\\windows\\documents\\repositories\\procedural-terrain-generation\\Assets\\Heightmaps\\1 Height Map (Merged).png";
-            // heightmapLoaderComponent.texture = LoadImageFromDisk(TexturePathField.text);
-            heightmapLoaderComponent.texture = LoadImageFromDisk(test);
-            heightmapLoaderComponent.UpdateComponent();
+            StartCoroutine(ShowLoadDialogCoroutine());
+        }
+
+        public void ExportHeightmapButton()
+        {
+            ShowSaveDialogCoroutine();
+        }
+
+        public void QuitButton()
+        {
+            Application.Quit();
+        }
+
+        private IEnumerator ShowLoadDialogCoroutine()
+        {
+            FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".jpg", ".png"));
+            FileBrowser.SetDefaultFilter( ".jpg" );
+
+            yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders, true, null, null, "Carregar imagem", "Carregar");
+
+            if(FileBrowser.Success)
+            {
+                heightmapLoaderComponent.texture = LoadImageFromDisk(FileBrowser.Result[0]);
+                heightmapLoaderComponent.UpdateComponent();
+            }
+        }
+
+        private void ShowSaveDialogCoroutine()
+        {
+            float[,] heightmap = heightmapLoaderComponent.meshGenerator.Heightmap;
+            FileBrowser.ShowSaveDialog((path) => SaveImageToDisk(path[0], heightmap), null, FileBrowser.PickMode.Files, false, "C:\\", "heightmap.png", "Salvar como", "Salvar");
+        }
+
+        private void SaveImageToDisk(string filePath, float[,] image)
+        {
+            int width = image.GetLength(0);
+            int height = image.GetLength(1);
+
+            Texture2D texture = new Texture2D(width, height, TextureFormat.RGB24, true);
+
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                    texture.SetPixel(y, x, new Color(image[x,y], image[x,y], image[x,y]));
+
+            texture.Apply();
+
+            File.WriteAllBytes(filePath, texture.EncodeToPNG());
         }
 
         private Texture2D LoadImageFromDisk(string filePath)
         {
             Texture2D texture = null;
-            byte[] fileData;
-        
+            
             if (File.Exists(filePath))
             {
-                fileData = File.ReadAllBytes(filePath);
+                byte[] fileData = File.ReadAllBytes(filePath);
 
                 int size = heightmapLoaderComponent.meshGenerator.resolution;
                 texture = new Texture2D(size, size);
@@ -104,11 +149,6 @@ namespace Unity.UI
             }
 
             return texture;
-        }
-
-        public void QuitButton()
-        {
-            Application.Quit();
         }
     }
 }
