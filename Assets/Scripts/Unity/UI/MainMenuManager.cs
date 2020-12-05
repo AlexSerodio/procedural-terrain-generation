@@ -24,6 +24,9 @@ namespace Unity.UI
         public Text HydraulicErosionEvaporationField;
         public Text HydraulicErosionIterationsField;
         public Toggle HydraulicErosionGpu;
+        public Dropdown TerrainTextureDropdown;
+
+        public Material[] terrainTextures;
 
         private DiamondSquareComponent diamondSquareComponent;
         private ThermalErosionComponent thermalErosionComponent;
@@ -37,6 +40,10 @@ namespace Unity.UI
             thermalErosionComponent = FindObjectOfType<ThermalErosionComponent>();
             hydraulicErosionComponent = FindObjectOfType<HydraulicErosionComponent>();
             heightmapLoaderComponent = FindObjectOfType<HeightmapLoaderComponent>();
+
+            TerrainTextureDropdown.onValueChanged.AddListener(value => {
+                FindObjectOfType<MeshGenerator>().GetComponent<Renderer>().material = terrainTextures[value];
+            });
 
             MenuPanel.SetActive(true);
         }
