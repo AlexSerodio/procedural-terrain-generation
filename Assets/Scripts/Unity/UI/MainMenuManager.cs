@@ -45,6 +45,7 @@ namespace Unity.UI
                 FindObjectOfType<MeshGenerator>().GetComponent<Renderer>().material = terrainTextures[value];
             });
 
+            DiamondSquareButton();
             MenuPanel.SetActive(true);
         }
 
