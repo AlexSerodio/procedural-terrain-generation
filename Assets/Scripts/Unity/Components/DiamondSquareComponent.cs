@@ -12,15 +12,21 @@ namespace Unity.Components
         public bool randomGeneration;
 
         // [ShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(randomGeneration))]
+        [Tooltip(TooltipHints.TERRAIN_SEED)]
         public int seed;
         
         public ComputeShader shader;
+        [Tooltip(TooltipHints.GPU_FLAG)]
         public bool useGPU;
+
+        [Tooltip("Se ativado, selecionará apenas os melhores terrenos com base no valor definido em MinimumFirstValue.")]
         public bool onlyBestResults;
 
         // [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
+        [Tooltip("O máximo de tentativas para encontrar o melhor resultado. Utilizado apenas quando OnlyBestResults estiver marcado.")]
         public int tries;
         // [DontShowIf(ActionOnConditionFail.JustDisable, ConditionOperator.And, nameof(onlyBestResults))]
+        [Tooltip("Valor mínimo para o primeiro dígito da lei de Benford. Utilizado apenas quando OnlyBestResults estiver marcado.")]
         public int minimumFirstValue;
 
         private ITerrainModifier terrainModifier;

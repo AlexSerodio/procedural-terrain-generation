@@ -3,7 +3,6 @@ using Generation.Terrain.Physics.Erosion.GPU;
 using Terrain;
 using Terrain.Evaluation;
 using Terrain.Generation.Configurations;
-using TerrainGeneration.Analytics;
 using UnityEngine;
 
 namespace Unity.Components
@@ -11,10 +10,14 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class ThermalErosionComponent : BaseComponent
     {
+        [Tooltip(TooltipHints.THERMAL_STRENGTH)]
         public float factor;
+        [Tooltip(TooltipHints.THERMAL_TALUS)]
         public float talusFactor;
+        [Tooltip(TooltipHints.ITERATIONS)]
         public int iterations;
         public ComputeShader shader;
+        [Tooltip(TooltipHints.GPU_FLAG)]
         public bool useGPU;
 
         private ITerrainModifier terrainModifier;

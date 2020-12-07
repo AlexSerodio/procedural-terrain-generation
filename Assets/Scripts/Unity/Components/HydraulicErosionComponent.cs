@@ -10,14 +10,19 @@ namespace Unity.Components
     [ExecuteInEditMode]
     public class HydraulicErosionComponent : BaseComponent
     {
+        [Tooltip(TooltipHints.HYDRAULIC_RAIN)]
         public float rainFactor;
+        [Tooltip(TooltipHints.HYDRAULIC_SOLUBILITY)]
         public float solubility;
+        [Tooltip(TooltipHints.HYDRAULIC_EVAPORATION)]
         public float evaporationFactor;
+        [Tooltip(TooltipHints.ITERATIONS)]
         public int iterations;
 
         public ComputeShader pourAndDissolveShader;
         public ComputeShader waterFlowShader;
         public ComputeShader drainWaterShader;
+        [Tooltip(TooltipHints.GPU_FLAG)]
         public bool useGPU;
 
         private ITerrainModifier terrainModifier;

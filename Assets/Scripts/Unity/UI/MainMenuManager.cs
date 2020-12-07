@@ -5,6 +5,8 @@ using System;
 using System.IO;
 using System.Collections;
 using SimpleFileBrowser;
+using UnityEngine.EventSystems;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Unity.UI
 {
@@ -36,6 +38,8 @@ namespace Unity.UI
 
         void Start()
         {
+            SetTooltipValues();
+
             diamondSquareComponent = FindObjectOfType<DiamondSquareComponent>();
             thermalErosionComponent = FindObjectOfType<ThermalErosionComponent>();
             hydraulicErosionComponent = FindObjectOfType<HydraulicErosionComponent>();
@@ -47,6 +51,26 @@ namespace Unity.UI
 
             DiamondSquareButton();
             MenuPanel.SetActive(true);
+        }
+
+        private void SetTooltipValues()
+        {
+            Tooltip.AddTooltipEvent("SizeText", TooltipHints.TERRAIN_DIMENSIONS);
+            Tooltip.AddTooltipEvent("SeedText", TooltipHints.TERRAIN_SEED);
+            Tooltip.AddTooltipEvent("GpuDiamondText", TooltipHints.GPU_FLAG);
+
+            Tooltip.AddTooltipEvent("StrengthText", TooltipHints.THERMAL_STRENGTH);
+            Tooltip.AddTooltipEvent("TalusText", TooltipHints.THERMAL_TALUS);
+            Tooltip.AddTooltipEvent("IterationsThermalText", TooltipHints.ITERATIONS);
+            Tooltip.AddTooltipEvent("GpuThermalText", TooltipHints.GPU_FLAG);
+
+            Tooltip.AddTooltipEvent("RainText", TooltipHints.HYDRAULIC_RAIN);
+            Tooltip.AddTooltipEvent("SolubilityText", TooltipHints.HYDRAULIC_SOLUBILITY);
+            Tooltip.AddTooltipEvent("EvaporationText", TooltipHints.HYDRAULIC_EVAPORATION);
+            Tooltip.AddTooltipEvent("IterationsHydraulicText", TooltipHints.ITERATIONS);
+            Tooltip.AddTooltipEvent("GpuHydraulicText", TooltipHints.GPU_FLAG);
+
+            Tooltip.AddTooltipEvent("TerrainTextureDropdown", TooltipHints.MAP_VISUALIZATION, Tooltip.Direction.RIGHT);
         }
 
         void Update()
@@ -109,7 +133,7 @@ namespace Unity.UI
 
         private IEnumerator ShowLoadDialogCoroutine()
         {
-            FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".jpg", ".png"));
+            FileBrowser.SetFilters(true, new FileBrowser.Filter("Imagens", ".jpg", ".png"));
             FileBrowser.SetDefaultFilter( ".jpg" );
 
             yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders, true, null, null, "Carregar imagem", "Carregar");
