@@ -15,13 +15,13 @@ Primeiro deve-se gerar o terreno base através do botão **`Gerar terreno`**. Em
 
 <p align="center">
   <a href=".github/screenshots/01_diamond-square.png" target="_blank">
-    <img width="445" src=".github/screenshots/01_diamond-square.png" alt="Terreno gerado de forma procedural">
+    <img width="420" src=".github/screenshots/01_diamond-square.png" alt="Terreno gerado de forma procedural">
   </a>
   <a href=".github/screenshots/02_thermal-erosion.png" target="_blank">
-    <img width="445" src=".github/screenshots/02_thermal-erosion.png" alt="Terreno melhorado pela erosão térmica">
+    <img width="420" src=".github/screenshots/02_thermal-erosion.png" alt="Terreno melhorado pela erosão térmica">
   </a>
   <a href=".github/screenshots/03_hydraulic-erosion.png" target="_blank">
-    <img width="445" src=".github/screenshots/03_hydraulic-erosion.png" alt="Terreno melhorado pela erosão hidráulica">
+    <img width="420" src=".github/screenshots/03_hydraulic-erosion.png" alt="Terreno melhorado pela erosão hidráulica">
   </a>
 </p>
 
@@ -29,10 +29,10 @@ Por padrão o terreno é texturizado por um mapa de altimetria no qual as regiõ
 
 <p align="center">
   <a href=".github/screenshots/04_heightmap.png" target="_blank">
-    <img width="445" src=".github/screenshots/04_heightmap.png" alt="Mapa de altimetria do terreno">
+    <img width="420" src=".github/screenshots/04_heightmap.png" alt="Mapa de altimetria do terreno">
   </a>
   <a href=".github/screenshots/05_slopemap.png" target="_blank">
-    <img width="445" src=".github/screenshots/05_slopemap.png" alt="Mapa de declividade do terreno">
+    <img width="420" src=".github/screenshots/05_slopemap.png" alt="Mapa de declividade do terreno">
   </a>
 </p>
 
