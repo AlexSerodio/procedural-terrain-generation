@@ -1,4 +1,5 @@
-﻿using Generation.Terrain.Evaluation;
+﻿using Terrain.Evaluation;
+using Terrain.Utils;
 using UnityEngine;
 
 namespace Unity.Components
@@ -16,8 +17,7 @@ namespace Unity.Components
 
             loader.Load(texture, heightmap);
 
-            Debug.Log($"Erosion Score: {ErosionScore.Evaluate(heightmap)}");
-            Debug.Log($"Benford's Law: {BenfordsLaw.Evaluate(heightmap)}");
+            Debug.Log($"Loaded Terrain: {ErosionScore.Evaluate(heightmap)} -> {BenfordsLaw.Evaluate(heightmap)}");
             
             UpdateTerrainHeight(heightmap);
         }

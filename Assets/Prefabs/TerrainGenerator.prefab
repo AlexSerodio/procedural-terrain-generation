@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6781124892613120222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6781124892613120210}
+  - component: {fileID: 6781124892613120220}
+  - component: {fileID: 6781124892613120208}
+  - component: {fileID: 6781124892613120215}
+  - component: {fileID: 6781124892613120209}
+  - component: {fileID: 6781124892613120211}
+  - component: {fileID: 6781124892613120221}
+  - component: {fileID: 6781124892613120214}
+  m_Layer: 0
+  m_Name: TerrainGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6781124892613120210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6781124892613120220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba863a556127a36418800e091cae2ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  randomGeneration: 1
+  seed: 0
+  shader: {fileID: 7200000, guid: d9528acf6b40c4743a7f2f6c7ed57817, type: 3}
+  useGPU: 1
+  onlyBestResults: 0
+  tries: 500
+  minimumFirstValue: 28
+--- !u!114 &6781124892613120208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 274851b108d807b44b53d5fe6eee3cf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  factor: 0.5
+  talusFactor: 4
+  iterations: 100
+  shader: {fileID: 7200000, guid: d6962c6e1071c4145a3d5bfa612d40a8, type: 3}
+  useGPU: 1
+--- !u!114 &6781124892613120215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 273dcaa06f3fb494389b3f45fddf6ab8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  rainFactor: 0.08
+  solubility: 0.02
+  evaporationFactor: 0.5
+  iterations: 100
+  pourAndDissolveShader: {fileID: 7200000, guid: 225314a3bc72fb642b43f050a7592482,
+    type: 3}
+  waterFlowShader: {fileID: 7200000, guid: 087ac59dc8357e04d814e039ec49a460, type: 3}
+  drainWaterShader: {fileID: 7200000, guid: 5875bea7e56245f4e82d1d2b0c3cccc1, type: 3}
+  useGPU: 1
+--- !u!114 &6781124892613120209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f2e178790e76747bc4b93397b0ed48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  smoothAmount: 5
+  shader: {fileID: 7200000, guid: d6962c6e1071c4145a3d5bfa612d40a8, type: 3}
+--- !u!114 &6781124892613120211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 683c9fe8c8fb6654398ef884d94527a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  fallOff: 5.89
+  dropOff: 5.8
+  minHeight: 0.5
+  maxHeight: 1
+  peaksAmount: 10
+  type: 2
+--- !u!114 &6781124892613120221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf7feea5e0069584c8286703bb704487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  perlinOffsetX: 0
+  perlinOffsetY: 0
+  perlinXScale: 0.01
+  perlinYScale: 0.01
+  perlinOctaves: 5
+  perlinPersistance: 0.1
+  perlinHeightScale: 0.58
+--- !u!114 &6781124892613120214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f0c24539fd57d48b6f3a367cbf58f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  texture: {fileID: 2800000, guid: 635f7fe6ad845b4419329cc4691fde49, type: 3}
