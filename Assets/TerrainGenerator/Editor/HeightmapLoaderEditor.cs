@@ -20,8 +20,11 @@ public class HeightmapLoaderEditor : Editor
 
         EditorGUILayout.PropertyField(texture);
         
-        if (GUILayout.Button("Load"))
+        if (GUILayout.Button("Import"))
             component.UpdateComponent();
+
+        if (GUILayout.Button("Export"))
+            component.export();
 
         serializedObject.ApplyModifiedProperties();
     }

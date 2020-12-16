@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 6781124892613120220}
   - component: {fileID: 6781124892613120208}
   - component: {fileID: 6781124892613120215}
+  - component: {fileID: 6781124892613120214}
   - component: {fileID: 6781124892613120209}
   - component: {fileID: 6781124892613120211}
   - component: {fileID: 6781124892613120221}
-  - component: {fileID: 6781124892613120214}
   m_Layer: 0
   m_Name: TerrainGenerator
   m_TagString: Untagged
@@ -97,6 +97,20 @@ MonoBehaviour:
   waterFlowShader: {fileID: 7200000, guid: 087ac59dc8357e04d814e039ec49a460, type: 3}
   drainWaterShader: {fileID: 7200000, guid: 5875bea7e56245f4e82d1d2b0c3cccc1, type: 3}
   useGPU: 1
+--- !u!114 &6781124892613120214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781124892613120222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f0c24539fd57d48b6f3a367cbf58f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshGenerator: {fileID: 0}
+  texture: {fileID: 2800000, guid: 635f7fe6ad845b4419329cc4691fde49, type: 3}
 --- !u!114 &6781124892613120209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,17 +165,3 @@ MonoBehaviour:
   perlinOctaves: 5
   perlinPersistance: 0.1
   perlinHeightScale: 0.58
---- !u!114 &6781124892613120214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6781124892613120222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3f0c24539fd57d48b6f3a367cbf58f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshGenerator: {fileID: 0}
-  texture: {fileID: 2800000, guid: 635f7fe6ad845b4419329cc4691fde49, type: 3}
